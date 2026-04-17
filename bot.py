@@ -6,8 +6,9 @@ import sys
 import glob
 import importlib
 from pathlib import Path
-from pyrogram import idle
-from auth_check import force_subscribe, is_user_member
+from pyrogram import idle, filters  # ← ADDED filters here
+from pyrogram.types import Message  # ← ADDED this import
+from auth_check import force_subscribe, is_user_member, check_auth_channel  # ← ADDED check_auth_channel
 from config import AUTH_CHANNEL_MODE, ADMINS, AUTH_CHANNEL, VERIFY_CHANNEL_LINK
 import logging
 import logging.config
@@ -47,8 +48,6 @@ from plugins.clone import restart_bots
 from TechVJ.bot import StreamBot
 from TechVJ.utils.keepalive import ping_server
 from TechVJ.bot.clients import initialize_clients
-# Import auth functions
-from auth_check import is_user_member, check_auth_channel
 
 # Don't Remove Credit Tg - @VJ_Bots
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
