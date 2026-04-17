@@ -47,6 +47,8 @@ from plugins.clone import restart_bots
 from TechVJ.bot import StreamBot
 from TechVJ.utils.keepalive import ping_server
 from TechVJ.bot.clients import initialize_clients
+# Import auth functions
+from auth_check import is_user_member, check_auth_channel
 
 # Don't Remove Credit Tg - @VJ_Bots
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
@@ -62,7 +64,14 @@ loop = asyncio.get_event_loop()
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-
+# Add this middleware to check all messages
+@StreamBot.on_message(filters.private & ~filters.service, group=1)
+async def auth_middleware(client: Client, message: Message):
+    is_verified = await check_auth_channel(client, message)
+    if not is_verified:
+        return  # Stop processing if not verified    
+    await client.continue_propagation()
+    
 async def start():
     print('\n')
     print('Initalizing Tech VJ Bot')
