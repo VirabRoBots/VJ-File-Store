@@ -315,6 +315,40 @@ async def base_site_handler(client, m: Message):
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
+    # ADD THIS BLOCK AT THE START for auth channel check
+    if query.data == "check_membership":
+        user_id = query.from_user.id
+        
+        is_member = await is_user_member(client, user_id)
+        
+        if is_member:
+            await query.message.edit_text(
+                "✅ **Verification Successful!**\n\n"
+                "You have joined the channel. You can now use the bot.\n\n"
+                "Send /start to continue."
+            )
+            await query.answer("Verified! You can now use the bot.", show_alert=True)
+        else:
+            auth_channel = config.AUTH_CHANNEL
+            if auth_channel.startswith('@'):
+                auth_channel = auth_channel[1:]
+            
+            channel_link = config.VERIFY_CHANNEL_LINK or f"https://t.me/{auth_channel}"
+            
+            await query.answer(
+                "❌ You haven't joined the channel yet!\nPlease join first.", 
+                show_alert=True
+            )
+            
+            await query.message.edit_reply_markup(
+                InlineKeyboardMarkup([[
+                    InlineKeyboardButton("📢 Join Channel", url=channel_link),
+                    InlineKeyboardButton("✅ Verify Membership", callback_data="check_membership")
+                ]])
+            )
+        return  # Don't process other callbacks if this is membership check
+    
+    # YOUR EXISTING CALLBACK CODE CONTINUES HERE.
     if query.data == "close_data":
         await query.message.delete()
     elif query.data == "about":
