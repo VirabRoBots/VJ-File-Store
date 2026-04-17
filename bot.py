@@ -7,6 +7,8 @@ import glob
 import importlib
 from pathlib import Path
 from pyrogram import idle
+from auth_check import force_subscribe, is_user_member
+from config import AUTH_CHANNEL_MODE, ADMINS, AUTH_CHANNEL, VERIFY_CHANNEL_LINK
 import logging
 import logging.config
 
