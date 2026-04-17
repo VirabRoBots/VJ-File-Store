@@ -35,3 +35,50 @@ async def is_user_member(client: Client, user_id: int) -> bool:
     except Exception as e:
         print(f"Error checking auth channel membership: {e}")
         return False  # If error, assume not member
+
+# Add this middleware function to check ALL messages
+async def check_auth_channel(client: Client, message: Message):
+    """Check auth channel for all messages"""
+    
+    # Skip if auth channel mode is disabled
+    if not config.AUTH_CHANNEL_MODE:
+        return True
+    
+    # Skip if no auth channel configured
+    if not config.AUTH_CHANNEL:
+        return True
+    
+    user_id = message.from_user.id
+    
+    # Skip check for admins
+    if user_id in config.ADMINS:
+        return True
+    
+    # Check if user is member
+    is_member = await is_user_member(client, user_id)
+    
+    if not is_member:
+        # Prepare channel link
+        auth_channel = config.AUTH_CHANNEL
+        if auth_channel.startswith('@'):
+            auth_channel = auth_channel[1:]
+        
+        channel_link = config.VERIFY_CHANNEL_LINK or f"https://t.me/{auth_channel}"
+        
+        # Send force subscribe message
+        buttons = InlineKeyboardMarkup([[
+            InlineKeyboardButton("📢 Join Channel", url=channel_link),
+            InlineKeyboardButton("✅ Verify Membership", callback_data="check_membership")
+        ]])
+        
+        await message.reply_text(
+            "**🔒 Access Restricted**\n\n"
+            f"**You must join our channel to use this bot!**\n\n"
+            f"👉 **Channel:** @{auth_channel}\n\n"
+            "After joining the channel, click the verify button below.",
+            reply_markup=buttons,
+            disable_web_page_preview=True
+        )
+        return False  # Not verified
+    
+    return True  # Verified
