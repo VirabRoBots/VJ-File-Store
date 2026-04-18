@@ -66,10 +66,26 @@ loop = asyncio.get_event_loop()
 # Add this middleware to check all messages
 @StreamBot.on_message(filters.private & ~filters.service, group=1)
 async def auth_middleware(client: Client, message: Message):
+    # First check if auth is enabled
+    if not AUTH_CHANNEL_MODE:
+        await client.continue_propagation()
+        return
+    
+    # Skip for admins
+    if message.from_user.id in ADMINS:
+        await client.continue_propagation()
+        return
+    
+    # Check if user is member
+    from auth_check import check_auth_channel
     is_verified = await check_auth_channel(client, message)
+    
     if not is_verified:
-        return  # Stop processing if not verified    
-    await client.continue_propagation()
+        # User not verified - STOP all further processing
+        return  # This stops the message from reaching command handlers
+    
+    # User is verified - continue to command handlers
+    await client.continue_propagation()    
     
 async def start():
     print('\n')
