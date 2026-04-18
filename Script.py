@@ -4,18 +4,17 @@
 
 
 class script(object):
-    START_TXT = """<b>ʜᴇʟʟᴏ {}, ᴍʏ ɴᴀᴍᴇ {} 👋, ɪ ᴀᴍ ʟᴀᴛᴇꜱᴛ ᴀᴅᴠᴀɴᴄᴇᴅ ᴀɴᴅ ᴘᴏᴡᴇʀꜰᴜʟ ꜰɪʟᴇ ꜱᴛᴏʀᴇ ʙᴏᴛ + ᴄʟᴏɴᴇ ғᴇᴀᴛᴜʀᴇ + sᴛʀᴇᴀᴍ / ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ ғᴇᴀᴛᴜʀᴇ + ᴄᴜꜱᴛᴏᴍ ᴜʀʟ ꜱʜᴏʀᴛɴᴇʀ ꜱᴜᴘᴘᴏʀᴛ + ᴀᴜᴛᴏ ᴅᴇʟᴇᴛᴇ sᴜᴘᴘᴏʀᴛ ᴀɴᴅ ʙᴇꜱᴛ ᴜɪ ᴘᴇʀꜰᴏʀᴍᴀɴᴄᴇ </b>"""
+    START_TXT = """<b>Hᴇʟʟᴏ {}, Tʜɪs ʙᴏᴛ ᴘʀᴏᴠɪᴅᴇs ɪɴғᴏʀᴍᴀᴛɪᴏɴ ʀᴇɢᴀʀᴅɪɴɢ ᴍᴏᴠɪᴇs ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴ ᴏᴜʀ ᴡᴇʙsɪᴛᴇ. Pʟᴇᴀsᴇ ᴄʟɪᴄᴋ "Vɪsɪᴛ Wᴇʙsɪᴛᴇ" ᴏʀ "Jᴏɪɴ" ᴛᴏ ᴀᴄᴄᴇss ᴛʜᴇ ʟᴀᴛᴇsᴛ ғɪʟᴍ ʀᴇʟᴇᴀsᴇs
+🍿</b>"""
 
 # Don't Remove Credit Tg - @VJ_Bots
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
     
-    CAPTION = """<b>📂 ғɪʟᴇɴᴀᴍᴇ : {file_name}
+    CAPTION = """<code>📂 ғɪʟᴇɴᴀᴍᴇ : {file_name}
 
-⚙️ sɪᴢᴇ : {file_size}
-
-Jᴏɪɴ [ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ](https://t.me/vj_bots)</b>""" 
+⚙️ sɪᴢᴇ : {file_size}</code>""" 
 
 # Don't Remove Credit Tg - @VJ_Bots
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
@@ -130,9 +129,7 @@ First Send /clone command then follow below steps.
 # Ask Doubt on telegram @KingVJ01
 
     LOG_TEXT = """<b>#NewUser
-    
 ID - <code>{}</code>
-
 Nᴀᴍᴇ - {}</b>
 """
     RESTART_TXT = """
