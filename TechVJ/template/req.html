@@ -1,333 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CinemaniacsHub | Video Player</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.9/plyr.css" />
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #000;
-            font-family: Arial, sans-serif;
-            padding-bottom: 20px;
-            color: #fff;
-        }
-        /* Header - matches Cinemaniacs */
-        .header {
-            display: flex;
-            align-items: center;
-            padding: 6px 10px;
-            gap: 8px;
-            background: #000;
-        }
-        .logo-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-            height: 50px;
-            flex-shrink: 0;
-        }
-        .logo-circle {
-            position: absolute;
-            right: -25px;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-        }
-        .logo-text {
-            font-size: 20px;
-            font-weight: 800;
-            color: white;
-            left: 2.5px;
-            position: relative;
-            z-index: 3;
-        }
-        .video-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 15px;
-        }
-        .plyr {
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-        .player-card {
-            background: #1a1a2e;
-            border-radius: 20px;
-            transition: all 0.3s;
-        }
-        .file-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 40px;
-            color: white;
-        }
-        .card {
-            transition: transform 0.2s;
-            cursor: pointer;
-        }
-        .card:hover {
-            transform: translateY(-3px);
-        }
-        .toast-message {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 16px;
-            font-weight: bold;
-            font-size: 14px;
-            z-index: 10000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 1.5s forwards;
-            pointer-events: none;
-        }
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fadeOut {
-            to { opacity: 0; visibility: hidden; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Cinemaniacs Hub | Neo Player</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.6.9/plyr.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 30%, #0a0a0f, #030303);
+      font-family: 'Inter', system-ui, sans-serif;
+      padding-bottom: 30px;
+      color: #f0f3fa;
+    }
+
+    ::-webkit-scrollbar {
+      width: 3px;
+      height: 3px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #141414;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #00c6ff;
+      border-radius: 10px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      gap: 8px;
+      background: #0a0a0a;
+    }
+
+    .logo-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 50px;
+      flex-shrink: 0;
+    }
+
+    .logo-circle {
+      position: absolute;
+      right: -25px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      left: 2.5px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .file-info {
+      background: linear-gradient(105deg, rgba(15, 20, 35, 0.9), rgba(5, 8, 20, 0.85));
+      padding: 14px 22px;
+      border-radius: 28px;
+      margin-bottom: 22px;
+      border: 1px solid rgba(0, 198, 255, 0.5);
+    }
+
+    .file-info strong {
+      color: #00e0ff;
+    }
+
+    .plyr {
+      border-radius: 32px;
+      box-shadow: 0 25px 40px -12px #000, 0 0 0 2px rgba(0, 198, 255, 0.4);
+      background: #000;
+    }
+
+
+.video-container:focus-within {
+    box-shadow: 0 -3px 0 0 #00c6ff, 3px 0 0 0 #00c6ff, -3px 0 0 0 #00c6ff;
+    border-radius: 18px;
+}
+    .ext-zone {
+      background: rgba(8, 8, 16, 0.7);
+      backdrop-filter: blur(16px);
+      border-radius: 36px;
+      padding: 20px 18px;
+      margin-top: 25px;
+      border: 1px solid rgba(0, 198, 255, 0.5);
+    }
+
+    .ext-zone h5 {
+      text-align: center;
+      margin-bottom: 16px;
+      font-weight: 700;
+      background: linear-gradient(130deg, #b5f0ff, #2a9eff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 1.3rem;
+    }
+
+    .btn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .ext-btn {
+      background: rgba(15, 20, 32, 0.85);
+      border: 1px solid rgba(0, 198, 255, 0.5);
+      border-radius: 60px;
+      padding: 10px 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #f0f4ff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .ext-btn:hover {
+      background: linear-gradient(135deg, #00c6ff20, #1e5aff40);
+      transform: translateY(-2px);
+    }
+
+    .codec-alert {
+      background: rgba(12, 12, 20, 0.8);
+      backdrop-filter: blur(10px);
+      color: #ffc107;
+      border: 1px solid rgba(0, 198, 255, 0.4);
+      border-radius: 20px;
+      padding: 12px 20px;
+      text-align: center;
+      margin-top: 25px;
+      font-size: 0.85rem;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: #0f0f1a;
+      border-left: 4px solid #00c6ff;
+      border-radius: 16px;
+      padding: 10px 20px;
+      color: white;
+      font-size: 13px;
+      z-index: 10000;
+      transform: translateX(400px);
+      transition: 0.3s;
+    }
+
+    .toast-msg.show {
+      transform: translateX(0);
+    }
+
+    @media(max-width:600px) {
+      .ext-btn {
+        padding: 8px 18px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-
-    <!-- Cinemaniacs Hub Header -->
-    <div class="header">
-        <div class="logo-container">
-            <div class="logo-circle"></div>
-            <div class="logo-text">Cinemaniacs Hub</div>
-        </div>
+  <div class="header">
+    <div class="logo-container">
+      <div class="logo-circle"></div>
+      <div class="logo-text">Cinemaniacs Hub</div>
     </div>
-
-    <!-- Main Content -->
-    <div class="container mt-3">
-        <!-- File Information -->
-        <div class="file-info" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 12px 20px; border-radius: 12px; margin-bottom: 15px; color: black; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <div><strong>📁 File Name:</strong> <span id="fileNameDisplay">Loading...</span></div>
-            <div class="mt-1"><strong>💾 File Size:</strong> <span id="fileSizeDisplay">Calculating...</span></div>
+  </div>
+  <div class="container mt-3">
+    <div style="max-width:900px;margin:0 auto;">
+      <div class="file-info">
+        <div><strong>📁 File:</strong> <span id="fileNameDisplay">Loading...</span></div>
+        <div class="mt-1"><strong>💾 Size:</strong> <span id="fileSizeDisplay">—</span></div>
+      </div>
+      <div class="video-container"><video id="player" class="player" playsinline controls>
+          <source src="{{file_url}}" type="video/mp4">
+        </video></div>
+      <div class="ext-zone">
+        <h5><i class="fas fa-external-link-alt me-2"></i> External Players</h5>
+        <div class="btn-grid">
+          <div onclick="launchPlayer('vlc')" class="ext-btn"><i class="fab fa-vimeo-v"></i> VLC</div>
+          <div onclick="launchPlayer('mx')" class="ext-btn"><i class="fas fa-play-circle"></i> MX</div>
+          <div onclick="launchPlayer('playit')" class="ext-btn"><i class="fas fa-play"></i> Play-it</div>
+          <div onclick="launchPlayer('km')" class="ext-btn"><i class="fas fa-video"></i> KM</div>
+          <div onclick="launchPlayer('s')" class="ext-btn"><i class="fas fa-magic"></i> S Player</div>
+          <div onclick="launchPlayer('hd')" class="ext-btn"><i class="fas fa-gem"></i> HD Player</div>
         </div>
-
-        <!-- Video Player -->
-        <div class="video-container">
-            <video id="player" class="player" playsinline controls>
-                <source src="{{file_url}}" type="video/mp4">
-            </video>
-        </div>
-
-        <!-- Player Options Section -->
-        <div class="player-card p-4 rounded-4 mt-3" style="background: #1a1a2e;">
-            <h5 class="mb-3" style="background: linear-gradient(45deg, #00c6ff, #0072ff); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: bold;">📱 Play with External Player</h5>
-            <div class="row g-3 justify-content-center">
-                <div class="col-6 col-md-3">
-                    <div onclick="vlc_player()" class="card text-center p-3 border-0 shadow-sm" style="background: linear-gradient(45deg, #00c6ff, #0072ff); color: white;">
-                        <span style="font-size: 28px;">📺</span>
-                        <span class="fw-bold mt-1">VLC Player</span>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div onclick="mx_player()" class="card text-center p-3 border-0 shadow-sm" style="background: linear-gradient(45deg, #00c6ff, #0072ff); color: white;">
-                        <span style="font-size: 28px;">🎬</span>
-                        <span class="fw-bold mt-1">MX Player</span>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div onclick="playit_player()" class="card text-center p-3 border-0 shadow-sm" style="background: linear-gradient(45deg, #00c6ff, #0072ff); color: white;">
-                        <span style="font-size: 28px;">▶️</span>
-                        <span class="fw-bold mt-1">Play-it</span>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div onclick="km_player()" class="card text-center p-3 border-0 shadow-sm" style="background: linear-gradient(45deg, #00c6ff, #0072ff); color: white;">
-                        <span style="font-size: 28px;">🎥</span>
-                        <span class="fw-bold mt-1">KM Player</span>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div onclick="s_player()" class="card text-center p-3 border-0 shadow-sm" style="background: linear-gradient(45deg, #00c6ff, #0072ff); color: white;">
-                        <span style="font-size: 28px;">🎞️</span>
-                        <span class="fw-bold mt-1">S Player</span>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div onclick="hd_player()" class="card text-center p-3 border-0 shadow-sm" style="background: linear-gradient(45deg, #00c6ff, #0072ff); color: white;">
-                        <span style="font-size: 28px;">✨</span>
-                        <span class="fw-bold mt-1">HD Player (4K)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Info Alert -->
-        <div class="text-center mt-3">
-            <div class="alert rounded-4" style="background: red; color: white; border: 1px solid #333;">
-                ⚠️ Video not playing? Possibly because your browser doesn't support the codec. Please play using external Player.
-            </div>
-        </div>
+      </div>
+      <div class="codec-alert">⚠️ Video not playing? Possibly because your browser doesn't support the codec. Please play using external Player.</div>
     </div>
+  </div>
+  <div id="toastMsg" class="toast-msg"><i class="fas fa-check-circle" style="color:#00c6ff;margin-right:8px;"></i><span id="toastText">Launching...</span></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
+  <script>
+    (function() {
+      const videoLink = window.location.href.replace("/watch/", "/");
+      new Plyr('#player', {
+        controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen']
+      });
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('[data-plyr="fullscreen"]')) {
+          setTimeout(() => {
+            if (document.fullscreenElement && screen.orientation?.lock) screen.orientation.lock('landscape').catch(() => {});
+          }, 100);
+        }
+      });
+      const srcUrl = document.querySelector('#player source')?.src;
+      if (srcUrl) {
+        let rawName = decodeURIComponent(srcUrl.split('/').pop().split('?')[0] || 'video').replace(/\+/g, ' ').replace(/@[^\s]+/g, '').replace(/@/g, '').replace(/\s+/g, ' ').trim();
+        document.getElementById('fileNameDisplay').innerText = (rawName.slice(0, 60) + (rawName.length > 60 ? '...' : ''));
+        fetch(srcUrl, {
+          method: 'HEAD'
+        }).then(res => {
+          let len = res.headers.get('content-length');
+          if (len) {
+            let b = parseInt(len);
+            document.getElementById('fileSizeDisplay').innerText = b < 1e6 ? (b / 1024).toFixed(1) + ' KB' : b < 1e9 ? (b / 1048576).toFixed(2) + ' MB' : (b / 1073741824).toFixed(2) + ' GB';
+          } else document.getElementById('fileSizeDisplay').innerText = 'Unknown';
+        }).catch(() => document.getElementById('fileSizeDisplay').innerText = 'Unknown');
+      }
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
-    <script>
-        // Function to request fullscreen and auto-rotate to landscape
-        function goFullscreenAndRotate() {
-            const playerElement = document.querySelector('.plyr');
-            if (playerElement) {
-                if (playerElement.requestFullscreen) {
-                    playerElement.requestFullscreen();
-                } else if (playerElement.webkitRequestFullscreen) {
-                    playerElement.webkitRequestFullscreen();
-                } else if (playerElement.msRequestFullscreen) {
-                    playerElement.msRequestFullscreen();
-                }
-                
-                // Force landscape orientation on mobile
-                if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch(() => {});
-                }
-            }
-        }
-
-        // Initialize Plyr with custom controls and auto-rotate on fullscreen
-        const controls = [
-            'play-large', 'rewind', 'play', 'fast-forward', 'progress',
-            'current-time', 'duration', 'mute', 'volume', 'captions',
-            'settings', 'pip', 'airplay', 'download', 'fullscreen'
-        ];
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const players = Plyr.setup('.player', { controls });
-            
-            // Add auto-rotate when fullscreen button is clicked
-            const fullscreenBtn = document.querySelector('.plyr__control[data-plyr="fullscreen"]');
-            if (fullscreenBtn) {
-                fullscreenBtn.addEventListener('click', goFullscreenAndRotate);
-            }
-            
-            // Also handle when fullscreen changes via other methods
-            document.addEventListener('fullscreenchange', function() {
-                if (!document.fullscreenElement && screen.orientation && screen.orientation.unlock) {
-                    screen.orientation.unlock();
-                }
-            });
-        });
-
-        // Get video link from URL
-        const videolink = window.location.href;
-        const lazyLink = videolink.replace("/watch/", "/");
-
-        // Display file name and size
-        const fileNameSpan = document.getElementById('fileNameDisplay');
-        const fileSizeSpan = document.getElementById('fileSizeDisplay');
-        
-        // Get file name from video source URL
-        const videoSource = document.querySelector('#player source');
-        let fileName = 'Unknown File';
-        let fileExtension = '';
-
-        if (videoSource && videoSource.src) {
-            // Extract filename from URL
-            const url = videoSource.src;
-            const decodedUrl = decodeURIComponent(url);
-            const lastSlash = decodedUrl.lastIndexOf('/');
-            if (lastSlash !== -1) {
-                let name = decodedUrl.substring(lastSlash + 1);
-                // Remove query parameters
-                const queryIndex = name.indexOf('?');
-                if (queryIndex !== -1) {
-                    name = name.substring(0, queryIndex);
-                }
-                
-                // Extract extension
-                const extIndex = name.lastIndexOf('.');
-                if (extIndex !== -1) {
-                    fileExtension = name.substring(extIndex); // Includes dot, e.g., ".mp4"
-                    name = name.substring(0, extIndex);
-                }
-                
-                // Replace + with space
-                name = name.replace(/\+/g, ' ');
-                // Remove anything with @ symbol (like @Cinemaniacs_Hub)
-                name = name.replace(/@[^\s]+/g, '');
-                // Remove any leftover @ symbols
-                name = name.replace(/@/g, '');
-                // Clean up multiple spaces
-                name = name.replace(/\s+/g, ' ').trim();
-                
-                // Add extension back to filename
-                if (fileExtension && name.length > 0) {
-                    fileName = name + fileExtension;
-                } else if (name.length > 0) {
-                    fileName = name;
-                }
-            }
-        }
-        
-        if (fileName.length > 60) fileName = fileName.slice(0, 60) + '...';
-        fileNameSpan.textContent = fileName;
-
-        // Get file size from video source
-        if (videoSource && videoSource.src) {
-            fetch(videoSource.src, { method: 'HEAD' })
-                .then(response => {
-                    const size = response.headers.get('content-length');
-                    if (size) {
-                        const bytes = parseInt(size);
-                        if (bytes < 1024 * 1024) {
-                            fileSizeSpan.textContent = (bytes / 1024).toFixed(2) + ' KB';
-                        } else if (bytes < 1024 * 1024 * 1024) {
-                            fileSizeSpan.textContent = (bytes / (1024 * 1024)).toFixed(2) + ' MB';
-                        } else {
-                            fileSizeSpan.textContent = (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
-                        }
-                    } else {
-                        fileSizeSpan.textContent = 'Unknown';
-                    }
-                })
-                .catch(() => {
-                    fileSizeSpan.textContent = 'Unable to fetch';
-                });
-        } else {
-            fileSizeSpan.textContent = 'Not available';
-        }
-
-        // External player functions
-        function vlc_player() {
-            window.location.href = `vlc://${lazyLink}`;
-        }
-        function mx_player() {
-            window.location.href = `intent:${lazyLink}#Intent;package=com.mxtech.videoplayer.ad;end`;
-        }
-        function playit_player() {
-            window.location.href = `playit://playerv2/video?url=${lazyLink}`;
-        }
-        function s_player() {
-            window.location.href = `intent:${lazyLink}#Intent;action=com.young.simple.player.playback_online;package=com.young.simple.player;end`;
-        }
-        function km_player() {
-            window.location.href = `intent:${lazyLink}#Intent;package=com.kmplayer;end`;
-        }
-        function hd_player() {
-            window.location.href = `intent:${lazyLink}#Intent;package=uplayer.video.player;end`;
-        }
-
-        // Disable right click
-        document.addEventListener("contextmenu", function(e) {
-            e.preventDefault();
-        });
-    </script>
+      function showToast(msg) {
+        let t = document.getElementById('toastMsg');
+        document.getElementById('toastText').innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2200);
+      }
+      window.launchPlayer = function(t) {
+        showToast(`⟳ Opening ${t.toUpperCase()} Player...`);
+        let s = {
+          vlc: `vlc://${videoLink}`,
+          mx: `intent:${videoLink}#Intent;package=com.mxtech.videoplayer.ad;end`,
+          playit: `playit://playerv2/video?url=${encodeURIComponent(videoLink)}`,
+          km: `intent:${videoLink}#Intent;package=com.kmplayer;end`,
+          s: `intent:${videoLink}#Intent;action=com.young.simple.player.playback_online;package=com.young.simple.player;end`,
+          hd: `intent:${videoLink}#Intent;package=uplayer.video.player;end`
+        };
+        setTimeout(() => {
+          window.location.href = s[t];
+        }, 60);
+      };
+      document.addEventListener('contextmenu', e => e.preventDefault());
+    })();
+  </script>
 </body>
+
 </html>
