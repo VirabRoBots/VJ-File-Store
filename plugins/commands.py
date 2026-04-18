@@ -50,13 +50,8 @@ def formate_file_name(file_name):
         file_name.replace(c, "")
     file_name = '@VJ_Botz ' + ' '.join(filter(lambda x: not x.startswith('http') and not x.startswith('@') and not x.startswith('www.'), file_name.split()))
     return file_name
-
-# Don't Remove Credit Tg - @VJ_Bots
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ0
-
-
-@Client.on_message(filters.command("start") & filters.incoming)
+    
+@Client.on_message(filters.command("start") & filters.incoming, group=1)
 async def start(client, message):
     username = client.me.username
     if not await db.is_user_exist(message.from_user.id):
