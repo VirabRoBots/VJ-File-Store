@@ -8,7 +8,7 @@ import importlib
 from pathlib import Path
 from pyrogram import idle, filters  # ← ADDED filters here
 from pyrogram.types import Message  # ← ADDED this import
-from auth_check import force_subscribe, is_user_member, check_auth_channel  # ← ADDED check_auth_channel
+from auth_check import is_user_member, check_auth_channel
 from config import AUTH_CHANNEL_MODE, ADMINS, AUTH_CHANNEL, VERIFY_CHANNEL_LINK
 import logging
 import logging.config
