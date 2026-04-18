@@ -63,7 +63,7 @@ async def check_auth_channel(client: Client, message: Message):
         if auth_channel.startswith('@'):
             auth_channel = auth_channel[1:]
         
-        channel_link = config.VERIFY_CHANNEL_LINK or f"https://t.me/{auth_channel}"
+        channel_link = config.VERIFY_CHANNEL_LINK
         
         # Send force subscribe message
         buttons = InlineKeyboardMarkup([[
@@ -76,7 +76,7 @@ async def check_auth_channel(client: Client, message: Message):
             await message.reply_text(
                 "**🔒 Access Restricted**\n\n"
                 f"**You must join our channel to use this bot!**\n\n"
-                f"👉 **Channel:** @{auth_channel}\n\n"
+                "👉 Click the button below to join the channel"
                 "After joining the channel, click the verify button below.",
                 reply_markup=buttons,
                 disable_web_page_preview=True
