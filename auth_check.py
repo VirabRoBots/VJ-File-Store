@@ -71,14 +71,16 @@ async def check_auth_channel(client: Client, message: Message):
             InlineKeyboardButton("✅ Verify Membership", callback_data="check_membership")
         ]])
         
-        await message.reply_text(
-            "**🔒 Access Restricted**\n\n"
-            f"**You must join our channel to use this bot!**\n\n"
-            f"👉 **Channel:** @{auth_channel}\n\n"
-            "After joining the channel, click the verify button below.",
-            reply_markup=buttons,
-            disable_web_page_preview=True
-        )
+        # IMPORTANT: Only send if not already sent (check if message is the restriction message)
+        if not message.text or not message.text.startswith("**🔒 Access Restricted**"):
+            await message.reply_text(
+                "**🔒 Access Restricted**\n\n"
+                f"**You must join our channel to use this bot!**\n\n"
+                f"👉 **Channel:** @{auth_channel}\n\n"
+                "After joining the channel, click the verify button below.",
+                reply_markup=buttons,
+                disable_web_page_preview=True
+            )
         return False  # Not verified
     
     return True  # Verified
