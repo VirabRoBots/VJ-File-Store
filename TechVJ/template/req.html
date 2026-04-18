@@ -232,13 +232,40 @@
         // Display file name and size
         const fileNameSpan = document.getElementById('fileNameDisplay');
         const fileSizeSpan = document.getElementById('fileSizeDisplay');
-        const urlParams = new URLSearchParams(window.location.search);
-        let fileName = urlParams.get('title') || urlParams.get('name') || 'Unknown File';
+        
+        // Get file name from video source URL instead of URL params
+        const videoSource = document.querySelector('#player source');
+        let fileName = 'Unknown File';
+        
+        if (videoSource && videoSource.src) {
+            // Extract filename from URL
+            const url = videoSource.src;
+            const decodedUrl = decodeURIComponent(url);
+            const lastSlash = decodedUrl.lastIndexOf('/');
+            if (lastSlash !== -1) {
+                let name = decodedUrl.substring(lastSlash + 1);
+                // Remove query parameters if any
+                const queryIndex = name.indexOf('?');
+                if (queryIndex !== -1) {
+                    name = name.substring(0, queryIndex);
+                }
+                // Remove file extension
+                const extIndex = name.lastIndexOf('.');
+                if (extIndex !== -1) {
+                    name = name.substring(0, extIndex);
+                }
+                // Replace underscores and hyphens with spaces
+                name = name.replace(/[_\-]/g, ' ');
+                if (name.length > 0) {
+                    fileName = name;
+                }
+            }
+        }
+        
         if (fileName.length > 50) fileName = fileName.slice(0, 50) + '...';
         fileNameSpan.textContent = fileName;
 
         // Get file size from video source
-        const videoSource = document.querySelector('#player source');
         if (videoSource && videoSource.src) {
             fetch(videoSource.src, { method: 'HEAD' })
                 .then(response => {
