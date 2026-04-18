@@ -233,10 +233,11 @@
         const fileNameSpan = document.getElementById('fileNameDisplay');
         const fileSizeSpan = document.getElementById('fileSizeDisplay');
         
-        // Get file name from video source URL instead of URL params
+        // Get file name from video source URL
         const videoSource = document.querySelector('#player source');
         let fileName = 'Unknown File';
-        
+        let fileExtension = '';
+
         if (videoSource && videoSource.src) {
             // Extract filename from URL
             const url = videoSource.src;
@@ -244,25 +245,38 @@
             const lastSlash = decodedUrl.lastIndexOf('/');
             if (lastSlash !== -1) {
                 let name = decodedUrl.substring(lastSlash + 1);
-                // Remove query parameters if any
+                // Remove query parameters
                 const queryIndex = name.indexOf('?');
                 if (queryIndex !== -1) {
                     name = name.substring(0, queryIndex);
                 }
-                // Remove file extension
+                
+                // Extract extension
                 const extIndex = name.lastIndexOf('.');
                 if (extIndex !== -1) {
+                    fileExtension = name.substring(extIndex); // Includes dot, e.g., ".mp4"
                     name = name.substring(0, extIndex);
                 }
-                // Replace underscores and hyphens with spaces
-                name = name.replace(/[_\-]/g, ' ');
-                if (name.length > 0) {
+                
+                // Replace + with space
+                name = name.replace(/\+/g, ' ');
+                // Remove anything with @ symbol (like @Cinemaniacs_Hub)
+                name = name.replace(/@[^\s]+/g, '');
+                // Remove any leftover @ symbols
+                name = name.replace(/@/g, '');
+                // Clean up multiple spaces
+                name = name.replace(/\s+/g, ' ').trim();
+                
+                // Add extension back to filename
+                if (fileExtension && name.length > 0) {
+                    fileName = name + fileExtension;
+                } else if (name.length > 0) {
                     fileName = name;
                 }
             }
         }
         
-        if (fileName.length > 50) fileName = fileName.slice(0, 50) + '...';
+        if (fileName.length > 60) fileName = fileName.slice(0, 60) + '...';
         fileNameSpan.textContent = fileName;
 
         // Get file size from video source
