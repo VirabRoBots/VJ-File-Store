@@ -377,13 +377,13 @@
           if (videoData) {
             currentStats = videoData;
           } else {
-            currentStats = { views: 1247, likes: 342, dislikes: 28 };
+            currentStats = { views: 0, likes: 0, dislikes: 0 };
             await updateStats();
           }
           updateDisplay();
         } catch(e) {
           console.log("Using fallback stats");
-          currentStats = { views: 1247, likes: 342, dislikes: 28 };
+          currentStats = { views: 0, likes: 0, dislikes: 0 };
           updateDisplay();
         }
       }
