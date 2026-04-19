@@ -332,6 +332,17 @@
         gap: 10px;
       }
     }
+
+    /* Additional fix for file details styling - ensures proper alignment */
+    .file-details div {
+      line-height: 1.4;
+    }
+    .engagement-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
   </style>
 </head>
 
@@ -348,7 +359,7 @@
     </div>
     <div class="video-container">
       <video id="player" class="player" playsinline controls poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
-        <!-- Fixed: Using a reliable demo video that works across all browsers (standard H.264/AAC) -->
+        <!-- Video source: using a reliable public sample video that works across all browsers (H.264/AAC) -->
         <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
       </video>
     </div>
@@ -356,8 +367,9 @@
     <!-- Engagement bar with file details + likes/dislikes/views/telegram -->
     <div class="engagement-bar">
       <div class="file-details" style="color: #00e0ff;">
-        <div><strong>📁 File:</strong> <span id="fileNameDisplay">Loading...</span></div>
-        <div class="mt-1"><strong>💾 Size:</strong> <span id="fileSizeDisplay">—</span></div>
+        <!-- Fixed: Displaying the exact custom filename and size as requested -->
+        <div><strong>📁 File:</strong> <span id="fileNameDisplay">S. Saraswathi (2026) Kannada HDRip - x264 - AAC ESub</span></div>
+        <div class="mt-1"><strong>💾 Size:</strong> <span id="fileSizeDisplay">278.05 MB</span></div>
       </div>
       <div class="engagement-row">
         <span class="views-count">
@@ -410,7 +422,7 @@
       const BIN_ID = "69e4b76b36566621a8cc408f"; // your bin ID
       const API_KEY = "$2a$10$TyOXeu0PPOnyzTfOreJzhOKiw3NyMQtnURo0koS2JFiOFMatKoDgq"; // master key
       
-      // Get current video source from the <source> tag (fixed demo URL)
+      // Get current video source from the <source> tag
       const videoSourceElem = document.querySelector('#player source');
       let currentSourceUrl = '';
       if (videoSourceElem && videoSourceElem.src) {
@@ -424,7 +436,6 @@
       // Generate stable videoId based on source URL (to keep stats per video)
       let videoId = "default_video";
       if (currentSourceUrl) {
-        // create a consistent ID from URL
         let urlHash = 0;
         for (let i = 0; i < currentSourceUrl.length; i++) {
           urlHash = ((urlHash << 5) - urlHash) + currentSourceUrl.charCodeAt(i);
@@ -445,8 +456,6 @@
       const viewSpan = document.getElementById('viewCount');
       const likeSpan = document.getElementById('likeCount');
       const dislikeSpan = document.getElementById('dislikeCount');
-      const fileNameSpan = document.getElementById('fileNameDisplay');
-      const fileSizeSpan = document.getElementById('fileSizeDisplay');
       const likeBtn = document.getElementById('likeBtn');
       const dislikeBtn = document.getElementById('dislikeBtn');
       const subscribeBtn = document.getElementById('subscribeBtn');
@@ -558,43 +567,6 @@
         showToast('Feedback recorded');
       }
       
-      // Update file name and size from video source
-      function updateFileMetadata() {
-        if (!currentSourceUrl) {
-          fileNameSpan.innerText = "sample_movie.mp4";
-          fileSizeSpan.innerText = "~ 245 MB";
-          return;
-        }
-        try {
-          let rawName = decodeURIComponent(currentSourceUrl.split('/').pop().split('?')[0] || 'video');
-          rawName = rawName.replace(/\+/g, ' ').replace(/@[^\s]+/g, '').replace(/@/g, '').replace(/\s+/g, ' ').trim();
-          if (rawName.length > 65) rawName = rawName.slice(0, 62) + '...';
-          fileNameSpan.innerText = rawName || "media_file.mp4";
-          
-          // Get file size via HEAD request with timeout fallback
-          fetch(currentSourceUrl, { method: 'HEAD', mode: 'cors', cache: 'no-cache' })
-            .then(res => {
-              const len = res.headers.get('content-length');
-              if (len) {
-                const bytes = parseInt(len, 10);
-                let sizeText = '';
-                if (bytes < 1e6) sizeText = (bytes / 1024).toFixed(1) + ' KB';
-                else if (bytes < 1e9) sizeText = (bytes / 1048576).toFixed(2) + ' MB';
-                else sizeText = (bytes / 1073741824).toFixed(2) + ' GB';
-                fileSizeSpan.innerText = sizeText;
-              } else {
-                fileSizeSpan.innerText = '~ 180 MB';
-              }
-            })
-            .catch(() => {
-              fileSizeSpan.innerText = '~ 180 MB';
-            });
-        } catch (e) {
-          fileNameSpan.innerText = "video_stream";
-          fileSizeSpan.innerText = "—";
-        }
-      }
-      
       // Toast notification system
       function showToast(msg) {
         const toastDiv = document.getElementById('toastMsg');
@@ -704,13 +676,21 @@
         playerElem.addEventListener('dragstart', (e) => e.preventDefault());
       }
       
-      // Load stats and file metadata
+      // Load stats and ensure file metadata is already hardcoded as per requirement
       getStats();
-      updateFileMetadata();
       
-      // For demo, ensure that if the video never plays, we still show proper UI
-      // Provide a manual view increment for non-playing? No, only on play.
-      console.log("Cinemaniacs Hub fully loaded with video:", currentSourceUrl);
+      // The filename and size are already hardcoded in the HTML spans,
+      // so we don't need to override them. But to be safe, ensure they are exactly as requested.
+      const fileNameSpan = document.getElementById('fileNameDisplay');
+      const fileSizeSpan = document.getElementById('fileSizeDisplay');
+      if (fileNameSpan) {
+        fileNameSpan.innerText = "S. Saraswathi (2026) Kannada HDRip - x264 - AAC ESub";
+      }
+      if (fileSizeSpan) {
+        fileSizeSpan.innerText = "278.05 MB";
+      }
+      
+      console.log("Cinemaniacs Hub fully loaded with custom file metadata: S. Saraswathi (2026) Kannada HDRip - x264 - AAC ESub, Size: 278.05 MB");
     })();
   </script>
 </body>
