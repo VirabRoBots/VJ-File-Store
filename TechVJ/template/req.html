@@ -87,13 +87,13 @@
       border-radius: 32px;
       box-shadow: 0 25px 40px -12px #000, 0 0 0 2px rgba(0, 198, 255, 0.4);
       background: #000;
+      transition: 0.2s;
     }
 
+    .plyr:hover {
+      box-shadow: 0 28px 45px -14px #000, 0 0 0 2px #00c6ff;
+    }
 
-.video-container:focus-within {
-    box-shadow: 0 -3px 0 0 #00c6ff, 3px 0 0 0 #00c6ff, -3px 0 0 0 #00c6ff;
-    border-radius: 18px;
-}
     .ext-zone {
       background: rgba(8, 8, 16, 0.7);
       backdrop-filter: blur(16px);
@@ -151,6 +151,30 @@
       text-align: center;
       margin-top: 25px;
       font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      .plyr {
+        border-radius: 20px;
+        overflow: hidden;
+        /* 🔥 Fix: keeps icons inside */
+      }
+
+      .plyr__controls {
+        flex-wrap: wrap;
+        /* prevents overflow */
+        gap: 6px;
+        padding: 8px;
+      }
+
+      .plyr__control {
+        flex: 0 0 auto;
+      }
+
+      .plyr__progress {
+        width: 100% !important;
+        /* force proper scaling */
+      }
     }
 
     .toast-msg {
