@@ -154,26 +154,41 @@
     }
 
     @media (max-width: 600px) {
-      .plyr {
-        border-radius: 20px;
-        overflow: hidden;
-        /* 🔥 Fix: keeps icons inside */
-      }
-
       .plyr__controls {
-        flex-wrap: wrap;
-        /* prevents overflow */
-        gap: 6px;
-        padding: 8px;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2px;
+        padding: 4px;
       }
 
       .plyr__control {
-        flex: 0 0 auto;
+        flex: 0 0 auto !important;
+        padding: 4px !important;
       }
 
+      /* 🔥 Ultra-compact icons */
+      .plyr__control svg {
+        width: 14px !important;
+        height: 14px !important;
+      }
+
+      /* 🔥 Compress progress bar HARD */
       .plyr__progress {
-        width: 100% !important;
-        /* force proper scaling */
+        flex: 1 1 auto !important;
+        min-width: 40px !important;
+        max-width: 70px !important;
+      }
+
+      /* 🔥 Tiny time text */
+      .plyr__time {
+        font-size: 10px !important;
+      }
+
+      /* 🔥 Reduce volume width */
+      .plyr__volume {
+        max-width: 60px !important;
       }
     }
 
