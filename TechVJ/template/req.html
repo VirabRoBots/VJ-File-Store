@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>{{ template_ne }} | {{ file_name }}</title>
+  <title>{{ file_name }}</title>
   <link rel="icon" href="https://telegra.ph/file/5a53e66bb148003666d62.jpg" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -52,6 +52,41 @@
       background: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Custom Header Logo */
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+
+    .logo-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 50px;
+      flex-shrink: 0;
+    }
+
+    .logo-circle {
+      position: absolute;
+      right: -25px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      left: 2.5px;
+      position: relative;
+      z-index: 3;
     }
 
     .navbar-brand {
@@ -209,6 +244,19 @@
       animation: fadeIn 0.8s ease-out;
     }
 
+    /* Soft red glow effect */
+    .player-wrapper.active {
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.35),
+        0 0 50px rgba(255, 0, 0, 0.15);
+      transition: box-shadow 0.3s ease;
+    }
+
+    /* Red border on active */
+    .player-wrapper.active {
+      border: 2px solid red;
+      transition: border 0.3s ease;
+    }
+
     .watermark {
       position: fixed;
       bottom: 20px;
@@ -229,124 +277,147 @@
   <!-- Header -->
   <nav class="navbar navbar-dark">
     <div class="container">
-      <span class="navbar-brand mb-0 h1"><i class="fa-solid fa-robot me-2"></i>{{ template_ne }}</span>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <main class="container py-4">
-
-    <!-- Player -->
-    <div class="player-wrapper mb-4">
-      <video id="myVideo" src="{{file_url}}" class="w-100" controls>
-        Your browser does not support the video tag.
-      </video>
-    </div>
-
-    <!-- External Players -->
-    <div class="d-flex flex-wrap gap-2 mb-3">
-      <a onclick="mx_player()" class="btn btn-custom btn-mx flex-fill" title="MX Player">
-        <i class="fa fa-play"></i> MX Player
-      </a>
-      <a onclick="vlc_player()" class="btn btn-custom btn-vlc flex-fill" title="VLC Player">
-        <i class="fa fa-play"></i> VLC Player
-      </a>
-      <a onclick="playit_player()" class="btn btn-custom btn-playit flex-fill" title="PlayIt">
-        <i class="fa fa-play"></i> PlayIt
-      </a>
-    </div>
-
-    <!-- Actions -->
-    <div class="row g-3 mb-3">
-      <div class="col-md-6">
-        <a onclick="streamDownload()" class="btn btn-custom btn-download">
-          <i class="fa-solid fa-cloud-arrow-down"></i> &nbsp; Direct Download
-        </a>
+      <div class="header">
+        <div class="logo-container">
+          <div class="logo-circle"></div>
+          <div class="logo-text">Cinemaniacs Hub</div>
+        </div>
       </div>
-      <div class="col-md-6">
-        <a onclick="showLinkModal('{{tg_button}}')" class="btn btn-custom btn-telegram">
-          <i class="fa-brands fa-telegram"></i> &nbsp; Get File in Telegram
-        </a>
-      </div>
-    </div>
+      <!-- Main Content -->
+      <main class="container">
 
-    <!-- File Info -->
-    <div class="glass-card">
-      <div class="file-info-title"><i class="fa-solid fa-circle-info me-2"></i> File Details</div>
-      <div class="info-item">
-        <span class="info-label">Filename</span>
-        <span class="info-value">{{file_name}}</span>
-      </div>
-      <div class="info-item">
-        <span class="info-label">Size</span>
-        <span class="info-value">{{file_size}}</span>
-      </div>
-    </div>
+        <!-- Player -->
+        <div class="player-wrapper mb-4">
+          <video id="myVideo" src="{{file_url}}" class="w-100" controls poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
+        </div>
 
-    <!-- Share -->
-    <button onclick="shareButton()" class="btn btn-custom btn-share">
-      <i class="fa-solid fa-share-nodes"></i> &nbsp; Share with Friends
-    </button>
+        <!-- External Players -->
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <a onclick="mx_player()" class="btn btn-custom btn-mx flex-fill" title="MX Player">
+            <i class="fa fa-play"></i> MX Player
+          </a>
+          <a onclick="vlc_player()" class="btn btn-custom btn-vlc flex-fill" title="VLC Player">
+            <i class="fa fa-play"></i> VLC Player
+          </a>
+          <a onclick="playit_player()" class="btn btn-custom btn-playit flex-fill" title="PlayIt">
+            <i class="fa fa-play"></i> PlayIt
+          </a>
+        </div>
 
-    <!-- Disclaimer usually hidden or subtle -->
-    <div class="mt-4 text-center" style="font-size: 0.75rem; color: #555;">
-      {{ disclaimer }} <br>
-      <a href="{{ report_link }}" style="color: #666;">Report Issue</a>
-    </div>
+        <!-- Actions -->
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <a onclick="streamDownload()" class="btn btn-custom btn-download">
+              <i class="fa-solid fa-cloud-arrow-down"></i> &nbsp; Direct Download
+            </a>
+          </div>
+          <div class="col-md-6">
+            <a onclick="showLinkModal('{{tg_button}}')" class="btn btn-custom btn-telegram">
+              <i class="fa-brands fa-telegram"></i> &nbsp; Get File in Telegram
+            </a>
+          </div>
+        </div>
 
-  </main>
+        <!-- File Info -->
+        <div class="glass-card">
+          <div class="file-info-title">
+            <i class="fa-solid fa-circle-info me-2"></i> File Info
+          </div>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 {{ template_ne }}. All rights reserved.</p>
-  </footer>
+          <p class="mb-2">
+            <span class="info-label">Filename</span> -
+            <span class="info-value">{{file_name}}</span>
+          </p>
 
-  <!-- Scripts -->
-  <script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const player = new Plyr("#myVideo", {
-        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-        settings: ['captions', 'quality', 'speed']
-      });
-    });
+          <p class="mb-0">
+            <span class="info-label">Filesize</span> -
+            <span class="info-value">{{file_size}}</span>
+          </p>
+        </div>
 
-    function mx_player() {
-      let clean = "{{ file_url }}";
-      clean = clean.replace(/^https?:\/\//, '');
-      window.location.href = `intent://${clean}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
-    }
-    function vlc_player() {
-      let clean = "{{ file_url }}";
-      clean = clean.replace(/^https?:\/\//, '');
-      window.location.href = `intent://${clean}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
-    }
-    function playit_player() {
-      let clean = "{{ file_url }}";
-      clean = clean.replace(/^https?:\/\//, '');
-      window.location.href = `intent://${clean}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
-    }
-    function streamDownload() {
-      window.location.href = "{{ file_url }}";
-    }
-    function showLinkModal(url) {
-      if (url) window.open(url, "_blank");
-    }
-    function shareButton() {
-      if (navigator.share) {
-        navigator.share({
-          title: '{{ file_name }}',
-          text: "Watch this video on {{ template_ne }}",
-          url: window.location.href,
+      </main>
+
+      <!-- Scripts -->
+      <script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const player = new Plyr("#myVideo", {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+            settings: ['captions', 'quality', 'speed']
+          });
         });
-      } else {
-        // Fallback or copy to clipboard
-        navigator.clipboard.writeText(window.location.href);
-        alert("Link copied to clipboard!");
-      }
-    }
-  </script>
-  <div class="watermark">RexBots</div>
+
+        function mx_player() {
+          let clean = "{{ file_url }}";
+          clean = clean.replace(/^https?:\/\//, '');
+          window.location.href = `intent://${clean}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
+        }
+
+        function vlc_player() {
+          let clean = "{{ file_url }}";
+          clean = clean.replace(/^https?:\/\//, '');
+          window.location.href = `intent://${clean}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
+        }
+
+        function playit_player() {
+          let clean = "{{ file_url }}";
+          clean = clean.replace(/^https?:\/\//, '');
+          window.location.href = `intent://${clean}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
+        }
+
+        function streamDownload() {
+          window.location.href = "{{ file_url }}";
+        }
+
+        function showLinkModal(url) {
+          if (url) window.open(url, "_blank");
+        }
+
+        function shareButton() {
+          if (navigator.share) {
+            navigator.share({
+              title: '{{ file_name }}',
+              text: "Watch this video on {{ template_ne }}",
+              url: window.location.href,
+            });
+          } else {
+            // Fallback or copy to clipboard
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link copied to clipboard!");
+          }
+        }
+      </script>
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const player = new Plyr("#myVideo");
+          const wrapper = document.querySelector(".player-wrapper");
+          wrapper.addEventListener("click", (e) => {
+            e.stopPropagation();
+            wrapper.classList.add("active");
+          });
+          document.addEventListener("click", () => {
+            wrapper.classList.remove("active");
+          });
+        });
+      </script>
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const player = new Plyr("#myVideo");
+          const video = document.getElementById("myVideo");
+          // Enter fullscreen → lock landscape
+          video.addEventListener("enterfullscreen", () => {
+            if (screen.orientation && screen.orientation.lock) {
+              screen.orientation.lock("landscape").catch(() => {});
+            }
+          });
+          // Exit fullscreen → unlock
+          video.addEventListener("exitfullscreen", () => {
+            if (screen.orientation && screen.orientation.unlock) {
+              screen.orientation.unlock();
+            }
+          });
+        });
+      </script>
 </body>
 
 </html>
