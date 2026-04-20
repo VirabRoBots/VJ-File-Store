@@ -417,26 +417,19 @@
             wrapper.classList.remove("active");
           });
         });
-      </script>
-      <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const player = new Plyr("#myVideo");
-          const video = document.getElementById("myVideo");
-          // Enter fullscreen → lock landscape
-          video.addEventListener("enterfullscreen", () => {
-            if (screen.orientation && screen.orientation.lock) {
-              screen.orientation.lock("landscape").catch(() => {});
-            }
-          });
-          // Exit fullscreen → unlock
-          video.addEventListener("exitfullscreen", () => {
-            if (screen.orientation && screen.orientation.unlock) {
-              screen.orientation.unlock();
-            }
-          });
+        // Enter fullscreen → lock landscape
+        video.addEventListener("enterfullscreen", () => {
+          if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock("landscape").catch(() => {});
+          }
         });
-      </script>
-      <script>
+        // Exit fullscreen → unlock
+        video.addEventListener("exitfullscreen", () => {
+        if (screen.orientation && screen.orientation.unlock) {
+          screen.orientation.unlock();
+        }
+        });
+        });
         const BIN_ID = "69e63ca736566621a8d25065";
         const API_KEY = "$2a$10$TyOXeu0PPOnyzTfOreJzhOKiw3NyMQtnURo0koS2JFiOFMatKoDgq";
         const URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
