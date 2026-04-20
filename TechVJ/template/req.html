@@ -1,15 +1,17 @@
+HTMLResult Skip Results Iframe
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
-  <title>{{ file_name }}</title>
+  <title>Now Streaming | {{ file_name }}</title>
   <link rel="icon" href="https://telegra.ph/file/5a53e66bb148003666d62.jpg" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Fonts & Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+
   <!-- Plyr & Bootstrap -->
   <link rel="stylesheet" href="https://cdn.plyr.io/3.6.12/plyr.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -31,6 +33,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      margin: 0;
     }
 
     /* Scrollbar */
@@ -54,13 +57,11 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Custom Header Logo */
     .header {
       display: flex;
       align-items: center;
       padding: 6px 10px;
       gap: 8px;
-      flex-wrap: nowrap;
     }
 
     .logo-container {
@@ -68,7 +69,6 @@
       display: flex;
       align-items: center;
       height: 50px;
-      flex-shrink: 0;
     }
 
     .logo-circle {
@@ -84,18 +84,11 @@
       font-size: 20px;
       font-weight: 800;
       color: white;
-      left: 2.5px;
       position: relative;
       z-index: 3;
     }
 
-    .navbar-brand {
-      color: var(--primary-color) !important;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
-
-    /* Video Player Container */
+    /* Player */
     .player-wrapper {
       background: #000;
       border-radius: var(--card-radius);
@@ -103,9 +96,22 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       margin-top: 20px;
       border: var(--glass-border);
+      transition: all 0.3s ease;
     }
 
-    /* Plyr Customization */
+    .player-wrapper.active {
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.35),
+        0 0 50px rgba(255, 0, 0, 0.15);
+      border: 2px solid red;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Plyr */
     .plyr--video .plyr__control--overlaid,
     .plyr--video .plyr__control:hover {
       background: var(--secondary-color);
@@ -121,62 +127,33 @@
       border-radius: 12px;
       padding: 12px 20px;
       font-weight: 500;
-      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
       text-transform: uppercase;
       font-size: 0.9rem;
-      letter-spacing: 0.5px;
-      position: relative;
-      overflow: hidden;
+      transition: 0.3s;
     }
 
     .btn-custom:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       filter: brightness(1.2);
     }
 
     .btn-mx {
       background: linear-gradient(45deg, #2980b9, #2c3e50);
-      color: white;
+      color: #fff;
     }
 
     .btn-vlc {
       background: linear-gradient(45deg, #e67e22, #d35400);
-      color: white;
+      color: #fff;
     }
 
     .btn-playit {
       background: linear-gradient(45deg, #8e44ad, #9b59b6);
-      color: white;
-    }
-
-    .btn-download {
-      background: linear-gradient(45deg, #00b09b, #96c93d);
-      color: white;
-      font-weight: 600;
-      width: 100%;
-    }
-
-    .btn-telegram {
-      background: linear-gradient(45deg, #0088cc, #36aee2);
-      color: white;
-      width: 100%;
-    }
-
-    .btn-share {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #aaa;
-      width: 100%;
-    }
-
-    .btn-share:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
+      color: #fff;
     }
 
     /* Cards */
@@ -212,22 +189,55 @@
       font-family: monospace;
     }
 
-    /* Footer */
-    footer {
-      margin-top: auto;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 15px;
-      text-align: center;
-      font-size: 0.8rem;
-      color: #666;
+    /* Engagement */
+    .engagement-stats .d-flex {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    footer a {
-      color: var(--primary-color);
+    .btn-like,
+    .btn-dislike,
+    .view-badge,
+    .btn-subscribe {
+      border-radius: 40px;
+      padding: 8px 20px;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-like {
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+      color: #fff;
+    }
+
+    .btn-dislike {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: #fff;
+    }
+
+    .view-badge {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: #fff;
+    }
+
+    .btn-subscribe {
+      background: linear-gradient(135deg, #0088cc, #2a9d8f);
+      color: #fff;
       text-decoration: none;
     }
 
-    /* Animations */
+    .btn-subscribe:hover {
+      color: #fff;
+    }
+
+    button:focus {
+      outline: none;
+    }
+
+    /* Animation */
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -241,260 +251,194 @@
     }
 
     main {
-      animation: fadeIn 0.8s ease-out;
-    }
-
-    /* Soft red glow effect */
-    .player-wrapper.active {
-      box-shadow: 0 0 25px rgba(255, 0, 0, 0.35),
-        0 0 50px rgba(255, 0, 0, 0.15);
-      transition: box-shadow 0.3s ease;
-    }
-
-    /* Red border on active */
-    .player-wrapper.active {
-      border: 2px solid red;
-      transition: border 0.3s ease;
-    }
-
-    .watermark {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      opacity: 0.2;
-      color: #fff;
-      font-size: 3rem;
-      font-weight: 800;
-      z-index: 99999;
-      pointer-events: none;
-      user-select: none;
-      transform: rotate(-15deg);
+      animation: fadeIn 0.5s ease-out;
     }
   </style>
 </head>
 
 <body>
   <!-- Header -->
-  <nav class="navbar navbar-dark">
-    <div class="container">
-      <div class="header">
-        <div class="logo-container">
-          <div class="logo-circle"></div>
-          <div class="logo-text">Cinemaniacs Hub</div>
-        </div>
+  <div class="container">
+    <div class="header">
+      <div class="logo-container">
+        <div class="logo-circle"></div>
+        <div class="logo-text">Cinemaniacs Hub</div>
       </div>
-      <!-- Main Content -->
-      <main class="container">
+    </div>
+  </div>
 
-        <!-- Player -->
-        <div class="player-wrapper mb-4">
-          <video id="myVideo" src="{{file_url}}" class="w-100" controls poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
+  <!-- Main Content -->
+  <main class="container">
+
+    <!-- Player -->
+    <div class="player-wrapper mb-4">
+      <video id="myVideo" class="w-100" controls poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
+        <source src="{{file_url}}" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- External Players -->
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <a onclick="mx_player()" class="btn btn-custom btn-mx flex-fill">
+        <i class="fa fa-play"></i> MX Player
+      </a>
+      <a onclick="vlc_player()" class="btn btn-custom btn-vlc flex-fill">
+        <i class="fa fa-play"></i> VLC Player
+      </a>
+      <a onclick="playit_player()" class="btn btn-custom btn-playit flex-fill">
+        <i class="fa fa-play"></i> PlayIt
+      </a>
+    </div>
+
+    <!-- File Info -->
+    <div class="glass-card">
+      <div class="file-info-title">
+        <i class="fa-solid fa-circle-info me-2"></i> File Information
+      </div>
+
+      <div class="info-item">
+        <span class="info-label"><i class="fa-regular fa-file-video"></i> Filename:</span>
+        <span class="info-value" id="fileName">{{ file_name }}</span>
+      </div>
+
+      <div class="info-item">
+        <span class="info-label"><i class="fa-regular fa-hard-drive"></i> File Size:</span>
+        <span class="info-value" id="fileSize">{{ file_size }}</span>
+      </div>
+    </div>
+
+    <!-- Engagement -->
+    <div class="engagement-stats mt-3">
+      <div class="d-flex gap-3">
+
+        <button class="btn btn-like" onclick="likeVideo()">
+          <i class="fa-regular fa-thumbs-up"></i>
+          <span id="likeCount">0</span>
+        </button>
+
+        <button class="btn btn-dislike" onclick="dislikeVideo()">
+          <i class="fa-regular fa-thumbs-down"></i>
+          <span id="dislikeCount">0</span>
+        </button>
+
+        <div class="view-badge">
+          <i class="fa-regular fa-eye"></i>
+          <span id="viewCount">0</span> views
         </div>
 
-        <!-- External Players -->
-        <div class="d-flex flex-wrap gap-2 mb-3">
-          <a onclick="mx_player()" class="btn btn-custom btn-mx flex-fill" title="MX Player">
-            <i class="fa fa-play"></i> MX Player
-          </a>
-          <a onclick="vlc_player()" class="btn btn-custom btn-vlc flex-fill" title="VLC Player">
-            <i class="fa fa-play"></i> VLC Player
-          </a>
-          <a onclick="playit_player()" class="btn btn-custom btn-playit flex-fill" title="PlayIt">
-            <i class="fa fa-play"></i> PlayIt
-          </a>
-        </div>
+        <a href="https://t.me/Cinemaniacs_Hub" target="_blank" class="btn-subscribe">
+          <i class="fa-brands fa-telegram"></i> Subscribe
+        </a>
 
-        <!-- Actions -->
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <a onclick="streamDownload()" class="btn btn-custom btn-download">
-              <i class="fa-solid fa-cloud-arrow-down"></i> &nbsp; Direct Download
-            </a>
-          </div>
-          <div class="col-md-6">
-            <a onclick="showLinkModal('{{tg_button}}')" class="btn btn-custom btn-telegram">
-              <i class="fa-brands fa-telegram"></i> &nbsp; Get File in Telegram
-            </a>
-          </div>
-        </div>
+      </div>
+    </div>
 
-        <!-- File Info -->
-        <div class="glass-card">
-          <div class="file-info-title">
-            <i class="fa-solid fa-circle-info me-2"></i> File Info
-          </div>
-
-          <p class="mb-2">
-            Filename - <span class="info-value">{{file_name}}</span>
-          </p>
-
-          <p class="mb-3">
-            Filesize - <span class="info-value">{{file_size}}</span>
-          </p>
-
-          <!-- COUNTERS -->
-          <div class="d-flex gap-2 flex-wrap mb-3">
-
-            <button class="btn btn-sm btn-primary" onclick="likeVideo()">
-              👍 <span id="likeCount">0</span>
-            </button>
-
-            <button class="btn btn-sm btn-danger" onclick="dislikeVideo()">
-              👎 <span id="dislikeCount">0</span>
-            </button>
-
-            <button class="btn btn-sm btn-secondary">
-              👁️ <span id="viewCount">0</span>
-            </button>
-
-            <a class="btn btn-sm btn-success" href="https://t.me/Cinemaniacs_Hub" target="_blank">
-              🔔 Subscribe
-            </a>
-
-          </div>
-        </div>
-      </main>
-
-      <!-- Scripts -->
-      <script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
-      <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const player = new Plyr("#myVideo", {
-            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-            settings: ['captions', 'quality', 'speed']
-          });
-        });
-
-        function mx_player() {
-          let clean = "{{ file_url }}";
-          clean = clean.replace(/^https?:\/\//, '');
-          window.location.href = `intent://${clean}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
+  </main>
+  <script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const player = new Plyr("#myVideo", {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+        settings: ['captions', 'quality', 'speed']
+      });
+      const wrapper = document.querySelector(".player-wrapper");
+      wrapper.addEventListener("click", (e) => {
+        e.stopPropagation();
+        wrapper.classList.add("active");
+      });
+      document.addEventListener("click", () => {
+        wrapper.classList.remove("active");
+      });
+      player.on('enterfullscreen', () => {
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('landscape').catch(() => {});
         }
-
-        function vlc_player() {
-          let clean = "{{ file_url }}";
-          clean = clean.replace(/^https?:\/\//, '');
-          window.location.href = `intent://${clean}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
-        }
-
-        function playit_player() {
-          let clean = "{{ file_url }}";
-          clean = clean.replace(/^https?:\/\//, '');
-          window.location.href = `intent://${clean}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
-        }
-
-        function streamDownload() {
-          window.location.href = "{{ file_url }}";
-        }
-
-        function showLinkModal(url) {
-          if (url) window.open(url, "_blank");
-        }
-
-        function shareButton() {
-          if (navigator.share) {
-            navigator.share({
-              title: '{{ file_name }}',
-              text: "Watch this video on {{ template_ne }}",
-              url: window.location.href,
-            });
-          } else {
-            // Fallback or copy to clipboard
-            navigator.clipboard.writeText(window.location.href);
-            alert("Link copied to clipboard!");
-          }
-        }
-      </script>
-      <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const player = new Plyr("#myVideo");
-          const wrapper = document.querySelector(".player-wrapper");
-          wrapper.addEventListener("click", (e) => {
-            e.stopPropagation();
-            wrapper.classList.add("active");
-          });
-          document.addEventListener("click", () => {
-            wrapper.classList.remove("active");
-          });
-        });
-        // Enter fullscreen → lock landscape
-        video.addEventListener("enterfullscreen", () => {
-          if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock("landscape").catch(() => {});
-          }
-        });
-        // Exit fullscreen → unlock
-        video.addEventListener("exitfullscreen", () => {
+      });
+      player.on('exitfullscreen', () => {
         if (screen.orientation && screen.orientation.unlock) {
           screen.orientation.unlock();
         }
+      });
+      const BIN_ID = "69e63ca736566621a8d25065";
+      const API_KEY = "$2a$10$TyOXeu0PPOnyzTfOreJzhOKiw3NyMQtnURo0koS2JFiOFMatKoDgq";
+      const URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+      const HEADERS = {
+        "Content-Type": "application/json",
+        "X-Master-Key": API_KEY
+      };
+      async function loadCounts() {
+        const res = await fetch(URL + "/latest", {
+          headers: HEADERS
         });
+        const data = await res.json();
+        const record = data.record;
+        document.getElementById("likeCount").innerText = record.likes;
+        document.getElementById("dislikeCount").innerText = record.dislikes;
+        document.getElementById("viewCount").innerText = record.views;
+      }
+      async function updateCounts(newData) {
+        await fetch(URL, {
+          method: "PUT",
+          headers: HEADERS,
+          body: JSON.stringify(newData)
         });
-        const BIN_ID = "69e63ca736566621a8d25065";
-        const API_KEY = "$2a$10$TyOXeu0PPOnyzTfOreJzhOKiw3NyMQtnURo0koS2JFiOFMatKoDgq";
-        const URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-        const HEADERS = {
-          "Content-Type": "application/json",
-          "X-Master-Key": API_KEY
-        };
-        // Load counts
-        async function loadCounts() {
-          const res = await fetch(URL + "/latest", {
-            headers: HEADERS
-          });
-          const data = await res.json();
-          const record = data.record;
-          document.getElementById("likeCount").innerText = record.likes;
-          document.getElementById("dislikeCount").innerText = record.dislikes;
-          document.getElementById("viewCount").innerText = record.views;
-        }
-        // Update backend
-        async function updateCounts(newData) {
-          await fetch(URL, {
-            method: "PUT",
-            headers: HEADERS,
-            body: JSON.stringify(newData)
-          });
-        }
-        // Like
-        async function likeVideo() {
-          const res = await fetch(URL + "/latest", {
-            headers: HEADERS
-          });
-          const data = await res.json();
-          const record = data.record;
-          record.likes += 1;
-          document.getElementById("likeCount").innerText = record.likes;
-          updateCounts(record);
-        }
-        // Dislike
-        async function dislikeVideo() {
-          const res = await fetch(URL + "/latest", {
-            headers: HEADERS
-          });
-          const data = await res.json();
-          const record = data.record;
-          record.dislikes += 1;
-          document.getElementById("dislikeCount").innerText = record.dislikes;
-          updateCounts(record);
-        }
-        // Views (auto +1 on load)
-        async function addView() {
-          const res = await fetch(URL + "/latest", {
-            headers: HEADERS
-          });
-          const data = await res.json();
-          const record = data.record;
-          record.views += 1;
-          document.getElementById("viewCount").innerText = record.views;
-          updateCounts(record);
-        }
-        // init
-        document.addEventListener("DOMContentLoaded", () => {
-          loadCounts();
-          addView();
+      }
+      window.likeVideo = async function() {
+        const res = await fetch(URL + "/latest", {
+          headers: HEADERS
         });
-      </script>
-</body>
+        const data = await res.json();
+        const record = data.record;
+        record.likes += 1;
+        document.getElementById("likeCount").innerText = record.likes;
+        updateCounts(record);
+      };
+      window.dislikeVideo = async function() {
+        const res = await fetch(URL + "/latest", {
+          headers: HEADERS
+        });
+        const data = await res.json();
+        const record = data.record;
+        record.dislikes += 1;
+        document.getElementById("dislikeCount").innerText = record.dislikes;
+        updateCounts(record);
+      };
+      async function addView() {
+        const res = await fetch(URL + "/latest", {
+          headers: HEADERS
+        });
+        const data = await res.json();
+        const record = data.record;
+        record.views += 1;
+        document.getElementById("viewCount").innerText = record.views;
+        updateCounts(record);
+      }
+      loadCounts();
+      addView();
+    });
+    /* external player functions (must be global) */
+    function mx_player() {
+      let clean = "{{ file_url }}".replace(/^https?:\/\//, '');
+      window.location.href = `intent://${clean}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
+    }
 
+    function vlc_player() {
+      let clean = "{{ file_url }}".replace(/^https?:\/\//, '');
+      window.location.href = `intent://${clean}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
+    }
+
+    function playit_player() {
+      let clean = "{{ file_url }}".replace(/^https?:\/\//, '');
+      window.location.href = `intent://${clean}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
+    }
+
+    function streamDownload() {
+      window.location.href = "{{ file_url }}";
+    }
+
+    function showLinkModal(url) {
+      if (url) window.open(url, "_blank");
+    }
+  </script>
+</body>
 </html>
