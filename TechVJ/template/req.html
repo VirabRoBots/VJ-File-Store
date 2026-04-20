@@ -132,6 +132,64 @@ HTMLResult Skip Results Iframe
       max-width: 400px;
     }
 
+    /* Engagement buttons container - added to match original style */
+    .engagement-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .engagement-btn {
+      background: rgba(0, 114, 255, 0.2);
+      border: 1px solid rgba(0, 198, 255, 0.3);
+      border-radius: 40px;
+      padding: 6px 16px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #f1f5f9;
+    }
+
+    .engagement-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(0, 114, 255, 0.4);
+      border-color: #00c6ff;
+    }
+
+    .engagement-btn.liked {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      border-color: #60a5fa;
+    }
+
+    .engagement-btn.disliked {
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      border-color: #f87171;
+    }
+
+    .subscribe-btn {
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      border: none;
+    }
+
+    .subscribe-btn.subscribed {
+      background: linear-gradient(135deg, #10b981, #047857);
+    }
+
+    .view-badge {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     @media (max-width: 768px) {
       .filename-value {
         max-width: 180px;
@@ -144,6 +202,15 @@ HTMLResult Skip Results Iframe
       .info-badge span:last-child {
         white-space: normal;
         word-break: break-all;
+      }
+
+      .file-info-container {
+        flex-direction: column;
+      }
+
+      .engagement-buttons {
+        justify-content: flex-start;
+        margin-top: 8px;
       }
     }
 
@@ -203,40 +270,6 @@ HTMLResult Skip Results Iframe
         font-size: 12px;
       }
 
-      /* Show border only at top with curved edges when video is active/touched */
-      .video-wrapper:active,
-      .video-wrapper:focus,
-      .video-wrapper:focus-within,
-      .plyr:active,
-      .plyr:focus,
-      .plyr--video:active,
-      .plyr--video:focus {
-        outline: none;
-        position: relative;
-      }
-
-      .video-wrapper:active::after,
-      .video-wrapper:focus::after,
-      .video-wrapper:focus-within::after,
-      .plyr:active::after,
-      .plyr:focus::after,
-      .plyr--video:active::after,
-      .plyr--video:focus::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        border-top: 3px solid #00c6ff;
-        border-left: 3px solid #00c6ff;
-        border-right: 3px solid #00c6ff;
-        border-radius: 26px 26px 26px 26px;
-        pointer-events: none;
-        z-index: 10;
-      }
-
-      /* Remove border when not active */
       .video-wrapper {
         background: #000000;
         border-radius: 28px;
@@ -248,6 +281,7 @@ HTMLResult Skip Results Iframe
         margin: 0 auto;
         position: relative;
       }
+    }
   </style>
 </head>
 
@@ -259,7 +293,7 @@ HTMLResult Skip Results Iframe
     <div class="logo-text">Cinemaniacs Hub</div>
   </div>
 
-  <!-- file info panel with clear headings -->
+  <!-- file info panel with clear headings + engagement features -->
   <div class="file-info-container">
     <div class="info-badge">
       <i class="bi bi-camera-reels-fill" style="color:#00c6ff;"></i>
@@ -270,6 +304,28 @@ HTMLResult Skip Results Iframe
       <i class="bi bi-hdd-stack-fill" style="color:#4ade80;"></i>
       <span style="color:#4ade80; font-weight:700;">FILE SIZE:</span>
       <span id="fileSizeDisplay" style="color:white; font-weight:500;">--</span>
+    </div>
+    <div class="engagement-buttons">
+      <!-- View count -->
+      <div class="view-badge">
+        <i class="bi bi-eye-fill" style="color:#00c6ff;"></i>
+        <span id="viewCount">0</span>
+      </div>
+      <!-- Like button -->
+      <div class="engagement-btn" id="likeBtn">
+        <i class="bi bi-hand-thumbs-up"></i>
+        <span id="likeCount">0</span>
+      </div>
+      <!-- Dislike button -->
+      <div class="engagement-btn" id="dislikeBtn">
+        <i class="bi bi-hand-thumbs-down"></i>
+        <span id="dislikeCount">0</span>
+      </div>
+      <!-- Subscribe button -->
+      <div class="engagement-btn subscribe-btn" id="subscribeBtn">
+        <i class="bi bi-bell-fill"></i>
+        <span id="subscribeText">Subscribe</span>
+      </div>
     </div>
   </div>
 
@@ -375,64 +431,52 @@ HTMLResult Skip Results Iframe
   <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
   <script>
     new WOW().init();
-    // ---------- AUTO DETECT VIDEO FROM CURRENT PAGE URL (NO DEMO) ----------
+    // ---------- JSONBIN.IO CONFIGURATION ----------
+    // IMPORTANT: Replace with your actual JSONbin Bin ID and API Key
+    const JSONBIN_BIN_ID = '69e4b76b36566621a8cc408f'; // <-- REPLACE WITH YOUR BIN ID
+    const JSONBIN_API_KEY = '$2a$10$TyOXeu0PPOnyzTfOreJzhOKiw3NyMQtnURo0koS2JFiOFMatKoDgq'; // <-- REPLACE WITH YOUR API KEY (X-Master-Key)
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+    // ---------- AUTO DETECT VIDEO FROM CURRENT PAGE URL ----------
     const currentUrl = window.location.href;
     const currentPath = window.location.pathname;
     const urlParts = currentPath.split('/');
-    // Extract filename from /watch/ID/filename.mkv pattern and replace + with space
     let detectedFileName = '';
     let detectedVideoUrl = '';
     if (currentPath.includes('/watch/')) {
-      // Get filename from path (last segment after /watch/ID/)
       let filenamePart = urlParts[urlParts.length - 1];
-      // Replace all + with spaces
       filenamePart = filenamePart.replace(/\+/g, ' ');
-      // Also decode URI components
       filenamePart = decodeURIComponent(filenamePart);
       detectedFileName = filenamePart;
-      // Use the FULL current URL as video source
       detectedVideoUrl = currentUrl;
     }
-    // Support query params as fallback
     const urlParams = new URLSearchParams(window.location.search);
     const paramFileName = urlParams.get('title');
-    // FILE SIZE from server-side variable {{file_size}}
     const fileSizeFromServer = '{{file_size}}';
     const paramVideoUrl = urlParams.get('url');
-    // Use detected values (real data from URL) - no demo content
     let fileName = paramFileName || detectedFileName || 'Unknown title';
-    // Replace any remaining + with space in fileName
     fileName = fileName.replace(/\+/g, ' ');
-    // Handle file size - if {{file_size}} is not replaced (still has braces), show as unknown
     let fileSize = fileSizeFromServer;
     if (fileSize === '{{file_size}}' || !fileSize || fileSize === '') {
       fileSize = 'Unknown size';
     }
     let videoUrl = paramVideoUrl || detectedVideoUrl || '';
-    // Update UI with real filename (no wrapping)
-    const fileNameSpan = document.getElementById('fileNameDisplay');
-    const fileSizeSpan = document.getElementById('fileSizeDisplay');
-    if (fileNameSpan) fileNameSpan.innerText = fileName;
-    if (fileSizeSpan) fileSizeSpan.innerText = fileSize;
+    document.getElementById('fileNameDisplay').innerText = fileName;
+    document.getElementById('fileSizeDisplay').innerText = fileSize;
     const videoSource = document.getElementById('videoSource');
     const videoElement = document.getElementById('plyrVideo');
     if (videoUrl) {
       videoSource.src = videoUrl;
       videoElement.load();
-      console.log('Video source set to:', videoUrl);
     }
-    // No error message shown when videoUrl is missing    
-    // Initialize Plyr player
     const playerInstance = Plyr.setup('#plyrVideo', {
       controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen'],
       download: true
     });
-    // Helper: get current video URL
+
     function getCurrentVideoUrl() {
       return videoSource.src || '';
     }
-    // External player intents — instant redirect, no loading page, no toast
-    function triggerExternalPlayer(type) {
+    window.triggerExternalPlayer = function(type) {
       const videoUrlRaw = getCurrentVideoUrl();
       if (!videoUrlRaw) return;
       let intentUrl = '';
@@ -458,9 +502,174 @@ HTMLResult Skip Results Iframe
         default:
           intentUrl = videoUrlRaw;
       }
-      // Immediate redirect — no loading screen, no toast, no delay
       window.location.href = intentUrl;
+    };
+    // ---------- ENGAGEMENT FEATURE (Like, Dislike, View, Subscribe) with JSONbin ----------
+    const videoUniqueId = btoa(encodeURIComponent(fileName + fileSize)).substring(0, 32).replace(/[^a-zA-Z0-9]/g, '');
+    let currentLikes = 0,
+      currentDislikes = 0,
+      currentViews = 0;
+    let userLiked = false,
+      userDisliked = false;
+    const likeBtn = document.getElementById('likeBtn');
+    const dislikeBtn = document.getElementById('dislikeBtn');
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    const likeSpan = document.getElementById('likeCount');
+    const dislikeSpan = document.getElementById('dislikeCount');
+    const viewSpan = document.getElementById('viewCount');
+    const subscribeSpan = document.getElementById('subscribeText');
+    async function fetchEngagementData() {
+      if (JSONBIN_BIN_ID === 'YOUR_JSONBIN_BIN_ID') {
+        loadFromLocalStorage();
+        return;
+      }
+      try {
+        const response = await fetch(BIN_URL, {
+          headers: {
+            'X-Master-Key': JSONBIN_API_KEY
+          }
+        });
+        if (!response.ok) throw new Error('Failed to fetch');
+        const data = await response.json();
+        const record = data.record || {};
+        const videoData = record[videoUniqueId] || {};
+        currentLikes = videoData.likes || 0;
+        currentDislikes = videoData.dislikes || 0;
+        currentViews = videoData.views || 0;
+        userLiked = videoData.userLiked || false;
+        userDisliked = videoData.userDisliked || false;
+        updateUI();
+        if (!sessionStorage.getItem(`view_incremented_${videoUniqueId}`)) {
+          await incrementViewCount();
+          sessionStorage.setItem(`view_incremented_${videoUniqueId}`, 'true');
+        }
+      } catch (err) {
+        console.error('JSONbin error:', err);
+        loadFromLocalStorage();
+      }
     }
+    async function saveToJsonbin() {
+      if (JSONBIN_BIN_ID === 'YOUR_JSONBIN_BIN_ID') {
+        saveToLocalStorage();
+        return;
+      }
+      try {
+        const getResp = await fetch(BIN_URL, {
+          headers: {
+            'X-Master-Key': JSONBIN_API_KEY
+          }
+        });
+        const fullData = await getResp.json();
+        let record = fullData.record || {};
+        record[videoUniqueId] = {
+          likes: currentLikes,
+          dislikes: currentDislikes,
+          views: currentViews,
+          userLiked: userLiked,
+          userDisliked: userDisliked,
+          updatedAt: Date.now()
+        };
+        await fetch(BIN_URL, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': JSONBIN_API_KEY
+          },
+          body: JSON.stringify(record)
+        });
+      } catch (err) {
+        console.error('Save failed:', err);
+        saveToLocalStorage();
+      }
+    }
+
+    function loadFromLocalStorage() {
+      const stored = localStorage.getItem(`engagement_${videoUniqueId}`);
+      if (stored) {
+        const data = JSON.parse(stored);
+        currentLikes = data.likes || 0;
+        currentDislikes = data.dislikes || 0;
+        currentViews = data.views || 0;
+        userLiked = data.userLiked || false;
+        userDisliked = data.userDisliked || false;
+      }
+      updateUI();
+      if (!sessionStorage.getItem(`view_inc_local_${videoUniqueId}`)) {
+        incrementViewCount();
+        sessionStorage.setItem(`view_inc_local_${videoUniqueId}`, 'true');
+      }
+    }
+
+    function saveToLocalStorage() {
+      localStorage.setItem(`engagement_${videoUniqueId}`, JSON.stringify({
+        likes: currentLikes,
+        dislikes: currentDislikes,
+        views: currentViews,
+        userLiked: userLiked,
+        userDisliked: userDisliked
+      }));
+    }
+    async function incrementViewCount() {
+      currentViews++;
+      updateUI();
+      if (JSONBIN_BIN_ID !== 'YOUR_JSONBIN_BIN_ID') await saveToJsonbin();
+      else saveToLocalStorage();
+    }
+
+    function updateUI() {
+      likeSpan.innerText = currentLikes;
+      dislikeSpan.innerText = currentDislikes;
+      viewSpan.innerText = currentViews;
+      if (userLiked) likeBtn.classList.add('liked');
+      else likeBtn.classList.remove('liked');
+      if (userDisliked) dislikeBtn.classList.add('disliked');
+      else dislikeBtn.classList.remove('disliked');
+      // Keep Subscribe button text always as "Subscribe"
+      subscribeSpan.innerText = 'Subscribe';
+      subscribeBtn.classList.remove('subscribed');
+    }
+    async function handleLike() {
+      if (userLiked) {
+        currentLikes--;
+        userLiked = false;
+      } else {
+        if (userDisliked) {
+          currentDislikes--;
+          userDisliked = false;
+          dislikeBtn.classList.remove('disliked');
+        }
+        currentLikes++;
+        userLiked = true;
+      }
+      updateUI();
+      if (JSONBIN_BIN_ID !== 'YOUR_JSONBIN_BIN_ID') await saveToJsonbin();
+      else saveToLocalStorage();
+    }
+    async function handleDislike() {
+      if (userDisliked) {
+        currentDislikes--;
+        userDisliked = false;
+      } else {
+        if (userLiked) {
+          currentLikes--;
+          userLiked = false;
+          likeBtn.classList.remove('liked');
+        }
+        currentDislikes++;
+        userDisliked = true;
+      }
+      updateUI();
+      if (JSONBIN_BIN_ID !== 'YOUR_JSONBIN_BIN_ID') await saveToJsonbin();
+      else saveToLocalStorage();
+    }
+
+    function handleSubscribe() {
+      window.open('https://t.me/Cinemaniacs_hub', '_blank');
+    }
+    likeBtn.addEventListener('click', handleLike);
+    dislikeBtn.addEventListener('click', handleDislike);
+    subscribeBtn.addEventListener('click', handleSubscribe);
+    fetchEngagementData();
     // Disable context menu & devtools
     document.addEventListener("contextmenu", (e) => e.preventDefault());
     document.addEventListener('keydown', (e) => {
