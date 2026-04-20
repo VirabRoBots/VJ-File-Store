@@ -307,43 +307,67 @@
   <script>
     new WOW().init();
 
-    // ---------- REAL DATA FROM URL PARAMETERS (NO DEMO) ----------
-    // Expects: ?title=MovieName&size=1.2GB&url=https://example.com/video.mp4
+    // ---------- AUTO DETECT VIDEO FROM CURRENT PAGE URL (NO DEMO) ----------
+    const currentUrl = window.location.href;
+    const currentPath = window.location.pathname;
+    const urlParts = currentPath.split('/');
+    
+    // Extract filename from /watch/ID/filename.mkv pattern
+    let detectedFileName = '';
+    let detectedVideoUrl = '';
+    
+    if (currentPath.includes('/watch/')) {
+        // Get filename from path (last segment after /watch/ID/)
+        const filenamePart = urlParts[urlParts.length - 1];
+        detectedFileName = decodeURIComponent(filenamePart);
+        // Use the FULL current URL as video source (the /watch/ endpoint serves the video)
+        detectedVideoUrl = currentUrl;
+    }
+    
+    // Also support query params as fallback
     const urlParams = new URLSearchParams(window.location.search);
-    const fileName = urlParams.get('title') || '';
-    const fileSize = urlParams.get('size') || '';
-    let videoUrl = urlParams.get('url') || '';
-
-    // Update UI with real data (empty if not provided)
-    document.getElementById('fileNameDisplay').innerText = fileName || 'Unknown title';
-    document.getElementById('fileSizeDisplay').innerText = fileSize || 'Unknown size';
+    const paramFileName = urlParams.get('title');
+    const paramFileSize = urlParams.get('size');
+    const paramVideoUrl = urlParams.get('url');
+    
+    // Use detected values (real data from URL) - no demo content
+    const fileName = paramFileName || detectedFileName || 'Unknown title';
+    const fileSize = paramFileSize || 'Unknown size';
+    let videoUrl = paramVideoUrl || detectedVideoUrl || '';
+    
+    // Update UI with real filename
+    document.getElementById('fileNameDisplay').innerText = fileName;
+    document.getElementById('fileSizeDisplay').innerText = fileSize;
     
     const videoSource = document.getElementById('videoSource');
+    const videoElement = document.getElementById('plyrVideo');
+    
     if (videoUrl) {
-      videoSource.src = videoUrl;
+        videoSource.src = videoUrl;
+        videoElement.load(); // Force reload the video element
+        console.log('Video source set to:', videoUrl);
     } else {
-      videoSource.src = '';
-      const videoWrapper = document.querySelector('.video-wrapper');
-      if (videoWrapper) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'text-center text-red-400 p-4 bg-red-950/50';
-        errorDiv.innerText = '⚠️ No video source provided. Use ?url=VIDEO_LINK parameter.';
-        videoWrapper.appendChild(errorDiv);
-      }
+        videoSource.src = '';
+        const videoWrapper = document.querySelector('.video-wrapper');
+        if (videoWrapper) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'text-center text-red-400 p-4 bg-red-950/50 rounded-xl mt-2';
+            errorDiv.innerText = '⚠️ No video source found.';
+            videoWrapper.appendChild(errorDiv);
+        }
     }
     
     // Initialize Plyr player
-    const playerElement = document.querySelector('#plyrVideo');
-    const playerInstance = Plyr.setup(playerElement, {
+    const playerInstance = Plyr.setup('#plyrVideo', {
       controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen'],
       download: true
     });
-
-    // Helper: NO TOAST, NO LOADING DELAY — direct redirect
+    
+    // Helper: get current video URL
     function getCurrentVideoUrl() {
       return videoSource.src || '';
     }
-
+    
     // External player intents — instant redirect, no loading page, no toast
     function triggerExternalPlayer(type) {
       const videoUrlRaw = getCurrentVideoUrl();
@@ -375,8 +399,8 @@
       // Immediate redirect — no loading screen, no toast, no delay
       window.location.href = intentUrl;
     }
-
-    // Disable context menu & devtools (as per original)
+    
+    // Disable context menu & devtools
     document.addEventListener("contextmenu", (e) => e.preventDefault());
     document.addEventListener('keydown', (e) => {
       if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
