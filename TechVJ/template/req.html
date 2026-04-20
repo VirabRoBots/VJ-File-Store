@@ -1,4 +1,3 @@
-HTMLResult Skip Results Iframe
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,50 +25,40 @@ HTMLResult Skip Results Iframe
       padding-bottom: 40px;
     }
 
-    /* Header / Logo matching original Cinemaniacs Hub */
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      background: #000;
+    }
+
     .logo-container {
       position: relative;
       display: flex;
       align-items: center;
-      height: 55px;
+      height: 50px;
       flex-shrink: 0;
-      margin-left: 16px;
-      margin-top: 8px;
     }
 
     .logo-circle {
       position: absolute;
-      right: -25px;
+      right: 215px;
       width: 45px;
       height: 45px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-      box-shadow: 0 0 12px rgba(0, 198, 255, 0.3);
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
     }
 
     .logo-text {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 800;
-      background: linear-gradient(135deg, #ffffff, #c0e0ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      color: white;
+      left: 2.5px;
       position: relative;
-      left: 2px;
       z-index: 3;
-      letter-spacing: -0.3px;
-    }
-
-    /* Thumbnail banner */
-    .thumbnail-banner {
-      width: 92%;
-      max-width: 1200px;
-      margin: 20px auto;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(0, 198, 255, 0.3);
     }
 
     .thumbnail-banner img {
@@ -80,15 +69,15 @@ HTMLResult Skip Results Iframe
       display: block;
     }
 
-    .file-info-container,
-    .video-wrapper {
-      width: 92%;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-      width: 92%;
-      max-width: 1200px;
-      margin: 20px auto;
+    .file-info-container {
+      width: 100%;
+      padding: 12px 10px;
+      border-radius: 0;
+    }
+
+    .thumbnail-banner {
+      width: 100%;
+      border-radius: 0;
     }
 
     /* file info panel + video wrapper same width */
@@ -97,39 +86,32 @@ HTMLResult Skip Results Iframe
       backdrop-filter: blur(12px);
       border: 1px solid rgba(0, 198, 255, 0.3);
       border-radius: 24px;
-      padding: 12px 24px;
+      padding: 12px 5px;
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 12px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      width: 92%;
+      max-width: 1200px;
+      margin: 20px auto;
     }
 
     .info-badge {
-      background: rgba(0, 114, 255, 0.2);
-      padding: 6px 16px;
-      border-radius: 40px;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
-      flex: 1;
-      min-width: 0;
+      flex: 0 0 auto;
+      /* stop stretching */
+      width: auto;
     }
 
-    .info-badge span:last-child {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .file-info-container {
+      justify-content: center;
+      /* center badges */
+      gap: 10px;
     }
 
-    /* Fix for filename - prevent going down */
     .filename-value {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 400px;
+      max-width: 100%;
+      display: inline-block;
     }
 
     /* Engagement buttons container - added to match original style */
@@ -212,87 +194,111 @@ HTMLResult Skip Results Iframe
         justify-content: flex-start;
         margin-top: 8px;
       }
-    }
 
-    /* external player buttons - clean style */
-    .external-player-btn {
-      background: linear-gradient(135deg, #1e1e2f, #2a2a3c);
-      border: 1px solid rgba(0, 198, 255, 0.3);
-      padding: 10px 20px;
-      border-radius: 50px;
-      color: white;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-      backdrop-filter: blur(4px);
-    }
-
-    .external-player-btn:hover {
-      transform: translateY(-3px);
-      background: linear-gradient(135deg, #2a2a3c, #3a3a4f);
-      border-color: #00c6ff;
-      box-shadow: 0 8px 20px rgba(0, 198, 255, 0.2);
-    }
-
-    .external-player-btn:active {
-      transform: translateY(0);
-    }
-
-    .warning-banner {
-      background: linear-gradient(95deg, #dc2626, #b91c1c);
-      border-radius: 60px;
-      padding: 10px 18px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      letter-spacing: 0.3px;
-      width: 92%;
-      max-width: 1200px;
-      margin: 20px auto;
-      text-align: center;
-    }
-
-    @media (max-width: 640px) {
-      .file-info-container {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .logo-text {
-        font-size: 18px;
-      }
-
+      /* external player buttons - clean style */
       .external-player-btn {
-        padding: 8px 16px;
-        font-size: 12px;
+        background: linear-gradient(135deg, #1e1e2f, #2a2a3c);
+        border: 1px solid rgba(0, 198, 255, 0.3);
+        padding: 10px 20px;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(4px);
+      }
+
+      .external-player-btn:hover {
+        transform: translateY(-3px);
+        background: linear-gradient(135deg, #2a2a3c, #3a3a4f);
+        border-color: #00c6ff;
+        box-shadow: 0 8px 20px rgba(0, 198, 255, 0.2);
+      }
+
+      .external-player-btn:active {
+        transform: translateY(0);
+      }
+
+      .warning-banner {
+        background: linear-gradient(95deg, #dc2626, #b91c1c);
+        border-radius: 25px;
+        padding: 10px 18px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.3px;
+        width: 92%;
+        max-width: 1200px;
+        margin: 20px auto;
+        text-align: center;
       }
 
       .video-wrapper {
-        background: #000000;
-        border-radius: 28px;
-        overflow: hidden;
-        box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.8);
-        border: 1px solid rgba(0, 198, 255, 0.2);
-        width: 92%;
-        max-width: 1200px;
+        width: 100%;
+        max-width: 100%;
         margin: 0 auto;
+        overflow: hidden;
+      }
+
+      .video-wrapper {
         position: relative;
+      }
+
+      /* Default hidden */
+      .video-wrapper::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        pointer-events: none;
+        z-index: 999;
+        /* VERY IMPORTANT */
+      }
+
+      .video-wrapper,
+      video {
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      /* Active border */
+      .video-wrapper.active::after {
+        border-top: 3px solid #00c6ff;
+        border-left: 3px solid #00c6ff;
+        border-right: 3px solid #00c6ff;
       }
     }
   </style>
 </head>
 
 <body class="bg-black">
-
-  <!-- header identical to Cinemaniacs Hub -->
-  <div class="logo-container">
-    <div class="logo-circle"></div>
-    <div class="logo-text">Cinemaniacs Hub</div>
+  <div class="header">
+    <div class="logo-container">
+      <div class="logo-circle"></div>
+      <div class="logo-text">Cinemaniacs Hub</div>
+    </div>
   </div>
+  </div>
+  <!-- main video player (Plyr + HTML5) -->
 
+  <div class="container px-3 px-md-4" style="display: flex; justify-content: center;">
+
+    <div class="video-wrapper">
+
+      <video id="plyrVideo" class="player" playsinline controls crossorigin poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
+
+        <source src="" type="video/mp4" id="videoSource">
+
+        Your browser does not support the video tag.
+
+      </video>
+
+    </div>
+
+  </div>
   <!-- file info panel with clear headings + engagement features -->
   <div class="file-info-container">
     <div class="info-badge">
@@ -305,6 +311,7 @@ HTMLResult Skip Results Iframe
       <span style="color:#4ade80; font-weight:700;">FILE SIZE:</span>
       <span id="fileSizeDisplay" style="color:white; font-weight:500;">--</span>
     </div>
+
     <div class="engagement-buttons">
       <!-- View count -->
       <div class="view-badge">
@@ -328,15 +335,6 @@ HTMLResult Skip Results Iframe
       </div>
     </div>
   </div>
-
-  <!-- main video player (Plyr + HTML5) -->
-  <div class="container px-3 px-md-4" style="display: flex; justify-content: center;">
-    <div class="video-wrapper">
-      <video id="plyrVideo" class="player" playsinline controls crossorigin poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
-        <source src="" type="video/mp4" id="videoSource">
-        Your browser does not support the video tag.
-      </video>
-    </div>
   </div>
 
   <!-- External player section - clean buttons -->
@@ -430,6 +428,22 @@ HTMLResult Skip Results Iframe
   <script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
   <script>
+    const videoWrapper = document.querySelector('.video-wrapper');
+    const video = document.getElementById('plyrVideo');
+    // Click anywhere inside player
+    videoWrapper.addEventListener('click', (e) => {
+      e.stopPropagation();
+      videoWrapper.classList.add('active');
+    });
+    // Also detect click directly on video
+    video.addEventListener('click', (e) => {
+      e.stopPropagation();
+      videoWrapper.classList.add('active');
+    });
+    // Click outside → remove
+    document.addEventListener('click', () => {
+      videoWrapper.classList.remove('active');
+    });
     new WOW().init();
     // ---------- JSONBIN.IO CONFIGURATION ----------
     // IMPORTANT: Replace with your actual JSONbin Bin ID and API Key
@@ -455,13 +469,15 @@ HTMLResult Skip Results Iframe
     const paramVideoUrl = urlParams.get('url');
     let fileName = paramFileName || detectedFileName || 'Unknown title';
     fileName = fileName.replace(/\+/g, ' ');
-    let fileSize = fileSizeFromServer;
-    if (fileSize === '{{file_size}}' || !fileSize || fileSize === '') {
-      fileSize = 'Unknown size';
-    }
     let videoUrl = paramVideoUrl || detectedVideoUrl || '';
-    document.getElementById('fileNameDisplay').innerText = fileName;
-    document.getElementById('fileSizeDisplay').innerText = fileSize;
+    let fileSize = fileSizeFromServer;
+    if (!fileSize || fileSize === '{{file_size}}') {
+      fetchFileSize(videoUrl).then(size => {
+        document.getElementById('fileSizeDisplay').innerText = size;
+      });
+    } else {
+      document.getElementById('fileSizeDisplay').innerText = fileSize;
+    }
     const videoSource = document.getElementById('videoSource');
     const videoElement = document.getElementById('plyrVideo');
     if (videoUrl) {
@@ -677,10 +693,22 @@ HTMLResult Skip Results Iframe
         e.preventDefault();
       }
     });
+    async function fetchFileSize(url) {
+      try {
+        const response = await fetch(url, {
+          method: 'HEAD'
+        });
+        const size = response.headers.get('content-length');
+        if (size) {
+          const mb = (size / (1024 * 1024)).toFixed(2);
+          return mb + ' MB';
+        }
+      } catch (err) {
+        console.error('Size fetch failed:', err);
+      }
+      return 'Unknown size';
+    }
   </script>
 </body>
 
 </html>
-
-
-Resources
