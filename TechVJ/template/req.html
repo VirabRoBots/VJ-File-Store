@@ -1,3 +1,4 @@
+HTMLResult Skip Results Iframe
 <!DOCTYPE html>
 <html lang="en">
 
@@ -60,6 +61,36 @@
       letter-spacing: -0.3px;
     }
 
+    /* Thumbnail banner */
+    .thumbnail-banner {
+      width: 92%;
+      max-width: 1200px;
+      margin: 20px auto;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 198, 255, 0.3);
+    }
+
+    .thumbnail-banner img {
+      width: 100%;
+      height: auto;
+      max-height: 300px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .file-info-container,
+    .video-wrapper {
+      width: 92%;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 92%;
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+
     /* file info panel + video wrapper same width */
     .file-info-container {
       background: rgba(26, 26, 46, 0.85);
@@ -72,9 +103,6 @@
       flex-wrap: wrap;
       gap: 12px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-      width: 92%;
-      max-width: 1200px;
-      margin: 20px auto;
     }
 
     .info-badge {
@@ -86,42 +114,37 @@
       align-items: center;
       gap: 8px;
       font-size: 0.9rem;
+      flex: 1;
+      min-width: 0;
     }
 
-    .video-wrapper {
-      background: #000000;
-      border-radius: 28px;
+    .info-badge span:last-child {
+      white-space: nowrap;
       overflow: hidden;
-      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.8);
-      border: 1px solid rgba(0, 198, 255, 0.2);
-      width: 92%;
-      max-width: 1200px;
-      margin: 0 auto;
-      transition: all 0.2s ease;
+      text-overflow: ellipsis;
     }
 
-    /* Show 20px border when video player is active/focused, stays until click elsewhere */
-    .video-wrapper:focus-within,
-    .plyr:focus-within,
-    .plyr--video:focus-within {
-      outline: none;
-      border: 20px solid #00c6ff;
-      border-radius: 28px;
-      box-shadow: 0 0 30px rgba(0, 198, 255, 0.5);
-      transition: all 0.2s ease;
+    /* Fix for filename - prevent going down */
+    .filename-value {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 400px;
     }
 
-    .plyr {
-      border-radius: 24px;
-      --plyr-color-main: #00c6ff;
-      --plyr-video-background: #0a0a0f;
-    }
+    @media (max-width: 768px) {
+      .filename-value {
+        max-width: 180px;
+      }
 
-    .plyr:focus,
-    .plyr video:focus,
-    .plyr__control:focus {
-      outline: none !important;
-      box-shadow: none !important;
+      .info-badge {
+        flex-wrap: wrap;
+      }
+
+      .info-badge span:last-child {
+        white-space: normal;
+        word-break: break-all;
+      }
     }
 
     /* external player buttons - clean style */
@@ -180,19 +203,51 @@
         font-size: 12px;
       }
 
+      /* Show border only at top with curved edges when video is active/touched */
+      .video-wrapper:active,
+      .video-wrapper:focus,
       .video-wrapper:focus-within,
-      .plyr:focus-within,
-      .plyr--video:focus-within {
-        border: 8px solid #00c6ff;
+      .plyr:active,
+      .plyr:focus,
+      .plyr--video:active,
+      .plyr--video:focus {
+        outline: none;
+        position: relative;
       }
-    }
 
-    /* remove tap highlight on mobile */
-    .video-wrapper,
-    .plyr,
-    .plyr video {
-      -webkit-tap-highlight-color: transparent;
-    }
+      .video-wrapper:active::after,
+      .video-wrapper:focus::after,
+      .video-wrapper:focus-within::after,
+      .plyr:active::after,
+      .plyr:focus::after,
+      .plyr--video:active::after,
+      .plyr--video:focus::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        border-top: 3px solid #00c6ff;
+        border-left: 3px solid #00c6ff;
+        border-right: 3px solid #00c6ff;
+        border-radius: 26px 26px 26px 26px;
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      /* Remove border when not active */
+      .video-wrapper {
+        background: #000000;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(0, 198, 255, 0.2);
+        width: 92%;
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+      }
   </style>
 </head>
 
@@ -209,7 +264,7 @@
     <div class="info-badge">
       <i class="bi bi-camera-reels-fill" style="color:#00c6ff;"></i>
       <span style="color:#00c6ff; font-weight:700;">FILE NAME:</span>
-      <span id="fileNameDisplay" style="color:white; font-weight:500;">--</span>
+      <span id="fileNameDisplay" class="filename-value" style="color:white; font-weight:500;">--</span>
     </div>
     <div class="info-badge">
       <i class="bi bi-hdd-stack-fill" style="color:#4ade80;"></i>
@@ -221,7 +276,7 @@
   <!-- main video player (Plyr + HTML5) -->
   <div class="container px-3 px-md-4" style="display: flex; justify-content: center;">
     <div class="video-wrapper">
-      <video id="plyrVideo" class="player" playsinline controls crossorigin>
+      <video id="plyrVideo" class="player" playsinline controls crossorigin poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
         <source src="" type="video/mp4" id="videoSource">
         Your browser does not support the video tag.
       </video>
@@ -240,11 +295,13 @@
         <button onclick="triggerExternalPlayer('vlc')" class="external-player-btn">
           <svg width="22" height="22" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <linearGradient id="gv1" x1="32" x2="32" y1="16.021" y2="39.25" gradientUnits="userSpaceOnUse">
-              <stop offset=".437" stop-color="#6dc7ff" /><stop offset="1" stop-color="#e6abff" />
+              <stop offset=".437" stop-color="#6dc7ff" />
+              <stop offset="1" stop-color="#e6abff" />
             </linearGradient>
             <path fill="url(#gv1)" d="M32,31.25c2.891,0,5.255-0.323,6.939-0.712l2.409,7.664C37.765,39.116,33.881,39.25,32,39.25 c-1.88,0-5.765-0.134-9.347-1.049l2.408-7.663C26.745,30.927,29.11,31.25,32,31.25z M32.5,24.25c1.554,0,2.999-0.141,4.343-0.38 l-2.429-7.729c-0.587,0.063-1.211,0.109-1.914,0.109c-1.1,0-2.062-0.092-2.876-0.229l-2.404,7.651 C28.816,24.034,30.574,24.25,32.5,24.25z" />
             <linearGradient id="gv2" x1="32.105" x2="32.105" y1="7.415" y2="56" gradientUnits="userSpaceOnUse">
-              <stop offset="0" stop-color="#1a6dff" /><stop offset="1" stop-color="#c822ff" />
+              <stop offset="0" stop-color="#1a6dff" />
+              <stop offset="1" stop-color="#c822ff" />
             </linearGradient>
             <path fill="url(#gv2)" d="M56.903,50.041l-2.216-10.779c-0.513-2.265-2.52-3.847-4.881-3.847H45.09l-8.059-24.451 c-0.7-2.123-2.726-3.549-5.04-3.549c-2.314,0-4.339,1.426-5.039,3.549l-8.058,24.451h-4.491c-2.362,0-4.369,1.582-4.885,3.866 L7.31,50.021c-0.327,1.442,0.019,2.937,0.947,4.099C9.212,55.314,10.645,56,12.19,56h39.828c1.545,0,2.979-0.685,3.934-1.88 C56.88,52.958,57.226,51.464,56.903,50.041z M19.096,41.19l9.755-29.601c0.429-1.301,1.69-2.175,3.14-2.175s2.711,0.874,3.14,2.175 l9.774,29.655c0.201,0.72,0.088,1.331-0.357,1.923c-1.509,2.001-6.32,3.246-12.557,3.247c-0.004,0-0.007,0-0.011,0 c-6.223,0-11.017-1.229-12.511-3.208C19,42.586,18.886,41.933,19.096,41.19z M54.39,52.872C53.816,53.589,52.952,54,52.019,54H12.19 c-0.934,0-1.798-0.411-2.371-1.128C9.39,52.334,9.181,51.677,9.202,51H17v-2H9.561l0.411-2H14v-2h-3.616l1.089-5.297 c0.3-1.326,1.532-2.288,2.93-2.288h3.832l-1.05,3.188c-0.392,1.376-0.154,2.693,0.689,3.81c1.921,2.544,7.062,4.003,14.106,4.003 c0.003,0,0.008,0,0.011,0c7.06-0.002,12.219-1.476,14.153-4.044c0.823-1.093,1.058-2.37,0.678-3.694 c-0.003-0.013-0.007-0.025-0.011-0.038l-1.062-3.224h4.058c1.397,0,2.63,0.962,2.926,2.269L53.825,45H50v2h4.236l0.411,2H47v2h8.008 C55.029,51.671,54.821,52.332,54.39,52.872z" />
           </svg>
@@ -270,19 +327,31 @@
         </button>
         <button onclick="triggerExternalPlayer('km')" class="external-player-btn">
           <svg width="22" height="22" viewBox="0 0 64 64">
-            <linearGradient id="kmg" x1="76.124" x2="76.124" y1="12.7" y2="50.192" gradientTransform="matrix(-1 0 0 1 115.415 0)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1a6dff"/><stop offset="1" stop-color="#c822ff"/></linearGradient>
-            <path fill="url(#kmg)" d="M50.999,50.192c-0.597,0-1.19-0.179-1.702-0.531L25.882,33.513 c-0.824-0.568-1.31-1.505-1.298-2.506c0.013-1,0.52-1.925,1.356-2.474l23.416-15.342c0.923-0.604,2.099-0.655,3.07-0.129 C53.397,13.587,54,14.598,54,15.701v31.49c0,1.118-0.615,2.136-1.605,2.656C51.955,50.078,51.476,50.192,50.999,50.192z M50.992,14.697c-0.162,0-0.348,0.042-0.54,0.168L27.036,30.207c-0.283,0.186-0.448,0.485-0.452,0.824 c-0.004,0.338,0.154,0.643,0.433,0.835l23.415,16.148c0.45,0.311,0.872,0.146,1.033,0.062C51.8,47.9,52,47.569,52,47.191v-31.49 c0-0.538-0.367-0.794-0.524-0.88C51.385,14.772,51.21,14.697,50.992,14.697z"/>
-            <linearGradient id="kmg2" x1="23.708" x2="23.708" y1="13.698" y2="49.195" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6dc7ff"/><stop offset="1" stop-color="#e6abff"/></linearGradient>
-            <path fill="url(#kmg2)" d="M10,15.701v31.49c0,1.612,1.809,2.561,3.135,1.646l23.416-16.149 c1.169-0.806,1.149-2.541-0.039-3.319L13.096,14.028C11.766,13.157,10,14.111,10,15.701z"/>
+            <linearGradient id="kmg" x1="76.124" x2="76.124" y1="12.7" y2="50.192" gradientTransform="matrix(-1 0 0 1 115.415 0)" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#1a6dff" />
+              <stop offset="1" stop-color="#c822ff" />
+            </linearGradient>
+            <path fill="url(#kmg)" d="M50.999,50.192c-0.597,0-1.19-0.179-1.702-0.531L25.882,33.513 c-0.824-0.568-1.31-1.505-1.298-2.506c0.013-1,0.52-1.925,1.356-2.474l23.416-15.342c0.923-0.604,2.099-0.655,3.07-0.129 C53.397,13.587,54,14.598,54,15.701v31.49c0,1.118-0.615,2.136-1.605,2.656C51.955,50.078,51.476,50.192,50.999,50.192z M50.992,14.697c-0.162,0-0.348,0.042-0.54,0.168L27.036,30.207c-0.283,0.186-0.448,0.485-0.452,0.824 c-0.004,0.338,0.154,0.643,0.433,0.835l23.415,16.148c0.45,0.311,0.872,0.146,1.033,0.062C51.8,47.9,52,47.569,52,47.191v-31.49 c0-0.538-0.367-0.794-0.524-0.88C51.385,14.772,51.21,14.697,50.992,14.697z" />
+            <linearGradient id="kmg2" x1="23.708" x2="23.708" y1="13.698" y2="49.195" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#6dc7ff" />
+              <stop offset="1" stop-color="#e6abff" />
+            </linearGradient>
+            <path fill="url(#kmg2)" d="M10,15.701v31.49c0,1.612,1.809,2.561,3.135,1.646l23.416-16.149 c1.169-0.806,1.149-2.541-0.039-3.319L13.096,14.028C11.766,13.157,10,14.111,10,15.701z" />
           </svg>
           KM Player
         </button>
         <button onclick="triggerExternalPlayer('splayer')" class="external-player-btn">
           <svg width="22" height="22" viewBox="0 0 64 64">
-            <linearGradient id="spg" x1="35.5" x2="35.5" y1="6.999" y2="57" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1a6dff"/><stop offset="1" stop-color="#c822ff"/></linearGradient>
-            <path fill="url(#spg)" d="M56.7,30c-0.95-0.5-9.83-5.54-9.92-5.6L16.69,7.42c-0.91-0.51-1.89-0.56-2.62-0.13 C13.39,7.69,13,8.44,13,9.34v45.57c0,0.81,0.35,1.47,0.96,1.83c0.3,0.17,0.63,0.26,0.98,0.26c0.42,0,0.86-0.12,1.29-0.37 l40.43-22.81c1.18-0.67,1.35-1.52,1.34-1.97C57.99,31.11,57.52,30.43,56.7,30z M44.59,25.46l-5.18,5.03L19.82,11.48L44.59,25.46z M15,54.2V9.6l22.98,22.29L15,54.2z M19.81,52.31l19.6-19.03l5.2,5.04L19.81,52.31z M55.67,32.08l-9.24,5.22l-5.58-5.41l5.56-5.4 c2.04,1.16,8.52,4.84,9.36,5.28c0.08,0.04,0.14,0.08,0.18,0.12C55.89,31.94,55.81,32,55.67,32.08z"/>
-            <linearGradient id="spg2" x1="26.055" x2="26.055" y1="14.33" y2="49.47" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6dc7ff"/><stop offset="1" stop-color="#e6abff"/></linearGradient>
-            <path fill="url(#spg2)" d="M35.11 31.89L17 49.47 17 14.33z"/>
+            <linearGradient id="spg" x1="35.5" x2="35.5" y1="6.999" y2="57" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#1a6dff" />
+              <stop offset="1" stop-color="#c822ff" />
+            </linearGradient>
+            <path fill="url(#spg)" d="M56.7,30c-0.95-0.5-9.83-5.54-9.92-5.6L16.69,7.42c-0.91-0.51-1.89-0.56-2.62-0.13 C13.39,7.69,13,8.44,13,9.34v45.57c0,0.81,0.35,1.47,0.96,1.83c0.3,0.17,0.63,0.26,0.98,0.26c0.42,0,0.86-0.12,1.29-0.37 l40.43-22.81c1.18-0.67,1.35-1.52,1.34-1.97C57.99,31.11,57.52,30.43,56.7,30z M44.59,25.46l-5.18,5.03L19.82,11.48L44.59,25.46z M15,54.2V9.6l22.98,22.29L15,54.2z M19.81,52.31l19.6-19.03l5.2,5.04L19.81,52.31z M55.67,32.08l-9.24,5.22l-5.58-5.41l5.56-5.4 c2.04,1.16,8.52,4.84,9.36,5.28c0.08,0.04,0.14,0.08,0.18,0.12C55.89,31.94,55.81,32,55.67,32.08z" />
+            <linearGradient id="spg2" x1="26.055" x2="26.055" y1="14.33" y2="49.47" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#6dc7ff" />
+              <stop offset="1" stop-color="#e6abff" />
+            </linearGradient>
+            <path fill="url(#spg2)" d="M35.11 31.89L17 49.47 17 14.33z" />
           </svg>
           S Player
         </button>
@@ -306,73 +375,66 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
   <script>
     new WOW().init();
-
     // ---------- AUTO DETECT VIDEO FROM CURRENT PAGE URL (NO DEMO) ----------
     const currentUrl = window.location.href;
     const currentPath = window.location.pathname;
     const urlParts = currentPath.split('/');
-    
-    // Extract filename from /watch/ID/filename.mkv pattern
+    // Extract filename from /watch/ID/filename.mkv pattern and replace + with space
     let detectedFileName = '';
     let detectedVideoUrl = '';
-    
     if (currentPath.includes('/watch/')) {
-        // Get filename from path (last segment after /watch/ID/)
-        const filenamePart = urlParts[urlParts.length - 1];
-        detectedFileName = decodeURIComponent(filenamePart);
-        // Use the FULL current URL as video source (the /watch/ endpoint serves the video)
-        detectedVideoUrl = currentUrl;
+      // Get filename from path (last segment after /watch/ID/)
+      let filenamePart = urlParts[urlParts.length - 1];
+      // Replace all + with spaces
+      filenamePart = filenamePart.replace(/\+/g, ' ');
+      // Also decode URI components
+      filenamePart = decodeURIComponent(filenamePart);
+      detectedFileName = filenamePart;
+      // Use the FULL current URL as video source
+      detectedVideoUrl = currentUrl;
     }
-    
-    // Also support query params as fallback
+    // Support query params as fallback
     const urlParams = new URLSearchParams(window.location.search);
     const paramFileName = urlParams.get('title');
-    const paramFileSize = urlParams.get('size');
+    // FILE SIZE from server-side variable {{file_size}}
+    const fileSizeFromServer = '{{file_size}}';
     const paramVideoUrl = urlParams.get('url');
-    
     // Use detected values (real data from URL) - no demo content
-    const fileName = paramFileName || detectedFileName || 'Unknown title';
-    const fileSize = paramFileSize || 'Unknown size';
+    let fileName = paramFileName || detectedFileName || 'Unknown title';
+    // Replace any remaining + with space in fileName
+    fileName = fileName.replace(/\+/g, ' ');
+    // Handle file size - if {{file_size}} is not replaced (still has braces), show as unknown
+    let fileSize = fileSizeFromServer;
+    if (fileSize === '{{file_size}}' || !fileSize || fileSize === '') {
+      fileSize = 'Unknown size';
+    }
     let videoUrl = paramVideoUrl || detectedVideoUrl || '';
-    
-    // Update UI with real filename
-    document.getElementById('fileNameDisplay').innerText = fileName;
-    document.getElementById('fileSizeDisplay').innerText = fileSize;
-    
+    // Update UI with real filename (no wrapping)
+    const fileNameSpan = document.getElementById('fileNameDisplay');
+    const fileSizeSpan = document.getElementById('fileSizeDisplay');
+    if (fileNameSpan) fileNameSpan.innerText = fileName;
+    if (fileSizeSpan) fileSizeSpan.innerText = fileSize;
     const videoSource = document.getElementById('videoSource');
     const videoElement = document.getElementById('plyrVideo');
-    
     if (videoUrl) {
-        videoSource.src = videoUrl;
-        videoElement.load(); // Force reload the video element
-        console.log('Video source set to:', videoUrl);
-    } else {
-        videoSource.src = '';
-        const videoWrapper = document.querySelector('.video-wrapper');
-        if (videoWrapper) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'text-center text-red-400 p-4 bg-red-950/50 rounded-xl mt-2';
-            errorDiv.innerText = '⚠️ No video source found.';
-            videoWrapper.appendChild(errorDiv);
-        }
+      videoSource.src = videoUrl;
+      videoElement.load();
+      console.log('Video source set to:', videoUrl);
     }
-    
+    // No error message shown when videoUrl is missing    
     // Initialize Plyr player
     const playerInstance = Plyr.setup('#plyrVideo', {
       controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen'],
       download: true
     });
-    
     // Helper: get current video URL
     function getCurrentVideoUrl() {
       return videoSource.src || '';
     }
-    
     // External player intents — instant redirect, no loading page, no toast
     function triggerExternalPlayer(type) {
       const videoUrlRaw = getCurrentVideoUrl();
       if (!videoUrlRaw) return;
-      
       let intentUrl = '';
       switch (type) {
         case 'vlc':
@@ -399,7 +461,6 @@
       // Immediate redirect — no loading screen, no toast, no delay
       window.location.href = intentUrl;
     }
-    
     // Disable context menu & devtools
     document.addEventListener("contextmenu", (e) => e.preventDefault());
     document.addEventListener('keydown', (e) => {
@@ -411,3 +472,6 @@
 </body>
 
 </html>
+
+
+Resources
