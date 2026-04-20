@@ -1,328 +1,169 @@
-HTML Result Skip Results Iframe
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ heading }}</title>
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf9f7">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030304">
+    <meta charset="UTF-8" />
+    <title>AV BOTZ | {{ file_name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="https://img.sanishtech.com/u/62e636411ff87f8ccbdd9eb50eb18279.png" type="image/x-icon">
 
-  <!-- Logo & Favicon -->
-  <link rel="icon" type="image/jpeg" href="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/logo.png">
-  <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-  <!-- SEO & Social Sharing (Open Graph) -->
-  <meta name="description" content="A premium cinema experience for '{{ file_name }}'. Stream in high quality with advanced controls.">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="{{ file_name }} — Cinema">
-  <meta property="og:description" content="Stream '{{ file_name }}' in a beautiful, atmospheric environment with professional playback controls.">
-  <meta property="og:image" content="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/logo.png">
-
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{ file_name }} — Cinema">
-  <meta name="twitter:description" content="Stream '{{ file_name }}' in a beautiful, atmospheric environment.">
-  <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/logo.png">
-
-  <!-- Vidstack Player -->
-  <link rel="stylesheet" href="https://cdn.vidstack.io/player/theme.css" />
-  <link rel="stylesheet" href="https://cdn.vidstack.io/player/video.css" />
-  <script type="module" src="https://cdn.vidstack.io/player"></script>
-
-  <!-- Typography: Outfit (geometric display) + DM Sans (refined body) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
-  </noscript>
-
-  <!-- Styles (CDN-hosted) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/Obsidian%20Ember/styles.css">
+    <link rel="stylesheet" href="https://av-botz.vercel.app/2626/style.css">
 </head>
 
 <body>
-  <!-- Atmospheric Background -->
-  <div class="atmosphere" aria-hidden="true">
-    <div class="gradient-mesh"></div>
-    <div class="noise"></div>
-    <div class="vignette"></div>
-  </div>
 
-  <!-- Main Viewport -->
-  <main class="viewport">
-    <!-- Masthead -->
-    <header class="masthead">
-      <div class="title-group">
-        <h1 class="title">{{ file_name }}</h1>
-        <div class="file-meta" id="fileMeta">
-          <span class="meta-tag" id="metaDuration">
-            <svg viewBox="0 0 24 24">
-              <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
-            </svg>
-            <span>Loading...</span>
-          </span>
-          <span class="meta-tag" id="metaResolution">
-            <svg viewBox="0 0 24 24">
-              <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM9 8h2v8H9zm4 0h2v8h-2z" />
-            </svg>
-            <span>Loading...</span>
-          </span>
+    <canvas id="particle-canvas"></canvas>
+
+    <nav class="navbar anim-entry">
+        <div class="container d-flex justify-content-between align-items-center position-relative">
+            <a href="#" class="navbar-brand text-decoration-none">
+                <i class="fa-solid fa-robot me-2" style="color: var(--accent-color);"></i> AV BOTZ
+            </a>
+            
+            <button id="menuToggle" class="menu-btn">
+                <i class="fa-solid fa-bars"></i> Menu
+            </button>
+
+            <div id="drawer" class="nav-drawer">
+                <a href="https://streming-template-eight.vercel.app/Disclaimer.html" class="menu-item drawer-link"><i class="fa-solid fa-triangle-exclamation"></i> Disclaimer</a>
+                <a href="https://streming-template-eight.vercel.app/Contact.html" class="menu-item drawer-link"><i class="fa-solid fa-envelope"></i> Contact Us</a>
+                <a href="https://streming-template-eight.vercel.app/About.html" class="menu-item drawer-link"><i class="fa-solid fa-circle-info"></i> About Us</a>
+                <a href="https://streming-template-eight.vercel.app/DMCA.html" class="menu-item drawer-link"><i class="fa-solid fa-bookmark"></i> DMCA</a>
+            </div>
         </div>
-      </div>
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        <!-- Sun icon (shown in dark mode) -->
-        <svg class="icon-sun" viewBox="0 0 24 24">
-          <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z" />
-        </svg>
-        <!-- Moon icon (shown in light mode) -->
-        <svg class="icon-moon" viewBox="0 0 24 24">
-          <path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />
-        </svg>
-      </button>
-    </header>
-
-    <!-- Cinema Screen -->
-    <section class="cinema">
-      <div class="screen">
-        <div class="player-background-message">
-          <svg class="bg-msg-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM9.5 7.5v9l7-4.5-7-4.5z" />
-          </svg>
-          <span class="bg-msg-title">If video not playing</span>
-          <span class="bg-msg-sub">Use External Player</span>
-        </div>
-        <media-player id="player" title="{{ file_name }}" playsinline keyTarget="document">
-          <media-provider></media-provider>
-          <media-video-layout></media-video-layout>
-        </media-player>
-      </div>
-    </section>
-
-    <!-- Command Bar -->
-    <nav class="command-bar">
-      <div class="command-glass">
-        <a href="{{ src }}" download="{{ file_name }}" class="cmd-btn primary" id="downloadBtn">
-          <svg viewBox="0 0 24 24">
-            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-          </svg>
-          <span>Download</span>
-        </a>
-
-        <div class="cmd-divider"></div>
-
-        <button class="cmd-btn" id="copyBtn" aria-label="Copy Link">
-          <svg viewBox="0 0 24 24">
-            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-          </svg>
-          <span>Copy Link</span>
-        </button>
-
-        <div class="cmd-divider"></div>
-
-        <button class="cmd-btn drawer-trigger" id="playersToggle" aria-expanded="false" aria-controls="playersDrawer" aria-label="Open in external player">
-          <svg viewBox="0 0 24 24">
-            <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM9.5 7.5v9l7-4.5-7-4.5z" />
-          </svg>
-          <span>Open In</span>
-          <svg class="chevron" viewBox="0 0 24 24">
-            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
-          </svg>
-        </button>
-      </div>
     </nav>
 
-    <!-- External Players Drawer -->
-    <aside class="drawer" id="playersDrawer">
-      <div class="drawer-panel" id="drawerPanel" role="region" aria-labelledby="playersToggle">
-        <!-- Android -->
-        <div class="player-group" id="androidGroup">
-          <div class="group-label">Android</div>
-          <div class="player-grid">
-            <a href="intent:{{ src }}#Intent;action=android.intent.action.VIEW;type=video/*;package=org.videolan.vlc;end" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              VLC
-            </a>
-            <a href="intent:{{ src }}#Intent;action=android.intent.action.VIEW;type=video/*;package=com.mxtech.videoplayer.ad;S.title={{ file_name }};end" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              MX Player
-            </a>
-            <a href="intent:{{ src }}#Intent;action=android.intent.action.VIEW;type=video/*;package=com.mxtech.videoplayer.pro;S.title={{ file_name }};end" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              MX Player Pro
-            </a>
-            <a href="intent:{{ src }}#Intent;action=android.intent.action.VIEW;type=video/*;package=com.young.simple.player;end" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              Splayer
-            </a>
-            <a href="intent:{{ src }}#Intent;action=android.intent.action.VIEW;type=video/*;package=dev.anilbeesetti.nextplayer;S.title={{ file_name }};end" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              Next Player
-            </a>
-            <a href="intent:{{ src }}#Intent;action=android.intent.action.VIEW;type=video/*;package=org.courville.nova;S.title={{ file_name }};end" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              Nova Player
-            </a>
-            <a href="intent:{{ src }}#Intent;action=android.intent.action.VIEW;type=video/*;package=is.xyz.mpv;S.title={{ file_name }};end" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              MPV-Android
-            </a>
-            <a href="intent:{{ src }}#Intent;action=android.intent.action.VIEW;type=video/*;package=com.brouken.player;end" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              Just Player
-            </a>
-            <a href="intent:{{ src }}#Intent;action=android.intent.action.VIEW;type=video/*;package=com.newin.nplayer.pro;end" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              nPlayer
-            </a>
-          </div>
+    <main class="container py-4">
+
+        <div class="player-wrapper mb-4 anim-entry delay-1" id="videoContainer">
+            <video id="myVideo" playsinline controls class="w-100 h-100">
+                <source src="{{ file_url }}" type="video/mp4" />
+                <source src="{{ file_url }}" type="video/mkv" />
+                Your browser does not support the video tag.
+            </video>
         </div>
 
-        <!-- iOS -->
-        <div class="player-group" id="iosGroup">
-          <div class="group-label">iOS / iPadOS</div>
-          <div class="player-grid">
-            <a href="vlc-x-callback://x-callback-url/stream?url={{ src }}" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              VLC
-            </a>
-            <a href="infuse://x-callback-url/play?url={{ src }}" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              Infuse
-            </a>
-            <a href="nplayer://weblink?url={{ src }}" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              nPlayer
-            </a>
-            <a href="outplayer://{{ src }}" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              Outplayer
-            </a>
-            <a href="oplayer://{{ src }}" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              OPlayer
-            </a>
-          </div>
+        <div class="glass-card anim-entry delay-2">
+            <div class="mb-3" style="color: var(--accent-color); font-weight: 700;">
+                <i class="fa-solid fa-circle-info me-2"></i> File Details
+            </div>
+            <div class="info-row">
+                <span style="color: #ccc;">Filename</span>
+                <span class="info-value">{{ file_name }}</span>
+            </div>
+            <div class="info-row">
+                <span style="color: #ccc;">Size</span>
+                <span class="info-value">{{ file_size }}</span>
+            </div>
         </div>
 
-        <!-- Desktop -->
-        <div class="player-group" id="desktopGroup">
-          <div class="group-label">Desktop</div>
-          <div class="player-grid">
-            <a href="vlc://{{ src }}" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              VLC
-            </a>
-            <a href="potplayer://{{ src }}" class="player-link" data-os="windows">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              PotPlayer
-            </a>
-            <a href="iina://weblink?url={{ src }}" class="player-link" data-os="mac">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              IINA
-            </a>
-            <a href="mpv://{{ src }}" class="player-link">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              MPV
-            </a>
-            <a href="kmplayer://{{ src }}" class="player-link" data-os="windows">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-              KMPlayer
-            </a>
-          </div>
+        <div class="row g-2 mb-3 anim-entry delay-3">
+            <div class="col-6">
+                <a onclick="play_intent('com.mxtech.videoplayer.ad')" class="btn-glass">
+                    <i class="fa-solid fa-play"></i> MX Player
+                </a>
+            </div>
+            <div class="col-6">
+                <a onclick="play_intent('org.videolan.vlc')" class="btn-glass">
+                    <i class="fa-solid fa-cone"></i> VLC Player
+                </a>
+            </div>
+            <div class="col-12">
+                <a onclick="play_intent('com.playit.videoplayer')" class="btn-glass">
+                    <i class="fa-solid fa-circle-play"></i> PlayIt Player
+                </a>
+            </div>
+            
+            <div class="col-12">
+                <button onclick="shareLink()" class="btn-glass btn-share">
+                    <i class="fa-solid fa-share-nodes"></i> Share with Friends
+                </button>
+            </div>
         </div>
-      </div>
-    </aside>
 
-    <!-- Footer Group -->
-    <footer class="footer-group">
-      <!-- Keyboard Hints -->
-      <div class="keyboard-hints" id="keyboardHints">
-        <div class="hints-row">
-          <div class="hint">
-            <kbd>Space</kbd>
-            <span>Play / Pause</span>
-          </div>
-          <div class="hint">
-            <kbd>←</kbd><kbd>→</kbd>
-            <span>Seek</span>
-          </div>
-          <div class="hint">
-            <kbd>↑</kbd><kbd>↓</kbd>
-            <span>Volume</span>
-          </div>
-          <div class="hint">
-            <kbd>F</kbd>
-            <span>Fullscreen</span>
-          </div>
-          <div class="hint">
-            <kbd>M</kbd>
-            <span>Mute</span>
-          </div>
-          <div class="hint">
-            <kbd>&lt;</kbd><kbd>&gt;</kbd>
-            <span>Speed</span>
-          </div>
+        <div class="row g-2 anim-entry delay-3">
+            <div class="col-6">
+                <a href="{{ file_url }}" class="btn-glass">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> Download
+                </a>
+            </div>
+            <div class="col-6">
+                <a href="{{ file_get }}" target="_blank" class="btn-glass btn-telegram">
+                    <i class="fa-brands fa-telegram"></i> Telegram
+                </a>
+            </div>
+            <div class="col-12">
+                <a href="tg://resolve?domain=AV_SUPPORT_GROUP" class="btn-glass btn-report">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Report Error / Disclaimer
+                </a>
+            </div>
         </div>
-      </div>
 
+        <div class="glass-card anim-entry delay-3 mt-4 text-center">
+            <h5 style="color: var(--accent-color); font-weight: 800;">📣 Stay Connected with AV BOTZ</h5>
+            <p class="small text-white-50 mt-2">
+                Join our official Telegram channel to get:<br>
+                🔑 Latest password updates • 🎁 Bonus files & rewards<br>
+                🚀 Early access to new features
+            </p>
+            <a href="tg://resolve?domain=AV_BOTz_UPDATE" class="btn-glass btn-telegram mt-2">
+                <i class="fa-brands fa-telegram"></i> 🚀 Open in Telegram
+            </a>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="mb-2">
+            <i class="fa-solid fa-moon me-1"></i> 🌗 Smart Theme Enabled<br>
+            <span style="font-size: 10px; opacity: 0.6;">This page automatically adjusts its theme based on your device time.</span>
+        </div>
+        <p class="mb-0">🔹 Official content by AV BOTZ <br> @AV_BOTz_UPDATE &copy; 2025</p>
+        <p class="text-danger mt-2" style="font-size: 0.7rem;">⚠️ Sharing or re-uploading this content without credit is strictly prohibited.</p>
     </footer>
-  </main>
 
-  <!-- Toast Stack -->
-  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+    <a href="https://t.me/AV_OWNER_BOT" target="_blank" class="floating-btn">
+         <i class="fa-solid fa-comments"></i> 💬 Need Help?
+    </a>
 
-  <!-- Config for external script (template injection happens here) -->
-  <script>
-    window.__CINEMA_CONFIG__ = {
-      src: '{{ src }}'
-    };
-  </script>
-  <!-- Main Script (CDN-hosted) -->
-  <script src="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/Obsidian%20Ember/script.js"></script>
+    <div id="supportPopup" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-btn" onclick="toggleSupport()">×</span>
+            <h4 class="mb-3">🤝 Need Assistance?</h4>
+            <p class="text-white-50">Having trouble with playback, download, or access issues? Our support team is available on Telegram.</p>
+            <a href="tg://resolve?domain=AV_BOTz_UPDATE" class="btn-glass btn-telegram">
+                👉 Chat on Telegram
+            </a>
+            <div class="mt-3 small text-muted">Fast replies • Trusted support • 24/7 updates</div>
+        </div>
+    </div>
+
+    <div id="securityModal" class="popup-overlay">
+        <div class="popup-content border-danger">
+            <div class="text-danger display-4 mb-2"><i class="fa-solid fa-shield-halved"></i></div>
+            <h4 class="text-danger">🚫 Restricted Action Detected</h4>
+            <p>Developer tools are disabled on this page to protect content integrity.</p>
+            <p class="small text-white-50">⚠️ Any suspicious activity may lead to temporary access restriction.</p>
+            <button class="btn-glass" onclick="closeSecurity()">✅ I Understand</button>
+        </div>
+    </div>
+
+    <script>
+        window.siteConfig = {
+            thumbnailUrl: "https://img.sanishtech.com/u/29b202409346d1bc163738eb0cab22fa.png",
+            watermarkText: "@AV_BOTz_UPDATE",
+            videoUrl: "{{ file_url }}" 
+        };
+    </script>
+
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    <script src="https://av-botz.vercel.app/2626/script.js"></script>
 </body>
-
 </html>
-
-
-Resources
