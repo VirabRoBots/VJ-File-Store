@@ -325,16 +325,34 @@
           </div>
 
           <p class="mb-2">
-            <span class="info-label">Filename</span> -
-            <span class="info-value">{{file_name}}</span>
+            Filename - <span class="info-value">{{file_name}}</span>
           </p>
 
-          <p class="mb-0">
-            <span class="info-label">Filesize</span> -
-            <span class="info-value">{{file_size}}</span>
+          <p class="mb-3">
+            Filesize - <span class="info-value">{{file_size}}</span>
           </p>
+
+          <!-- COUNTERS -->
+          <div class="d-flex gap-2 flex-wrap mb-3">
+
+            <button class="btn btn-sm btn-primary" onclick="likeVideo()">
+              👍 <span id="likeCount">0</span>
+            </button>
+
+            <button class="btn btn-sm btn-danger" onclick="dislikeVideo()">
+              👎 <span id="dislikeCount">0</span>
+            </button>
+
+            <button class="btn btn-sm btn-secondary">
+              👁️ <span id="viewCount">0</span>
+            </button>
+
+            <a class="btn btn-sm btn-success" href="https://t.me/Cinemaniacs_Hub" target="_blank">
+              🔔 Subscribe
+            </a>
+
+          </div>
         </div>
-
       </main>
 
       <!-- Scripts -->
@@ -416,6 +434,72 @@
               screen.orientation.unlock();
             }
           });
+        });
+      </script>
+      <script>
+        const BIN_ID = "69e63ca736566621a8d25065";
+        const API_KEY = "$2a$10$TyOXeu0PPOnyzTfOreJzhOKiw3NyMQtnURo0koS2JFiOFMatKoDgq";
+        const URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+        const HEADERS = {
+          "Content-Type": "application/json",
+          "X-Master-Key": API_KEY
+        };
+        // Load counts
+        async function loadCounts() {
+          const res = await fetch(URL + "/latest", {
+            headers: HEADERS
+          });
+          const data = await res.json();
+          const record = data.record;
+          document.getElementById("likeCount").innerText = record.likes;
+          document.getElementById("dislikeCount").innerText = record.dislikes;
+          document.getElementById("viewCount").innerText = record.views;
+        }
+        // Update backend
+        async function updateCounts(newData) {
+          await fetch(URL, {
+            method: "PUT",
+            headers: HEADERS,
+            body: JSON.stringify(newData)
+          });
+        }
+        // Like
+        async function likeVideo() {
+          const res = await fetch(URL + "/latest", {
+            headers: HEADERS
+          });
+          const data = await res.json();
+          const record = data.record;
+          record.likes += 1;
+          document.getElementById("likeCount").innerText = record.likes;
+          updateCounts(record);
+        }
+        // Dislike
+        async function dislikeVideo() {
+          const res = await fetch(URL + "/latest", {
+            headers: HEADERS
+          });
+          const data = await res.json();
+          const record = data.record;
+          record.dislikes += 1;
+          document.getElementById("dislikeCount").innerText = record.dislikes;
+          updateCounts(record);
+        }
+        // Views (auto +1 on load)
+        async function addView() {
+          const res = await fetch(URL + "/latest", {
+            headers: HEADERS
+          });
+          const data = await res.json();
+          const record = data.record;
+          record.views += 1;
+          document.getElementById("viewCount").innerText = record.views;
+          updateCounts(record);
+        }
+        // init
+        document.addEventListener("DOMContentLoaded", () => {
+          loadCounts();
+          addView();
         });
       </script>
 </body>
