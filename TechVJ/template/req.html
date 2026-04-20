@@ -1,4 +1,3 @@
-HTMLResult Skip Results Iframe
 <!DOCTYPE html>
 <html lang="en">
 
@@ -295,43 +294,39 @@ HTMLResult Skip Results Iframe
       <div class="file-info-title">
         <i class="fa-solid fa-circle-info me-2"></i> File Information
       </div>
+      <p class="mb-2">
+        Filename - <span class="info-value">{{file_name}}</span>
+      </p>
 
-      <div class="info-item">
-        <span class="info-label"><i class="fa-regular fa-file-video"></i> Filename:</span>
-        <span class="info-value" id="fileName">{{ file_name }}</span>
-      </div>
+      <p class="mb-3">
+        Filesize - <span class="info-value">{{file_size}}</span>
+      </p>
 
-      <div class="info-item">
-        <span class="info-label"><i class="fa-regular fa-hard-drive"></i> File Size:</span>
-        <span class="info-value" id="fileSize">{{ file_size }}</span>
-      </div>
-    </div>
+      <!-- Engagement -->
+      <div class="engagement-stats mt-3">
+        <div class="d-flex gap-3">
 
-    <!-- Engagement -->
-    <div class="engagement-stats mt-3">
-      <div class="d-flex gap-3">
+          <button class="btn btn-like" onclick="likeVideo()">
+            <i class="fa-regular fa-thumbs-up"></i>
+            <span id="likeCount">0</span>
+          </button>
 
-        <button class="btn btn-like" onclick="likeVideo()">
-          <i class="fa-regular fa-thumbs-up"></i>
-          <span id="likeCount">0</span>
-        </button>
+          <button class="btn btn-dislike" onclick="dislikeVideo()">
+            <i class="fa-regular fa-thumbs-down"></i>
+            <span id="dislikeCount">0</span>
+          </button>
 
-        <button class="btn btn-dislike" onclick="dislikeVideo()">
-          <i class="fa-regular fa-thumbs-down"></i>
-          <span id="dislikeCount">0</span>
-        </button>
+          <div class="view-badge">
+            <i class="fa-regular fa-eye"></i>
+            <span id="viewCount">0</span> views
+          </div>
 
-        <div class="view-badge">
-          <i class="fa-regular fa-eye"></i>
-          <span id="viewCount">0</span> views
+          <a href="https://t.me/Cinemaniacs_Hub" target="_blank" class="btn-subscribe">
+            <i class="fa-brands fa-telegram"></i> Subscribe
+          </a>
+
         </div>
-
-        <a href="https://t.me/Cinemaniacs_Hub" target="_blank" class="btn-subscribe">
-          <i class="fa-brands fa-telegram"></i> Subscribe
-        </a>
-
       </div>
-    </div>
 
   </main>
   <script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
