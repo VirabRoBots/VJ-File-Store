@@ -274,44 +274,39 @@
 
     <!-- Player -->
     <div class="player-wrapper mb-4">
-      <video id="myVideo" class="w-100" controls poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
-        <source src="{{file_url}}" type="video/mp4">
+      <video id="myVideo" src="{{file_url}}" class="w-100" controls poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
+        Your browser does not support the video tag.
       </video>
     </div>
 
     <!-- External Players -->
-<!-- Line 1: Full width button -->
-<div class="mb-2">
-  <a onclick="streamDownload()"
-     class="btn btn-custom w-100"
-     style="background: linear-gradient(135deg, #00c853, #64dd17);
+    <!-- Line 1: Full width button -->
+    <div class="mb-2">
+      <a onclick="streamDownload()" class="btn btn-custom w-100" style="background: linear-gradient(135deg, #00c853, #64dd17);
             color: white;
             border: none;
             border-radius: 15px;
             padding: 10px;">
-    <i class="fa-solid fa-cloud-arrow-down"></i> &nbsp; Direct Download
-  </a>
-</div>
+        <i class="fa-solid fa-cloud-arrow-down"></i> &nbsp; Direct Download
+      </a>
+    </div>
 
-<!-- Line 2: 3 buttons -->
-<div class="d-flex gap-2">
+    <!-- Line 2: 3 buttons -->
+    <div class="d-flex gap-2">
 
-  <a onclick="mx_player()"
-     class="btn btn-custom flex-fill btn-mx">
-    <i class="fa fa-play"></i> MX Player
-  </a>
+      <a onclick="mx_player()" class="btn btn-custom flex-fill btn-mx">
+        <i class="fa fa-play"></i> MX Player
+      </a>
 
-  <a onclick="vlc_player()"
-     class="btn btn-custom flex-fill btn-vlc">
-    <i class="fa fa-play"></i> VLC Player
-  </a>
+      <a onclick="vlc_player()" class="btn btn-custom flex-fill btn-vlc">
+        <i class="fa fa-play"></i> VLC Player
+      </a>
 
-  <a onclick="playit_player()"
-     class="btn btn-custom flex-fill btn-playit">
-    <i class="fa fa-play"></i> PlayIt
-  </a>
+      <a onclick="playit_player()" class="btn btn-custom flex-fill btn-playit">
+        <i class="fa fa-play"></i> PlayIt
+      </a>
 
-</div>
+    </div>
     <!-- File Info -->
     <div class="glass-card">
       <div class="file-info-title">
@@ -456,6 +451,20 @@
 
     function showLinkModal(url) {
       if (url) window.open(url, "_blank");
+    }
+
+    function shareButton() {
+      if (navigator.share) {
+        navigator.share({
+          title: '{{ file_name }}',
+          text: "Watch this video on {{ template_ne }}",
+          url: window.location.href,
+        });
+      } else {
+        // Fallback or copy to clipboard
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+      }
     }
   </script>
 </body>
