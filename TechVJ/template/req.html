@@ -1,234 +1,203 @@
-<!-- this code is written by @biisal tg:biisal-files  -->
-<!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.  -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOW STREAMING | {{file_name}}</title>
-    <link rel="stylesheet" href="https://unpkg.com/sheryjs/dist/Shery.css" />
-    <link rel="stylesheet" href="https://biisal.github.io/Resources/StreamCSS.css">
-    <link rel="stylesheet" href="https://biisal.github.io/Resources/playerCss.css">
+    <title>{{ file_name }}</title>  <!-- Changed from {{ heading }} -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf9f7">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030304">
+
+    <!-- Logo & Favicon -->
+    <link rel="icon" type="image/jpeg" href="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/logo.png">
+    <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/logo.png">
+
+    <!-- SEO & Social Sharing -->
+    <meta name="description" content="A premium cinema experience for '{{ file_name }}'. Stream in high quality with advanced controls.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ file_name }} — Cinema">
+    <meta property="og:description" content="Stream '{{ file_name }}' in a beautiful, atmospheric environment with professional playback controls.">
+    <meta property="og:image" content="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/logo.png">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ file_name }} — Cinema">
+    <meta name="twitter:description" content="Stream '{{ file_name }}' in a beautiful, atmospheric environment.">
+    <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/logo.png">
+
+    <!-- Vidstack Player -->
+    <link rel="stylesheet" href="https://cdn.vidstack.io/player/theme.css" />
+    <link rel="stylesheet" href="https://cdn.vidstack.io/player/video.css" />
+    <script type="module" src="https://cdn.vidstack.io/player"></script>
+
+    <!-- Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 
+    <!-- Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/Obsidian%20Ember/styles.css">
 </head>
-<!-- this code is written by @biisal tg:biisal-files  -->
-<!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
 
 <body>
-    <nav>
-        <div class="nleft">
-            <a href="https://t.me/bisal_files">
-                <!-- if u are trying to change the header name please remove the title text from bottom line  -->
-                <h3 id="heading" style="z-index: 100;" class="magnet title">BISAL FILES</h3>
-            </a>
-        </div>
-        <div class="nryt">
-            <a class="home-btn magnet" href="#main" onclick="toggleWidthnav(this)">HOME</a>
+    <div class="atmosphere" aria-hidden="true">
+        <div class="gradient-mesh"></div>
+        <div class="noise"></div>
+        <div class="vignette"></div>
+    </div>
 
-            <a href="#sec1" class="about-btn magnet" onclick="toggleWidthnav(this)">ABOUT</a>
-        </div>
-    </nav>
-    <center>
-        <div class="about-nav">
-            <a href="#sec1" class="wlcm magnet" onclick="toggleWidth(this)">WELCOME</a>
-            <a href="#sec2" class="abt-chnl magnet" onclick="toggleWidth(this)">CHANNELS</a>
-            <a href="#sec3" class="magnet bot-btn" onclick="toggleWidth(this) , bot_btn_clicked()">BOTS</a>
-            <a href="#sec4" class="magnet contact-btn" onclick="toggleWidth(this)">LET'S TALK</a>
-        </div>
-    </center>
-    <!-- this code is written by @biisal tg:biisal-files  -->
-    <!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
-
-    <div class="outer">
-        <div class="inner">
-            <div class="main" id="main">
-                <video id="player" class="player" src="{{file_url}}" type="video/mp4" playsinline controls
-                    width="100%"></video>
-                <div class="player"></div>
-                <div class="file-name">
-                    <h4>File name : </h4>
-                    <br>
-                    <p id="myDiv">{{file_name}}</p>
+    <main class="viewport">
+        <header class="masthead">
+            <div class="title-group">
+                <h1 class="title">{{ file_name }}</h1>  <!-- Already correct -->
+                <div class="file-meta" id="fileMeta">
+                    <span class="meta-tag" id="metaDuration">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+                        </svg>
+                        <span>Loading...</span>
+                    </span>
+                    <span class="meta-tag" id="metaResolution">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM9 8h2v8H9zm4 0h2v8h-2z" />
+                        </svg>
+                        <span>Loading...</span>
+                    </span>
                 </div>
-                <div class="downloadBtn">
-                    <button class="magnet" onclick="vlc_player()"><img src="https://i.postimg.cc/15TQ4y7B/vlc.png"
-                            alt="">watch in VLC PLAYER</button>
-                    <button class="magnet" onclick="mx_player()"><img src="https://i.postimg.cc/sx4Msv4T/mx.png"
-                            alt="">watch in MX PLAYER</button>
-                    <button class="magnet" onclick="playit_player()"><img src="https://i.postimg.cc/RVGWYJFF/playit.png"
-                            alt="">watch in PLAYit
-                        PLAYER</button>
-                    <button class="magnet" onclick="km_player()"><img src="https://i.postimg.cc/wT9tFQ9Z/km.png"
-                            alt="">watch in KM PLAYER</button>
-                    <button class="magnet" onclick="s_player()"><img src="https://i.postimg.cc/XYJr6NGg/s.png"
-                            alt="">watch in S PLAYER</button>
-                    <button class="magnet" onclick="hd_player()"><img src="https://i.postimg.cc/rFT43LNh/hd.png"
-                            alt="">watch in HD
-                        PLAYER(4K)</button>
-                    <button class="magnet" onclick="bisalDownload()"><img style="height: 35px;"
-                            src="https://i.postimg.cc/Zncc9YLq/Pngtree-download-icon-3581467.png" alt="">download video
-                    </button>
-                </div>
-
             </div>
-            <div class="abt">
-                <div class="about">
-                    <div class="about-dets">
-                        <div class="abt-sec" id="sec1" style="padding: 160px 30px;">
-                            <h1 style="text-align: center;">WELCOME TO OUR <Span>STREAMING</Span> PAGE</h1>
-                            <p style="text-align: center; line-height: 2;word-spacing: 2px;  letter-spacing: 0.8px;">
-                                We're
-                                thrilled to have <span>you</span> here.
-                                Get ready for an
-                                amazing <span>experience</span>
-                                filled with <span>entertainment</span>, <span>fun</span>, and <span>surprises</span>.
-                                Grab
-                                your snacks, sit back, and <span>enjoy</span> the show!
-                            </p>
-                        </div>
-                        <div class="abt-sec" id="sec2">
-                            <h1>OUR ALL <span>CHANNELS</span> LIST</h1>
-                            <div class="links chnl-link">
-                                <a class="magnet" href="https://t.me/bisal_files"><button>BISAL FILES -
-                                        MAIN</button></a>
-                                <a class="magnet" href="https://t.me/movies_request_group_Fhd"><button>BISAL FILES
-                                        REQUEST GROUP</button></a>
-                                <a class="magnet" href="https://t.me/+lNMBlcpzuyg0NjI1"><button>TERABOX
-                                        LINKS</button></a>
-                                <a class="magnet" href="https://t.me/bisal_movie_request_group"><button>FILES REQ
-                                        BACKUP</button></a>
-                                <a class="magnet" href="https://t.me/+gHtA-IkBdgQ1MzA9"><button>BISAL FILES
-                                        DIRECT</button></a>
-                            </div>
-                        </div>
-                        <div class="abt-sec" id="sec3">
-                            <h1>OUR ALL <span>BOTS</span> LIST</h1>
-                            <div class="links bot-link">
-                                <a class="magnet" href="https://t.me/Pm_link_yojana_bot"><button>PM LINK
-                                        YOJANA</button></a>
-                                <a class="magnet" href="https://t.me/Ai_Auto_Filter_Bot"><button>AI FILTER
-                                        BOT</button></a>
-                                <a class="magnet" href="https://t.me/Bisal_File2Link_Bot"><button>FILE STREAM
-                                        BOT</button></a>
-                                <a class="magnet" href="https://t.me/File_RenamerV4_Bot"><button>FILE RENAMER
-                                        BOT</button></a>
-                                <a class="magnet" href="https://t.me/Wanda_Ki_Shakti_Bot"><button>WANDA KI SHAKTI
-                                        BOT</button></a>
-                                <a class="magnet" href="https://t.me/wanda_ki_shakti_2_bot"><button>WANDA KI SHAKTI 2.0
-                                        BOT</button></a>
-                            </div>
-                        </div>
-                        <div class="abt-sec" id="sec4">
-                            <!-- this code is written by @biisal tg:biisal-files  -->
-                            <!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <svg class="icon-sun" viewBox="0 0 24 24">
+                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z" />
+                </svg>
+                <svg class="icon-moon" viewBox="0 0 24 24">
+                    <path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />
+                </svg>
+            </button>
+        </header>
 
-                            <p style="text-align: center;">we can tal'k for your support and you can report through
-                                telegram</p>
-                            <div class="links contact">
-                                <a href="https://t.me/biisal_bot"><button>CONTACT</button></a>
-                            </div>
-                        </div>
+        <section class="cinema">
+            <div class="screen">
+                <div class="player-background-message">
+                    <svg class="bg-msg-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM9.5 7.5v9l7-4.5-7-4.5z" />
+                    </svg>
+                    <span class="bg-msg-title">If video not playing</span>
+                    <span class="bg-msg-sub">Use External Player</span>
+                </div>
+                <media-player id="player" title="{{ file_name }}" playsinline keyTarget="document">
+                    <media-provider>
+                        <source src="{{ file_url }}" type="video/mp4">  <!-- Changed from {{ src }} -->
+                    </media-provider>
+                    <media-video-layout></media-video-layout>
+                </media-player>
+            </div>
+        </section>
+
+        <nav class="command-bar">
+            <div class="command-glass">
+                <a href="{{ file_url }}" download="{{ file_name }}" class="cmd-btn primary" id="downloadBtn">  <!-- Changed from {{ src }} -->
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                    </svg>
+                    <span>Download</span>
+                </a>
+
+                <div class="cmd-divider"></div>
+
+                <button class="cmd-btn" id="copyBtn" aria-label="Copy Link">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                    </svg>
+                    <span>Copy Link</span>
+                </button>
+
+                <div class="cmd-divider"></div>
+
+                <button class="cmd-btn drawer-trigger" id="playersToggle" aria-expanded="false" aria-controls="playersDrawer">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM9.5 7.5v9l7-4.5-7-4.5z" />
+                    </svg>
+                    <span>Open In</span>
+                    <svg class="chevron" viewBox="0 0 24 24">
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- All external player links need {{ file_url }} instead of {{ src }} -->
+        <aside class="drawer" id="playersDrawer">
+            <div class="drawer-panel" id="drawerPanel">
+                <!-- Android -->
+                <div class="player-group" id="androidGroup">
+                    <div class="group-label">Android</div>
+                    <div class="player-grid">
+                        <a href="intent:{{ file_url }}#Intent;action=android.intent.action.VIEW;type=video/*;package=org.videolan.vlc;end" class="player-link">VLC</a>
+                        <a href="intent:{{ file_url }}#Intent;action=android.intent.action.VIEW;type=video/*;package=com.mxtech.videoplayer.ad;S.title={{ file_name }};end" class="player-link">MX Player</a>
+                        <a href="intent:{{ file_url }}#Intent;action=android.intent.action.VIEW;type=video/*;package=com.mxtech.videoplayer.pro;S.title={{ file_name }};end" class="player-link">MX Player Pro</a>
+                        <a href="intent:{{ file_url }}#Intent;action=android.intent.action.VIEW;type=video/*;package=com.young.simple.player;end" class="player-link">Splayer</a>
+                        <a href="intent:{{ file_url }}#Intent;action=android.intent.action.VIEW;type=video/*;package=dev.anilbeesetti.nextplayer;S.title={{ file_name }};end" class="player-link">Next Player</a>
+                        <a href="intent:{{ file_url }}#Intent;action=android.intent.action.VIEW;type=video/*;package=org.courville.nova;S.title={{ file_name }};end" class="player-link">Nova Player</a>
+                        <a href="intent:{{ file_url }}#Intent;action=android.intent.action.VIEW;type=video/*;package=is.xyz.mpv;S.title={{ file_name }};end" class="player-link">MPV-Android</a>
+                        <a href="intent:{{ file_url }}#Intent;action=android.intent.action.VIEW;type=video/*;package=com.brouken.player;end" class="player-link">Just Player</a>
+                        <a href="intent:{{ file_url }}#Intent;action=android.intent.action.VIEW;type=video/*;package=com.newin.nplayer.pro;end" class="player-link">nPlayer</a>
+                    </div>
+                </div>
+
+                <!-- iOS -->
+                <div class="player-group" id="iosGroup">
+                    <div class="group-label">iOS / iPadOS</div>
+                    <div class="player-grid">
+                        <a href="vlc-x-callback://x-callback-url/stream?url={{ file_url }}" class="player-link">VLC</a>
+                        <a href="infuse://x-callback-url/play?url={{ file_url }}" class="player-link">Infuse</a>
+                        <a href="nplayer://weblink?url={{ file_url }}" class="player-link">nPlayer</a>
+                        <a href="outplayer://{{ file_url }}" class="player-link">Outplayer</a>
+                        <a href="oplayer://{{ file_url }}" class="player-link">OPlayer</a>
+                    </div>
+                </div>
+
+                <!-- Desktop -->
+                <div class="player-group" id="desktopGroup">
+                    <div class="group-label">Desktop</div>
+                    <div class="player-grid">
+                        <a href="vlc://{{ file_url }}" class="player-link">VLC</a>
+                        <a href="potplayer://{{ file_url }}" class="player-link" data-os="windows">PotPlayer</a>
+                        <a href="iina://weblink?url={{ file_url }}" class="player-link" data-os="mac">IINA</a>
+                        <a href="mpv://{{ file_url }}" class="player-link">MPV</a>
+                        <a href="kmplayer://{{ file_url }}" class="player-link" data-os="windows">KMPlayer</a>
                     </div>
                 </div>
             </div>
-        </div>
-        <footer>
-            <div class="mid">
-                <h1 class="mid-text">VISIT <a href="#sec3" onclick="bot_btn_clicked()"><span>OUR BOTS LIST</span></a>
-                    FOR
-                    MORE
-                    INFO</h1>
+        </aside>
+
+        <footer class="footer-group">
+            <div class="keyboard-hints" id="keyboardHints">
+                <div class="hints-row">
+                    <div class="hint"><kbd>Space</kbd><span>Play / Pause</span></div>
+                    <div class="hint"><kbd>←</kbd><kbd>→</kbd><span>Seek</span></div>
+                    <div class="hint"><kbd>↑</kbd><kbd>↓</kbd><span>Volume</span></div>
+                    <div class="hint"><kbd>F</kbd><span>Fullscreen</span></div>
+                    <div class="hint"><kbd>M</kbd><span>Mute</span></div>
+                    <div class="hint"><kbd>&lt;</kbd><kbd>&gt;</kbd><span>Speed</span></div>
+                </div>
             </div>
 
-            <div class="last-text">
-                <p style="font-weight: 500;">
-                    Welcome to our online streaming platform! Our website allows users to generate streamable links for
-                    various files using Telegram bots. Please note that we are not responsible for the content shared or
-                    streamed through our service. Users are encouraged to respect copyright laws and adhere to our
-                    community
-                    guidelines. Enjoy easy, hassle-free file streaming.
-                </p>
+            <div class="copyright-footer">
+                <span>&copy; <span id="copyrightYear"></span> Tech VJ</span>
+                <span class="footer-separator">•</span>
+                <a href="https://t.me/vj_bots" target="_blank" class="footer-link">Telegram</a>
+                <span class="footer-separator">•</span>
+                <a href="https://youtube.com/@Tech_VJ" target="_blank" class="footer-link">YouTube</a>
             </div>
-            <center>
-
-                <div class="movie-cont">
-                    <a href="https://t.me/+PA8OPL2Zglk3MDM1">
-                        <div class="movieSug">
-                            <div class="movieDets">
-
-                            </div>
-                            <div class="movieimg">
-                                <img src="">
-                            </div>
-                        </div>
-                    </a>
-                    <div class="low-width-movie-dets">
-                        <div class="movieStsBar">
-                            <div class="movieDets-mini">
-
-                            </div>
-                        </div>
-                    </div>
-                    <button class="ranMovBtn" onclick="getDets()">Get More Movies Suggestion</button>
-                </div>
-
-            </center>
-            <!-- this code is written by @biisal tg:biisal-files  -->
-            <!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
-
-
-            <center>
-                <div class="copyright">
-                    <h5 class="text-center">Copyright © 2023 <a href="https://t.me/bisal_files"><span
-                                style="font-weight: 700;">BISAL FILES</span></a>. All
-                        Rights Reserved.</h5>
-                    <div class="icons">
-                        <a href="https://github.com/biisal"><i class="fa-brands fa-github fa-lg"></i></a>
-                        <a href="https://t.me/bisal_Files"><i class="fa-brands fa-telegram fa-lg"></i></a>
-                        <a href="https://www.instagram.com/avisekeditx"><i
-                                class="fa-brands fa-square-instagram fa-lg"></i></a>
-                    </div>
-                    <h4 style="font-weight: 700;">This Page Is Made By <a
-                            href="https://t.me/bisal_files"><span>Bisal</span></a></h4>
-                </div>
-            </center>
         </footer>
+    </main>
+
+    <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+    <script>
+        window.__CINEMA_CONFIG__ = { src: '{{ file_url }}' };
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/fyaz05/Resources@main/FileToLink/Obsidian%20Ember/script.js"></script>
 </body>
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.155.0/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/automat/controlkit.js@master/bin/controlKit.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sheryjs/dist/Shery.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const uncopyableElement = document.querySelector(".uncopyable");
-
-        uncopyableElement.addEventListener("selectstart", function (event) {
-            event.preventDefault();
-        });
-    });
-</script>
-<script src="js/wow.min.js"></script>
-<script>
-    new WOW().init();
-</script>
-<script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
-<script src="https://biisal.github.io/Resources/StreamJs.js"></script>
-<script src="script.js"></script>
-
 </html>
-
-<!-- this code is written by @biisal tg:biisal-files  -->
-<!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
