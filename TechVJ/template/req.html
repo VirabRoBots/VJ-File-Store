@@ -87,21 +87,24 @@
       z-index: 3;
     }
 
-    /* Player */
-    .player-wrapper {
-      background: #000;
-      border-radius: var(--card-radius);
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      margin-top: 20px;
-      border: var(--glass-border);
-      transition: all 0.3s ease;
+    /* Default (no black bars) */
+    .plyr__video-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    .player-wrapper.active {
-      box-shadow: 0 0 25px rgba(255, 0, 0, 0.35),
-        0 0 50px rgba(255, 0, 0, 0.15);
-      border: 2px solid red;
+    /* Apply same curve to Plyr layers */
+    .plyr,
+    .plyr__video-wrapper,
+    .plyr video,
+    .plyr__poster {
+      border-radius: 16px !important;
+    }
+
+    /* Fullscreen (show full video) */
+    .plyr--fullscreen-enabled.plyr--fullscreen-active .plyr__video-wrapper video {
+      object-fit: contain !important;
     }
 
     video {
@@ -277,18 +280,38 @@
     </div>
 
     <!-- External Players -->
-    <div class="d-flex flex-wrap gap-2 mb-3">
-      <a onclick="mx_player()" class="btn btn-custom btn-mx flex-fill">
-        <i class="fa fa-play"></i> MX Player
-      </a>
-      <a onclick="vlc_player()" class="btn btn-custom btn-vlc flex-fill">
-        <i class="fa fa-play"></i> VLC Player
-      </a>
-      <a onclick="playit_player()" class="btn btn-custom btn-playit flex-fill">
-        <i class="fa fa-play"></i> PlayIt
-      </a>
-    </div>
+<!-- Line 1: Full width button -->
+<div class="mb-2">
+  <a onclick="streamDownload()"
+     class="btn btn-custom w-100"
+     style="background: linear-gradient(135deg, #00c853, #64dd17);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 10px;">
+    <i class="fa-solid fa-cloud-arrow-down"></i> &nbsp; Direct Download
+  </a>
+</div>
 
+<!-- Line 2: 3 buttons -->
+<div class="d-flex gap-2">
+
+  <a onclick="mx_player()"
+     class="btn btn-custom flex-fill btn-mx">
+    <i class="fa fa-play"></i> MX Player
+  </a>
+
+  <a onclick="vlc_player()"
+     class="btn btn-custom flex-fill btn-vlc">
+    <i class="fa fa-play"></i> VLC Player
+  </a>
+
+  <a onclick="playit_player()"
+     class="btn btn-custom flex-fill btn-playit">
+    <i class="fa fa-play"></i> PlayIt
+  </a>
+
+</div>
     <!-- File Info -->
     <div class="glass-card">
       <div class="file-info-title">
