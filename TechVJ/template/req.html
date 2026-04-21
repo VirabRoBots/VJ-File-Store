@@ -1,169 +1,234 @@
+<!-- this code is written by @biisal tg:biisal-files  -->
+<!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.  -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Now Streaming...| {{ file_name }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="https://img.sanishtech.com/u/62e636411ff87f8ccbdd9eb50eb18279.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOW STREAMING | {{file_name}}</title>
+    <link rel="stylesheet" href="https://unpkg.com/sheryjs/dist/Shery.css" />
+    <link rel="stylesheet" href="https://biisal.github.io/Resources/StreamCSS.css">
+    <link rel="stylesheet" href="https://biisal.github.io/Resources/playerCss.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <link rel="stylesheet" href="https://av-botz.vercel.app/2626/style.css">
 </head>
+<!-- this code is written by @biisal tg:biisal-files  -->
+<!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
 
 <body>
-
-    <canvas id="particle-canvas"></canvas>
-
-    <nav class="navbar anim-entry">
-        <div class="container d-flex justify-content-between align-items-center position-relative">
-            <a href="#" class="navbar-brand text-decoration-none">
-                <i class="fa-solid fa-robot me-2" style="color: var(--accent-color);"></i> AV BOTZ
+    <nav>
+        <div class="nleft">
+            <a href="https://t.me/bisal_files">
+                <!-- if u are trying to change the header name please remove the title text from bottom line  -->
+                <h3 id="heading" style="z-index: 100;" class="magnet title">BISAL FILES</h3>
             </a>
-            
-            <button id="menuToggle" class="menu-btn">
-                <i class="fa-solid fa-bars"></i> Menu
-            </button>
+        </div>
+        <div class="nryt">
+            <a class="home-btn magnet" href="#main" onclick="toggleWidthnav(this)">HOME</a>
 
-            <div id="drawer" class="nav-drawer">
-                <a href="https://streming-template-eight.vercel.app/Disclaimer.html" class="menu-item drawer-link"><i class="fa-solid fa-triangle-exclamation"></i> Disclaimer</a>
-                <a href="https://streming-template-eight.vercel.app/Contact.html" class="menu-item drawer-link"><i class="fa-solid fa-envelope"></i> Contact Us</a>
-                <a href="https://streming-template-eight.vercel.app/About.html" class="menu-item drawer-link"><i class="fa-solid fa-circle-info"></i> About Us</a>
-                <a href="https://streming-template-eight.vercel.app/DMCA.html" class="menu-item drawer-link"><i class="fa-solid fa-bookmark"></i> DMCA</a>
-            </div>
+            <a href="#sec1" class="about-btn magnet" onclick="toggleWidthnav(this)">ABOUT</a>
         </div>
     </nav>
-
-    <main class="container py-4">
-
-        <div class="player-wrapper mb-4 anim-entry delay-1" id="videoContainer">
-            <video id="myVideo" playsinline controls class="w-100 h-100">
-                <source src="{{ file_url }}" type="video/mp4" />
-                <source src="{{ file_url }}" type="video/mkv" />
-                Your browser does not support the video tag.
-            </video>
+    <center>
+        <div class="about-nav">
+            <a href="#sec1" class="wlcm magnet" onclick="toggleWidth(this)">WELCOME</a>
+            <a href="#sec2" class="abt-chnl magnet" onclick="toggleWidth(this)">CHANNELS</a>
+            <a href="#sec3" class="magnet bot-btn" onclick="toggleWidth(this) , bot_btn_clicked()">BOTS</a>
+            <a href="#sec4" class="magnet contact-btn" onclick="toggleWidth(this)">LET'S TALK</a>
         </div>
+    </center>
+    <!-- this code is written by @biisal tg:biisal-files  -->
+    <!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
 
-        <div class="glass-card anim-entry delay-2">
-            <div class="mb-3" style="color: var(--accent-color); font-weight: 700;">
-                <i class="fa-solid fa-circle-info me-2"></i> File Details
+    <div class="outer">
+        <div class="inner">
+            <div class="main" id="main">
+                <video id="player" class="player" src="{{file_url}}" type="video/mp4" playsinline controls
+                    width="100%"></video>
+                <div class="player"></div>
+                <div class="file-name">
+                    <h4>File name : </h4>
+                    <br>
+                    <p id="myDiv">{{file_name}}</p>
+                </div>
+                <div class="downloadBtn">
+                    <button class="magnet" onclick="vlc_player()"><img src="https://i.postimg.cc/15TQ4y7B/vlc.png"
+                            alt="">watch in VLC PLAYER</button>
+                    <button class="magnet" onclick="mx_player()"><img src="https://i.postimg.cc/sx4Msv4T/mx.png"
+                            alt="">watch in MX PLAYER</button>
+                    <button class="magnet" onclick="playit_player()"><img src="https://i.postimg.cc/RVGWYJFF/playit.png"
+                            alt="">watch in PLAYit
+                        PLAYER</button>
+                    <button class="magnet" onclick="km_player()"><img src="https://i.postimg.cc/wT9tFQ9Z/km.png"
+                            alt="">watch in KM PLAYER</button>
+                    <button class="magnet" onclick="s_player()"><img src="https://i.postimg.cc/XYJr6NGg/s.png"
+                            alt="">watch in S PLAYER</button>
+                    <button class="magnet" onclick="hd_player()"><img src="https://i.postimg.cc/rFT43LNh/hd.png"
+                            alt="">watch in HD
+                        PLAYER(4K)</button>
+                    <button class="magnet" onclick="bisalDownload()"><img style="height: 35px;"
+                            src="https://i.postimg.cc/Zncc9YLq/Pngtree-download-icon-3581467.png" alt="">download video
+                    </button>
+                </div>
+
             </div>
-            <div class="info-row">
-                <span style="color: #ccc;">Filename</span>
-                <span class="info-value">{{ file_name }}</span>
-            </div>
-            <div class="info-row">
-                <span style="color: #ccc;">Size</span>
-                <span class="info-value">{{ file_size }}</span>
+            <div class="abt">
+                <div class="about">
+                    <div class="about-dets">
+                        <div class="abt-sec" id="sec1" style="padding: 160px 30px;">
+                            <h1 style="text-align: center;">WELCOME TO OUR <Span>STREAMING</Span> PAGE</h1>
+                            <p style="text-align: center; line-height: 2;word-spacing: 2px;  letter-spacing: 0.8px;">
+                                We're
+                                thrilled to have <span>you</span> here.
+                                Get ready for an
+                                amazing <span>experience</span>
+                                filled with <span>entertainment</span>, <span>fun</span>, and <span>surprises</span>.
+                                Grab
+                                your snacks, sit back, and <span>enjoy</span> the show!
+                            </p>
+                        </div>
+                        <div class="abt-sec" id="sec2">
+                            <h1>OUR ALL <span>CHANNELS</span> LIST</h1>
+                            <div class="links chnl-link">
+                                <a class="magnet" href="https://t.me/bisal_files"><button>BISAL FILES -
+                                        MAIN</button></a>
+                                <a class="magnet" href="https://t.me/movies_request_group_Fhd"><button>BISAL FILES
+                                        REQUEST GROUP</button></a>
+                                <a class="magnet" href="https://t.me/+lNMBlcpzuyg0NjI1"><button>TERABOX
+                                        LINKS</button></a>
+                                <a class="magnet" href="https://t.me/bisal_movie_request_group"><button>FILES REQ
+                                        BACKUP</button></a>
+                                <a class="magnet" href="https://t.me/+gHtA-IkBdgQ1MzA9"><button>BISAL FILES
+                                        DIRECT</button></a>
+                            </div>
+                        </div>
+                        <div class="abt-sec" id="sec3">
+                            <h1>OUR ALL <span>BOTS</span> LIST</h1>
+                            <div class="links bot-link">
+                                <a class="magnet" href="https://t.me/Pm_link_yojana_bot"><button>PM LINK
+                                        YOJANA</button></a>
+                                <a class="magnet" href="https://t.me/Ai_Auto_Filter_Bot"><button>AI FILTER
+                                        BOT</button></a>
+                                <a class="magnet" href="https://t.me/Bisal_File2Link_Bot"><button>FILE STREAM
+                                        BOT</button></a>
+                                <a class="magnet" href="https://t.me/File_RenamerV4_Bot"><button>FILE RENAMER
+                                        BOT</button></a>
+                                <a class="magnet" href="https://t.me/Wanda_Ki_Shakti_Bot"><button>WANDA KI SHAKTI
+                                        BOT</button></a>
+                                <a class="magnet" href="https://t.me/wanda_ki_shakti_2_bot"><button>WANDA KI SHAKTI 2.0
+                                        BOT</button></a>
+                            </div>
+                        </div>
+                        <div class="abt-sec" id="sec4">
+                            <!-- this code is written by @biisal tg:biisal-files  -->
+                            <!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
+
+                            <p style="text-align: center;">we can tal'k for your support and you can report through
+                                telegram</p>
+                            <div class="links contact">
+                                <a href="https://t.me/biisal_bot"><button>CONTACT</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="row g-2 mb-3 anim-entry delay-3">
-            <div class="col-6">
-                <a onclick="play_intent('com.mxtech.videoplayer.ad')" class="btn-glass">
-                    <i class="fa-solid fa-play"></i> MX Player
-                </a>
+        <footer>
+            <div class="mid">
+                <h1 class="mid-text">VISIT <a href="#sec3" onclick="bot_btn_clicked()"><span>OUR BOTS LIST</span></a>
+                    FOR
+                    MORE
+                    INFO</h1>
             </div>
-            <div class="col-6">
-                <a onclick="play_intent('org.videolan.vlc')" class="btn-glass">
-                    <i class="fa-solid fa-cone"></i> VLC Player
-                </a>
+
+            <div class="last-text">
+                <p style="font-weight: 500;">
+                    Welcome to our online streaming platform! Our website allows users to generate streamable links for
+                    various files using Telegram bots. Please note that we are not responsible for the content shared or
+                    streamed through our service. Users are encouraged to respect copyright laws and adhere to our
+                    community
+                    guidelines. Enjoy easy, hassle-free file streaming.
+                </p>
             </div>
-            <div class="col-12">
-                <a onclick="play_intent('com.playit.videoplayer')" class="btn-glass">
-                    <i class="fa-solid fa-circle-play"></i> PlayIt Player
-                </a>
-            </div>
-            
-            <div class="col-12">
-                <button onclick="shareLink()" class="btn-glass btn-share">
-                    <i class="fa-solid fa-share-nodes"></i> Share with Friends
-                </button>
-            </div>
-        </div>
+            <center>
 
-        <div class="row g-2 anim-entry delay-3">
-            <div class="col-6">
-                <a href="{{ file_url }}" class="btn-glass">
-                    <i class="fa-solid fa-cloud-arrow-down"></i> Download
-                </a>
-            </div>
-            <div class="col-6">
-                <a href="{{ file_get }}" target="_blank" class="btn-glass btn-telegram">
-                    <i class="fa-brands fa-telegram"></i> Telegram
-                </a>
-            </div>
-            <div class="col-12">
-                <a href="tg://resolve?domain=AV_SUPPORT_GROUP" class="btn-glass btn-report">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Report Error / Disclaimer
-                </a>
-            </div>
-        </div>
+                <div class="movie-cont">
+                    <a href="https://t.me/+PA8OPL2Zglk3MDM1">
+                        <div class="movieSug">
+                            <div class="movieDets">
 
-        <div class="glass-card anim-entry delay-3 mt-4 text-center">
-            <h5 style="color: var(--accent-color); font-weight: 800;">📣 Stay Connected with AV BOTZ</h5>
-            <p class="small text-white-50 mt-2">
-                Join our official Telegram channel to get:<br>
-                🔑 Latest password updates • 🎁 Bonus files & rewards<br>
-                🚀 Early access to new features
-            </p>
-            <a href="tg://resolve?domain=AV_BOTz_UPDATE" class="btn-glass btn-telegram mt-2">
-                <i class="fa-brands fa-telegram"></i> 🚀 Open in Telegram
-            </a>
-        </div>
+                            </div>
+                            <div class="movieimg">
+                                <img src="">
+                            </div>
+                        </div>
+                    </a>
+                    <div class="low-width-movie-dets">
+                        <div class="movieStsBar">
+                            <div class="movieDets-mini">
 
-    </main>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="ranMovBtn" onclick="getDets()">Get More Movies Suggestion</button>
+                </div>
 
-    <footer>
-        <div class="mb-2">
-            <i class="fa-solid fa-moon me-1"></i> 🌗 Smart Theme Enabled<br>
-            <span style="font-size: 10px; opacity: 0.6;">This page automatically adjusts its theme based on your device time.</span>
-        </div>
-        <p class="mb-0">🔹 Official content by AV BOTZ <br> @AV_BOTz_UPDATE &copy; 2025</p>
-        <p class="text-danger mt-2" style="font-size: 0.7rem;">⚠️ Sharing or re-uploading this content without credit is strictly prohibited.</p>
-    </footer>
+            </center>
+            <!-- this code is written by @biisal tg:biisal-files  -->
+            <!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
 
-    <a href="https://t.me/AV_OWNER_BOT" target="_blank" class="floating-btn">
-         <i class="fa-solid fa-comments"></i> 💬 Need Help?
-    </a>
 
-    <div id="supportPopup" class="popup-overlay">
-        <div class="popup-content">
-            <span class="close-btn" onclick="toggleSupport()">×</span>
-            <h4 class="mb-3">🤝 Need Assistance?</h4>
-            <p class="text-white-50">Having trouble with playback, download, or access issues? Our support team is available on Telegram.</p>
-            <a href="tg://resolve?domain=AV_BOTz_UPDATE" class="btn-glass btn-telegram">
-                👉 Chat on Telegram
-            </a>
-            <div class="mt-3 small text-muted">Fast replies • Trusted support • 24/7 updates</div>
-        </div>
-    </div>
-
-    <div id="securityModal" class="popup-overlay">
-        <div class="popup-content border-danger">
-            <div class="text-danger display-4 mb-2"><i class="fa-solid fa-shield-halved"></i></div>
-            <h4 class="text-danger">🚫 Restricted Action Detected</h4>
-            <p>Developer tools are disabled on this page to protect content integrity.</p>
-            <p class="small text-white-50">⚠️ Any suspicious activity may lead to temporary access restriction.</p>
-            <button class="btn-glass" onclick="closeSecurity()">✅ I Understand</button>
-        </div>
-    </div>
-
-    <script>
-        window.siteConfig = {
-            thumbnailUrl: "https://img.sanishtech.com/u/29b202409346d1bc163738eb0cab22fa.png",
-            watermarkText: "@AV_BOTz_UPDATE",
-            videoUrl: "{{ file_url }}" 
-        };
-    </script>
-
-    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-    <script src="https://av-botz.vercel.app/2626/script.js"></script>
+            <center>
+                <div class="copyright">
+                    <h5 class="text-center">Copyright © 2023 <a href="https://t.me/bisal_files"><span
+                                style="font-weight: 700;">BISAL FILES</span></a>. All
+                        Rights Reserved.</h5>
+                    <div class="icons">
+                        <a href="https://github.com/biisal"><i class="fa-brands fa-github fa-lg"></i></a>
+                        <a href="https://t.me/bisal_Files"><i class="fa-brands fa-telegram fa-lg"></i></a>
+                        <a href="https://www.instagram.com/avisekeditx"><i
+                                class="fa-brands fa-square-instagram fa-lg"></i></a>
+                    </div>
+                    <h4 style="font-weight: 700;">This Page Is Made By <a
+                            href="https://t.me/bisal_files"><span>Bisal</span></a></h4>
+                </div>
+            </center>
+        </footer>
 </body>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.155.0/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/automat/controlkit.js@master/bin/controlKit.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sheryjs/dist/Shery.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const uncopyableElement = document.querySelector(".uncopyable");
+
+        uncopyableElement.addEventListener("selectstart", function (event) {
+            event.preventDefault();
+        });
+    });
+</script>
+<script src="js/wow.min.js"></script>
+<script>
+    new WOW().init();
+</script>
+<script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
+<script src="https://biisal.github.io/Resources/StreamJs.js"></script>
+<script src="script.js"></script>
+
 </html>
+
+<!-- this code is written by @biisal tg:biisal-files  -->
+<!-- stealing credit doesn't make you developer..so try to give full credit to the developer 😊 u will not loose anything for giving proper credit.   -->
