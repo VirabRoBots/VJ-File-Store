@@ -388,8 +388,7 @@
         document.getElementById("likeCount").innerText = record.likes;
         document.getElementById("dislikeCount").innerText = record.dislikes;
         document.getElementById("viewCount").innerText = record.views;
-      }
-      async function updateCounts(newData) {
+     
         await fetch(URL, {
           method: "PUT",
           headers: HEADERS,
@@ -446,7 +445,8 @@
     }
 
     function streamDownload() {
-      window.location.href = "{{ file_url }}";
+      const url = "{{ file_url }}".replace("/watch/", "/download/");
+      window.location.href = url;
     }
 
     function showLinkModal(url) {
