@@ -83,6 +83,18 @@
       box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.8);
     }
 
+    .video-wrapper {
+      border: 3px solid transparent;
+      border-bottom: 0;
+      transition: all 0.3s ease;
+    }
+
+    /* Active border effect */
+    .video-wrapper.active {
+      background: linear-gradient(#0a0a0a, #0a0a0a) padding-box,
+        linear-gradient(45deg, #00c6ff, #0072ff, #c822ff) border-box;
+    }
+
     .plyr {
       border-radius: 18px;
       width: 100%;
@@ -113,17 +125,69 @@
       transform: scale(1.02);
     }
 
-    /* file info bar */
     .file-info-bar {
-      background: linear-gradient(135deg, #1f2937, #111827);
-      border-left: 4px solid #f59e0b;
+      position: relative;
+      background: #0a0a0a;
       border-radius: 1.25rem;
+      overflow: hidden;
+    }
+
+    /* gradient border like video player */
+    .file-info-bar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 2px;
+      border-radius: 1.25rem;
+      background: linear-gradient(45deg, #00c6ff, #0072ff, #c822ff);
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
     }
 
     /* responsive adjustments */
     @media (max-width: 768px) {
+
+      /* Force single line */
       .plyr__controls {
-        flex-wrap: wrap;
+        flex-wrap: nowrap !important;
+        overflow: hidden;
+        padding: 4px 6px !important;
+       
+      }
+
+
+      /* Reduce button size */
+      .plyr__controls button {
+        padding: 3px !important;
+      }
+
+      /* Reduce spacing between items */
+      .plyr__controls__item {
+        margin: 0 3px !important;
+      }
+
+      /* Make icons smaller */
+      .plyr__controls svg {
+        width: 16px !important;
+        height: 16px !important;
+      }
+
+      /* Reduce font size (time, etc.) */
+      .plyr__controls__item.plyr__time {
+        font-size: 11px !important;
+      }
+
+      /* Progress bar height smaller */
+      .plyr__progress input[type=range] {
+        height: 3px;
+      }
+
+      /* Volume slider smaller */
+      .plyr__volume input[type=range] {
+        width: 60px !important;
       }
 
       .player-card {
@@ -155,6 +219,15 @@
       <div class="logo-text">Cinemaniacs Hub</div>
     </div>
   </div>
+  <!-- Online Video Player - Main Plyr element -->
+  <div class="container-fluid px-3 py-3">
+    <div class="video-wrapper wow animate__animated animate__fadeInUp">
+      <video id="player" class="player" playsinline controls crossorigin poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
+        <source src="{{file_url}}">
+        <p>Your browser doesn't support HTML5 video. Please update your browser.</p>
+      </video>
+    </div>
+  </div>
   <!-- File name & size section -->
   <div class="container-fluid px-3 py-2 mt-1">
     <div class="file-info-bar d-flex justify-content-between align-items-center rounded-4 px-4 py-3 shadow-lg wow animate__animated animate__fadeInDown">
@@ -167,25 +240,14 @@
     </div>
   </div>
 
-  <!-- Online Video Player - Main Plyr element -->
-  <div class="container-fluid px-3 py-3">
-    <div class="video-wrapper wow animate__animated animate__fadeInUp border wow animate__animated animate__fadeInLeft" style="border: 2px solid #f59e0b !important; border-radius: 20px;">
-      <video id="player" class="player" playsinline controls crossorigin poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
-        <source src="{{file_url}}">
-        <p>Your browser doesn't support HTML5 video. Please update your browser.</p>
-      </video>
-    </div>
-  </div>
-
   <!-- Player selection grid: external players section -->
   <div class="container mt-3 mb-2">
     <div class="row justify-content-center align-items-center">
       <div class="col-12 col-lg-10">
         <div class="d-flex flex-wrap justify-content-start align-items-center mb-3 gap-2">
-          <p class="bg-clip-text text-[20px] sm:text-[24px] text-transparent bg-gradient-to-r from-orange-500 to-amber-500 fw-semibold mb-0">
+          <p class="text-info fw-semibold mb-0 fs-5">
             | Play with external app
-          </p>
-          <span class="badge bg-dark text-warning ms-2 rounded-pill"><i class="bi bi-lightning-charge"></i> 6 players</span>
+          </p><span class="badge bg-dark text-info ms-2 rounded-pill"><i class="bi bi-lightning-charge"></i> 6 players</span>
         </div>
         <div class="row g-3 justify-content-center wow animate__animated animate__fadeIn">
           <!-- VLC Player -->
@@ -380,6 +442,26 @@
     if (fileNameSpan && fileNameSpan.innerText.length > 65) {
       fileNameSpan.innerText = fileNameSpan.innerText.slice(0, 62) + '...';
     }
+    const wrapper = document.querySelector('.video-wrapper');
+    const plyrContainer = document.querySelector('.plyr');
+    // Activate when clicking inside player
+    plyrContainer.addEventListener('click', (e) => {
+      e.stopPropagation(); // prevent bubbling to document
+      wrapper.classList.add('active');
+    });
+    // Remove when clicking anywhere outside
+    document.addEventListener('click', (e) => {
+      if (!wrapper.contains(e.target)) {
+        wrapper.classList.remove('active');
+      }
+    });
+    // Keep sync with player state
+    player.on('play', () => {
+      wrapper.classList.add('active');
+    });
+    player.on('pause', () => {
+      wrapper.classList.remove('active');
+    });
   </script>
 </body>
 
