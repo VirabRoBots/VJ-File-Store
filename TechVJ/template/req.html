@@ -7,7 +7,7 @@
   <meta property="og:image" content="https://i.ibb.co/qJyZWCv/20230629-081948-0000.png" itemprop="thumbnailUrl">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>{{file_name}} | Tech VJ</title>
+  <title>Now Streaming | {{file_name}}</title>
   <!-- Stylesheets -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -30,6 +30,40 @@
       background-color: #000000;
       font-family: 'Raleway', sans-serif;
       overflow-x: hidden;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+
+    .logo-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 50px;
+      flex-shrink: 0;
+    }
+
+    .logo-circle {
+      position: absolute;
+      right: -25px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      left: 2.5px;
+      position: relative;
+      z-index: 3;
     }
 
     /* Remove any possible spacing from removed navbar */
@@ -115,21 +149,17 @@
 </head>
 
 <body class="bg-black">
-
-  <!-- Simple minimal brand/home indicator (no navbar) -->
-  <div class="container-fluid pt-3 pb-1">
-    <div class="d-flex align-items-center justify-content-start ps-2">
-      <span class="fs-1 wow animate__animated animate__tada me-1" style="animation-iteration-count: infinite; display: inline-block;">📀</span> <span class="bg-clip-text text-[20px] sm:text-[24px] text-transparent bg-gradient-to-r from-orange-500 to-amber-500 fw-semibold mb-0" style="cursor: pointer;" onclick="window.open('https://t.me/Cinemaniacs_Hub', '_blank');">
-        Cine𐌌aniacs - Hub
-      </span>
+  <div class="header">
+    <div class="logo-container">
+      <div class="logo-circle"></div>
+      <div class="logo-text">Cinemaniacs Hub</div>
     </div>
   </div>
-
   <!-- File name & size section -->
   <div class="container-fluid px-3 py-2 mt-1">
     <div class="file-info-bar d-flex justify-content-between align-items-center rounded-4 px-4 py-3 shadow-lg wow animate__animated animate__fadeInDown">
       <div class="d-flex flex-column">
-        <span class="text-white fw-bold fs-5" id="displayFileName">{{file_name}}</span><span class="text-white small opacity-75" id="file-size">📁 File size: Detecting...</span>
+        <span class="text-white fw-bold fs-5" id="displayFileName">📁 File Name: {{file_name}}</span><span class="text-white small opacity-75" id="file-size">🚧 File size: Detecting...</span>
       </div>
       <div class="text-secondary-emphasis d-none d-sm-block">
         <i class="bi bi-play-circle-fill text-warning fs-4"></i>
@@ -140,7 +170,7 @@
   <!-- Online Video Player - Main Plyr element -->
   <div class="container-fluid px-3 py-3">
     <div class="video-wrapper wow animate__animated animate__fadeInUp border wow animate__animated animate__fadeInLeft" style="border: 2px solid #f59e0b !important; border-radius: 20px;">
-      <video id="player" class="player" playsinline controls crossorigin>
+      <video id="player" class="player" playsinline controls crossorigin poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
         <source src="{{file_url}}">
         <p>Your browser doesn't support HTML5 video. Please update your browser.</p>
       </video>
@@ -253,23 +283,10 @@
     <div class="row justify-content-center">
       <div class="col-11 col-md-10 col-lg-8 py-3 text-center bg-warning bg-opacity-10 rounded-4 border border-warning shadow-sm wow animate__animated animate__fadeIn">
         <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
-        <span class="text-light fw-medium">Video Not Playing? Possibly because your browser or player doesn't support the codec. Please download and watch using external players.</span>
+        <span class="text-light fw-medium">Video Not Playing? Possibly because your browser or player doesn't support the codec. Please watch using external players.</span>
       </div>
     </div>
   </div>
-
-  <!-- Footer Disclaimer -->
-  <footer class="bg-dark mt-5">
-    <div class="container-fluid py-3">
-      <div class="row justify-content-center">
-        <div class="col-11 col-md-10 col-lg-8 py-4 text-center bg-dark rounded-4 border border-warning shadow-sm wow animate__animated animate__fadeIn">
-          <div class="text-warning fw-bold mb-2 fs-5"><i class="bi bi-shield-exclamation"></i> Disclaimer</div>
-          <p class="text-white mb-3 opacity-90">This website provides a service to help you play your video online without downloading. You can report files or videos that contain issues like copyright infringement, +18 content, violence, etc.</p>
-          <button class="btn btn-danger btn-md px-5 rounded-pill" style="cursor: pointer;" onclick="window.open('https://t.me/+c_J_jevX0lY1NDJl', '_blank');"><i class="bi bi-flag"></i> Report Video</button>
-        </div>
-      </div>
-    </div>
-  </footer>
 
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
