@@ -5,8 +5,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>CinemaniacsHub | Streaming</title>
+  <title>Now Streaming | {{file_name}}</title>
   <link rel="stylesheet" href="https://cdn.plyr.io/3.6.9/plyr.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
       margin: 0;
@@ -78,81 +79,213 @@
       width: 100%;
     }
 
-    .file-info-bar {
-      
-      background: #0a0a0a;
-      border-radius: 20px;
-      padding: 15px;
-      margin: 15px;
-     border-bottom: 3px solid #00c6ff;
-      border-left: 3px solid #00c6ff;
-      border-right: 3px solid #00c6ff;
-      position: relative;
-      overflow: hidden;
+    /* Glassmorphic card */
+    .glass-card {
+      background: rgba(12, 16, 26, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      border-radius: var(--card-radius);
+      padding: 1.5rem;
+      margin: 20px auto;
+      max-width: 1280px;
+      transition: all 0.2s;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
 
-    .label-text,
-    .label-size {
-      color: #00c6ff;
-      font-weight: bold;
+    .file-info-title {
+      color: #60a5fa;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.3);
+      padding-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .file-name {
-      color: #fff;
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .info-label {
+      color: #9ca3af;
+      font-weight: 500;
+    }
+
+    .info-value {
+      color: #f0f3fa;
+      font-family: 'Outfit', monospace;
+      font-weight: 500;
       word-break: break-word;
     }
 
-    .btn-custom {
-      border-radius: 40px;
-      padding: 14px 20px;
+    /* Engagement row */
+    .engagement-stats .d-flex {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin: 20px 0 10px;
+    }
+
+    .btn-like,
+    .btn-dislike,
+    .view-badge,
+    .btn-subscribe {
+      border-radius: 60px;
+      padding: 10px 24px;
+      font-size: 0.95rem;
       font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-like {
+      background: linear-gradient(115deg, #059669, #10b981);
+      color: white;
+    }
+
+    .btn-like:hover {
+      transform: scale(1.03);
+      filter: brightness(1.05);
+    }
+
+    .btn-dislike {
+      background: linear-gradient(115deg, #be123c, #e11d48);
+      color: white;
+    }
+
+    .btn-dislike:hover {
+      transform: scale(1.03);
+    }
+
+    .view-badge {
+      background: linear-gradient(125deg, #1e3a8a, #3b82f6);
+      color: white;
+      font-weight: 600;
+    }
+
+    .btn-subscribe {
+      background: linear-gradient(135deg, #0f7b6e, #2a9d8f);
+      text-decoration: none;
+      color: white;
+    }
+
+    .btn-subscribe:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #1e8f7e, #38b2a5);
+    }
+
+    /* External players row */
+    .players-row {
+      display: flex;
+      gap: 14px;
+      margin: 25px 0 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-custom {
+      border-radius: 50px;
+      padding: 14px 10px;
+      font-weight: 700;
       text-align: center;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.25s;
       border: none;
       color: white;
       flex: 1;
-      font-size: 14px;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: rgba(20, 25, 40, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .btn-custom:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.1);
+      transform: translateY(-3px);
+      filter: brightness(1.08);
+      box-shadow: 0 12px 20px -10px rgba(0, 0, 0, 0.4);
     }
 
     .btn-mx {
-      background: linear-gradient(45deg, #2980b9, #2c3e50);
-      color: #fff;
+      background: linear-gradient(115deg, #1e3a5f, #0f4c5c);
+      border-left: 3px solid #3b82f6;
     }
 
     .btn-vlc {
-      background: linear-gradient(45deg, #e67e22, #d35400);
-      color: #fff;
+      background: linear-gradient(115deg, #e67e22, #b45309);
+      border-left: 3px solid #f97316;
     }
 
     .btn-playit {
-      background: linear-gradient(45deg, #ff0000, #ff4d4d, #b30000);
-      color: #fff;
+      background: linear-gradient(115deg, #b91c1c, #7f1d1d);
+      border-left: 3px solid #ef4444;
     }
 
+    /* compatibility alert */
     .compat-box {
-      background: rgba(255, 193, 7, 0.1);
-      border: 1px solid #ffc107;
-      border-radius: 20px;
-      padding: 15px;
-      margin: 15px;
+      background: rgba(251, 191, 36, 0.12);
+      border-left: 4px solid #fbbf24;
+      border-radius: 24px;
+      padding: 14px 20px;
+      margin: 18px 0 6px;
       text-align: center;
-      color: #ffc107;
+      color: #ffdf8c;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .file-name-truncate {
+      max-width: 100%;
+      word-break: break-word;
     }
 
     @media (max-width: 768px) {
-      .btn-custom {
-        padding: 10px 12px;
-        font-size: 12px;
+      .header {
+        padding: 10px 16px;
       }
 
-      .file-name {
-        font-size: 12px;
+      .logo-text {
+        font-size: 1.3rem;
+      }
+
+      .logo-circle {
+        width: 36px;
+        height: 36px;
+      }
+
+      .glass-card {
+        padding: 1.2rem;
+        margin: 12px;
+        border-radius: 24px;
+      }
+
+      .btn-custom {
+        padding: 12px 8px;
+        font-size: 0.8rem;
+      }
+
+      .btn-like,
+      .btn-dislike,
+      .view-badge,
+      .btn-subscribe {
+        padding: 7px 18px;
+        font-size: 0.8rem;
       }
     }
   </style>
@@ -174,26 +307,59 @@
     </div>
   </div>
 
-  <div class="file-info-bar">
-    <div>
-      <span class="label-text">📁 File Name:</span>
-      <span class="file-name" id="displayFileName">{{file_name}}</span><br>
-      <span class="label-size">📦 File size:</span>
-      <span class="file-name" id="file-size">Detecting...</span>
+  <!-- File info & engagement -->
+  <div class="glass-card">
+    <div class="file-info-title">
+      <i class="fas fa-film"></i>
+      <span>File Information</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">📂Fɪʟᴇ-Nᴀᴍᴇ:</span>
+      <span class="info-value file-name-truncate" id="displayFileName">{{file_name}}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">📦Fɪʟᴇ-Sɪᴢᴇ:</span>
+      <span class="info-value" id="file-size-display">{{file_size}}</span>
+    </div>
+
+    <!-- Engagement stats row -->
+    <div class="engagement-stats">
+      <div class="d-flex">
+        <button class="btn-like" id="likeBtn" onclick="likeVideo()">
+          <i class="fas fa-thumbs-up"></i>
+          <span id="likeCount">128</span>
+        </button>
+        <button class="btn-dislike" id="dislikeBtn" onclick="dislikeVideo()">
+          <i class="fas fa-thumbs-down"></i>
+          <span id="dislikeCount">12</span>
+        </button>
+        <div class="view-badge">
+          <i class="fas fa-eye"></i>
+          <span id="viewCount">1347</span> views
+        </div>
+        <a href="https://t.me/Cinemaniacs_Hub" target="_blank" class="btn-subscribe" id="telegramSubscribe">
+          <i class="fab fa-telegram-plane"></i> Subscribe
+        </a>
+      </div>
+    </div>
+
+    <!-- external players -->
+    <div class="players-row">
+      <div class="btn-custom btn-mx" onclick="mx_player()">
+        <i class="fas fa-play"></i> MX PLAYER
+      </div>
+      <div class="btn-custom btn-vlc" onclick="vlc_player()">
+        <i class="fas fa-play-circle"></i> VLC PLAYER
+      </div>
+      <div class="btn-custom btn-playit" onclick="playit_player()">
+        <i class="fas fa-bolt"></i> PLAY IT
+      </div>
+    </div>
+
+    <div class="compat-box">
+      <i class="fas fa-exclamation-triangle"></i> Video Not Playing? Possibly because your browser or player doesn't support the codec. Please watch using external players
     </div>
   </div>
-
-  <div style="padding: 0 15px;">
-    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-      <div class="btn-custom btn-mx" onclick="mx_player()"> MX PLAYER</div>
-      <div class="btn-custom btn-vlc" onclick="vlc_player()"> VLC PLAYER</div>
-      <div class="btn-custom btn-playit" onclick="playit_player()"> PLAY - IT</div>
-    </div>
-  </div>
-
-  <div class="compat-box">
-    Video Not Playing? Possibly because your browser or player doesn't support the codec. Please watch using external players</div>
-
   <script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
   <script>
     const playerConfig = {
