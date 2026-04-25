@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -387,9 +388,6 @@
   </div>
   <script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
   <script>
-    const BIN_ID = "69ece842856a682189706426";
-    const API_KEY = "$2a$10$TyOXeu0PPOnyzTfOreJzhOKiw3NyMQtnURo0koS2JFiOFMatKoDgq";
-    const videoId = "{{file_name}}"; // unique per video
     const playerConfig = {
       controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen'],
       invertTime: false,
@@ -402,7 +400,7 @@
     const player = new Plyr('#player', playerConfig);
     const video = document.getElementById('player');
     async function detectFileSize() {
-      const fileSizeSpan = document.getElementById('file-size-display');
+      const fileSizeSpan = document.getElementById('file-size');
       const videoUrl = getRawLink();
       try {
         const response = await fetch(videoUrl, {
@@ -423,89 +421,6 @@
       }
     }
     setTimeout(detectFileSize, 1000);
-
-    function random(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    async function getData() {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-        headers: {
-          "X-Master-Key": API_KEY
-        }
-      });
-      const json = await res.json();
-      return json.record || {};
-    }
-    async function updateData(data) {
-      await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Master-Key": API_KEY
-        },
-        body: JSON.stringify(data)
-      });
-    }
-    let videoData = {};
-    async function initVideo() {
-      let data = await getData();
-      if (!data[videoId]) {
-        data[videoId] = {
-          likes: random(500, 1000),
-          dislikes: random(10, 50),
-          views: random(500, 1500)
-        };
-        await updateData(data);
-      }
-      videoData = data[videoId];
-      document.getElementById("likeCount").innerText = videoData.likes;
-      document.getElementById("dislikeCount").innerText = videoData.dislikes;
-      document.getElementById("viewCount").innerText = videoData.views;
-    }
-    initVideo();
-    async function likeVideo() {
-      let action = localStorage.getItem(videoId + "_reaction");
-      if (action === "like") return;
-      videoData.likes++;
-      if (action === "dislike") {
-        videoData.dislikes--;
-      }
-      localStorage.setItem(videoId + "_reaction", "like");
-      updateUI();
-      save();
-    }
-    async function dislikeVideo() {
-      let action = localStorage.getItem(videoId + "_reaction");
-      if (action === "dislike") return;
-      videoData.dislikes++;
-      if (action === "like") {
-        videoData.likes--;
-      }
-      localStorage.setItem(videoId + "_reaction", "dislike");
-      updateUI();
-      save();
-    }
-    player.on('play', async () => {
-      wrapper.classList.add('active');
-      let viewed = localStorage.getItem(videoId + "_viewed");
-      if (!viewed) {
-        videoData.views++;
-        localStorage.setItem(videoId + "_viewed", "true");
-        updateUI();
-        save();
-      }
-    });
-
-    function updateUI() {
-      document.getElementById("likeCount").innerText = videoData.likes;
-      document.getElementById("dislikeCount").innerText = videoData.dislikes;
-      document.getElementById("viewCount").innerText = videoData.views;
-    }
-    async function save() {
-      let data = await getData();
-      data[videoId] = videoData;
-      await updateData(data);
-    }
 
     function getRawLink() {
       let currentUrl = window.location.href;
@@ -559,6 +474,125 @@
     player.on('pause', () => {
       wrapper.classList.remove('active');
     });
+  </script>
+  <script>
+    const BIN_ID = "69ece842856a682189706426";
+    const API_KEY = "$2a$10$TyOXeu0PPOnyzTfOreJzhOKiw3NyMQtnURo0koS2JFiOFMatKoDgq";
+    const CACHE_KEY = "video_data_cache";
+    const videoId = "{{file_name}}";
+    let videoData = {
+      likes: 0,
+      dislikes: 0,
+      views: 0
+    };
+
+    function ui() {
+      document.getElementById("likeCount").innerText = videoData.likes || 0;
+      document.getElementById("dislikeCount").innerText = videoData.dislikes || 0;
+      document.getElementById("viewCount").innerText = videoData.views || 0;
+    }
+
+    function mark() {
+      let r = localStorage.getItem(videoId + "_reaction");
+      document.getElementById("likeBtn").style.opacity = r === "like" ? "1" : "0.5";
+      document.getElementById("dislikeBtn").style.opacity = r === "dislike" ? "1" : "0.5";
+    }
+
+    function random(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    async function getData() {
+      let r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+        headers: {
+          "X-Master-Key": API_KEY
+        }
+      });
+      let j = await r.json();
+      return j.record || {};
+    }
+    async function save(data) {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Master-Key": API_KEY
+        },
+        body: JSON.stringify(data)
+      });
+    }
+    async function initStats() {
+      ui();
+      let cache = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
+      if (cache[videoId]) {
+        videoData = {
+          likes: +cache[videoId].likes || 0,
+          dislikes: +cache[videoId].dislikes || 0,
+          views: +cache[videoId].views || 0
+        };
+        ui();
+      }
+      let data = await getData();
+      if (!data[videoId]) {
+        data[videoId] = {
+          likes: random(500, 1000),
+          dislikes: random(10, 50),
+          views: random(500, 1500)
+        };
+        await save(data);
+      }
+      videoData = {
+        likes: +data[videoId].likes || 0,
+        dislikes: +data[videoId].dislikes || 0,
+        views: +data[videoId].views || 0
+      };
+      cache[videoId] = videoData;
+      localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+      ui();
+      mark();
+    }
+
+    function likeVideo() {
+      let r = localStorage.getItem(videoId + "_reaction");
+      if (r === "like") return;
+      if (r === "dislike") {
+        videoData.dislikes = Math.max(0, videoData.dislikes - 1);
+      }
+      videoData.likes++;
+      localStorage.setItem(videoId + "_reaction", "like");
+      ui();
+      mark();
+      push();
+    }
+
+    function dislikeVideo() {
+      let r = localStorage.getItem(videoId + "_reaction");
+      if (r === "dislike") return;
+      if (r === "like") {
+        videoData.likes = Math.max(0, videoData.likes - 1);
+      }
+      videoData.dislikes++;
+      localStorage.setItem(videoId + "_reaction", "dislike");
+      ui();
+      mark();
+      push();
+    }
+
+    function addView() {
+      let v = localStorage.getItem(videoId + "_viewed");
+      if (!v) {
+        videoData.views++;
+        localStorage.setItem(videoId + "_viewed", "1");
+        ui();
+        push();
+      }
+    }
+    async function push() {
+      let cache = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
+      cache[videoId] = videoData;
+      save(cache);
+    }
+    initStats();
   </script>
 </body>
 
