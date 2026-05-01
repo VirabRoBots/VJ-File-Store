@@ -1,3 +1,5 @@
+telethon
+asyncio
 pyrofork==2.3.45
 Tgcrypto
 asyncio
