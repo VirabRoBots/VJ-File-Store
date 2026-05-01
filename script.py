@@ -2,7 +2,7 @@ from telethon import TelegramClient
 from telethon.errors import FloodWaitError
 import asyncio
 from flask import Flask
-import threading
+import os
 
 # ========= CONFIG =========
 api_id = 14853951
@@ -14,8 +14,8 @@ channel = "-1003633262234"
 old_link = "https://t.me/+VO7e3SdukyczOTE9"
 new_link = "https://t.me/+M3LkAUujeR5jNzQ9"
 
-delay_between_edits = 2       # Bots are safer, can go faster
-max_edits_per_run = 500       # Bot can do more
+delay_between_edits = 2
+max_edits_per_run = 500
 # ==========================
 
 app = Flask(__name__)
@@ -24,13 +24,19 @@ app = Flask(__name__)
 def health():
     return "OK", 200
 
-# Use bot token instead of user login
-client = TelegramClient("bot_session", api_id, api_hash).start(bot_token=bot_token)
+@app.route('/health')
+def health_check():
+    return "Healthy", 200
 
 async def main():
     print("🤖 Bot started! Editing messages...")
     edited_count = 0
-
+    
+    client = TelegramClient("bot_session", api_id, api_hash)
+    await client.start(bot_token=bot_token)
+    
+    print(f"✅ Bot logged in: {await client.get_me()}")
+    
     async for msg in client.iter_messages(channel):
         if edited_count >= max_edits_per_run:
             print(f"🛑 Reached limit ({max_edits_per_run}). Stopping.")
@@ -52,12 +58,15 @@ async def main():
             await asyncio.sleep(2)
 
     print(f"🎉 Done! Edited {edited_count} messages.")
+    await client.disconnect()
 
-def run_bot():
-    with client:
-        client.loop.run_until_complete(main())
-
+# Run everything in the same event loop
 if __name__ == "__main__":
-    thread = threading.Thread(target=run_bot, daemon=True)
-    thread.start()
+    # Run the bot first
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(main())
+    
+    # Then start Flask (but it won't run if bot finished)
+    # For Koyeb, we need Flask to keep running
     app.run(host='0.0.0.0', port=8080)
