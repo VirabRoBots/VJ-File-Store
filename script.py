@@ -8,7 +8,7 @@ import time
 # ========= CONFIG =========
 api_id = 14853951
 api_hash = "0a33bc287078d4dace12aaecc8e73545"
-bot_token = "8458711873:AAHBiPv2XWDZ3WuGaRCZvejat8bEIfwVZkk"
+bot_token = "7850386310:AAFnDJhcd8wSeIff6HhYXXbCW6GTJ2j_5ME"
 
 channel = -1003633262234
 
