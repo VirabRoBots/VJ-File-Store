@@ -1,13 +1,12 @@
 from urllib.parse import quote_plus
 import asyncio
-from pyrogram import Client, filters, enums
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram import Client, filters
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram.errors import FloodWait
 from utils.file_properties import get_hash, get_name
 from config import STREAM_MODE, URL, LOG_CHANNEL
-from plugins.dbusers import db
 
-ALLOWED_CHANNELS = [-1003907302256]
+ALLOWED_CHANNELS = [-1003907302256]  # Add your channel IDs here
 
 @Client.on_message(filters.channel & (filters.document | filters.video) & ~filters.forwarded, group=-1)
 async def channel_receive_handler(bot: Client, broadcast: Message):
@@ -26,6 +25,20 @@ async def channel_receive_handler(bot: Client, broadcast: Message):
         stream = f"{URL}watch/{msg.id}/{quote_plus(get_name(msg))}?hash={get_hash(msg)}"
         download = f"{URL}{msg.id}/{quote_plus(get_name(msg))}?hash={get_hash(msg)}"
         
+        # Log message with remove button
+        log_buttons = InlineKeyboardMarkup([
+            [InlineKeyboardButton("🖥 WATCH NOW!", url=stream),
+             InlineKeyboardButton("📥 DOWNLOAD", url=download)],
+            [InlineKeyboardButton("❌ REMOVE BUTTONS", callback_data=f"remove_btn_{broadcast.chat.id}_{broadcast.id}")]
+        ])
+        
+        await msg.reply_text(
+            text=f"**Channel:** {broadcast.chat.title}\n**File:** `{file_name}`\n**Message ID:** `{broadcast.id}`",
+            quote=True,
+            reply_markup=log_buttons
+        )
+        
+        # Original message buttons
         buttons = InlineKeyboardMarkup([
             [InlineKeyboardButton("🖥 WATCH NOW!", url=stream),
              InlineKeyboardButton("📥 DOWNLOAD", url=download)]
