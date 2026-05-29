@@ -1,139 +1,55 @@
-import re
-import os
-import json
-import base64
-from pyrogram import filters, Client
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from pyrogram.errors.exceptions.bad_request_400 import ChannelInvalid, UsernameInvalid, UsernameNotModified
-from config import ADMINS, LOG_CHANNEL, PUBLIC_FILE_STORE, WEBSITE_URL, WEBSITE_URL_MODE
-from plugins.users_api import get_user, get_short_link
+from urllib.parse import quote_plus
+import asyncio
+from pyrogram import Client, filters
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.errors import FloodWait
+from TechVJ.utils.file_properties import get_hash, get_name
+from config import STREAM_MODE, URL, LOG_CHANNEL
 
-async def allowed(_, __, message):
-    if PUBLIC_FILE_STORE:
-        return True
-    if message.from_user and message.from_user.id in ADMINS:
-        return True
-    return False
+ALLOWED_CHANNELS = [-1003907302256]
 
-@Client.on_message((filters.document | filters.video | filters.audio) & filters.private & filters.create(allowed))
-async def incoming_gen_link(bot, message):
-    username = (await bot.get_me()).username
-    post = await message.copy(LOG_CHANNEL)
-    file_id = str(post.id)
-    string = 'file_' + file_id
-    outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
-    user = await get_user(message.from_user.id)
-    if WEBSITE_URL_MODE:
-        share_link = f"{WEBSITE_URL}?{outstr}"
-    else:
-        share_link = f"https://t.me/{username}?start={outstr}"
-    if user["base_site"] and user["shortener_api"]:
-        short_link = await get_short_link(user, share_link)
-        await message.reply(f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🖇️ sʜᴏʀᴛ ʟɪɴᴋ :- {short_link}</b>")
-    else:
-        await message.reply(f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🔗 ᴏʀɪɢɪɴᴀʟ ʟɪɴᴋ :- {share_link}</b>")
-
-@Client.on_message(filters.command(['link']) & filters.create(allowed))
-async def gen_link_s(bot, message):
-    username = (await bot.get_me()).username
-    replied = message.reply_to_message
-    if not replied:
-        return await message.reply('Reply to a message to get a shareable link.')
-    post = await replied.copy(LOG_CHANNEL)
-    file_id = str(post.id)
-    string = "file_" + file_id
-    outstr = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
-    user = await get_user(message.from_user.id)
-    if WEBSITE_URL_MODE:
-        share_link = f"{WEBSITE_URL}?{outstr}"
-    else:
-        share_link = f"https://t.me/{username}?start={outstr}"
-    if user["base_site"] and user["shortener_api"]:
-        short_link = await get_short_link(user, share_link)
-        await message.reply(f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🖇️ sʜᴏʀᴛ ʟɪɴᴋ :- {short_link}</b>")
-    else:
-        await message.reply(f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\n🔗 ᴏʀɪɢɪɴᴀʟ ʟɪɴᴋ :- {share_link}</b>")
-
-@Client.on_message(filters.command(['batch']) & filters.create(allowed))
-async def gen_link_batch(bot, message):
-    username = (await bot.get_me()).username
-    if " " not in message.text:
-        return await message.reply("Use correct format.\nExample /batch https://t.me/vj_botz/10 https://t.me/vj_botz/20.")
-    links = message.text.strip().split(" ")
-    if len(links) != 3:
-        return await message.reply("Use correct format.\nExample /batch https://t.me/vj_botz/10 https://t.me/vj_botz/20.")
-    cmd, first, last = links
-    regex = re.compile("(https://)?(t\.me/|telegram\.me/|telegram\.dog/)(c/)?(\d+|[a-zA-Z_0-9]+)/(\d+)$")
-    match = regex.match(first)
-    if not match:
-        return await message.reply('Invalid link')
-    f_chat_id = match.group(4)
-    f_msg_id = int(match.group(5))
-    if f_chat_id.isnumeric():
-        f_chat_id = int(("-100" + f_chat_id))
-    match = regex.match(last)
-    if not match:
-        return await message.reply('Invalid link')
-    l_chat_id = match.group(4)
-    l_msg_id = int(match.group(5))
-    if l_chat_id.isnumeric():
-        l_chat_id = int(("-100" + l_chat_id))
-    if f_chat_id != l_chat_id:
-        return await message.reply("Chat ids not matched.")
+@Client.on_message(filters.channel & (filters.document | filters.video) & ~filters.forwarded, group=-1)
+async def channel_receive_handler(bot: Client, broadcast: Message):
+    if STREAM_MODE == False:
+        return
+    
+    if broadcast.chat.id not in ALLOWED_CHANNELS:
+        return
+    
     try:
-        chat_id = (await bot.get_chat(f_chat_id)).id
-    except ChannelInvalid:
-        return await message.reply('This may be a private channel / group. Make me an admin over there to index the files.')
-    except (UsernameInvalid, UsernameNotModified):
-        return await message.reply('Invalid Link specified.')
+        file = broadcast.document or broadcast.video
+        file_name = file.file_name if file else "Unknown File"
+        
+        msg = await broadcast.forward(chat_id=LOG_CHANNEL)
+        
+        stream = f"{URL}watch/{msg.id}/{quote_plus(get_name(msg))}?hash={get_hash(msg)}"
+        download = f"{URL}{msg.id}/{quote_plus(get_name(msg))}?hash={get_hash(msg)}"
+        
+        log_buttons = InlineKeyboardMarkup([
+            [InlineKeyboardButton("WATCH NOW", url=stream),
+             InlineKeyboardButton("DOWNLOAD", url=download)],
+            [InlineKeyboardButton("REMOVE BUTTONS", callback_data=f"remove_btn_{broadcast.chat.id}_{broadcast.id}")]
+        ])
+        
+        await msg.reply_text(
+            text=f"Channel: {broadcast.chat.title}\nFile: {file_name}\nMessage ID: {broadcast.id}",
+            quote=True,
+            reply_markup=log_buttons
+        )
+        
+        buttons = InlineKeyboardMarkup([
+            [InlineKeyboardButton("WATCH NOW", url=stream),
+             InlineKeyboardButton("DOWNLOAD", url=download)]
+        ])
+        
+        await bot.edit_message_reply_markup(
+            chat_id=broadcast.chat.id,
+            message_id=broadcast.id,
+            reply_markup=buttons
+        )
+
+    except FloodWait as w:
+        await asyncio.sleep(w.value)
+        await channel_receive_handler(bot, broadcast)
     except Exception as e:
-        return await message.reply(f'Errors - {e}')
-    sts = await message.reply("Generating link for your messages.\nThis may take time depending upon number of messages")
-    FRMT = "Generating link...\nTotal messages: {total}\nDone: {current}\nRemaining: {rem}\nStatus: {sts}"
-    outlist = []
-    og_msg = 0
-    tot = 0
-    async for msg in bot.iter_messages(f_chat_id, l_msg_id, f_msg_id):
-        tot += 1
-        if og_msg % 20 == 0:
-            try:
-                await sts.edit(FRMT.format(total=l_msg_id-f_msg_id, current=tot, rem=((l_msg_id-f_msg_id) - tot), sts="Saving Messages"))
-            except:
-                pass
-        if msg.empty or msg.service:
-            continue
-        buttons_data = []
-        if msg.reply_markup and isinstance(msg.reply_markup, InlineKeyboardMarkup):
-            for row in msg.reply_markup.inline_keyboard:
-                row_data = []
-                for btn in row:
-                    btn_info = {
-                        "text": btn.text,
-                        "url": btn.url if btn.url else None,
-                        "callback_data": btn.callback_data if btn.callback_data else None
-                    }
-                    row_data.append(btn_info)
-                buttons_data.append(row_data)
-        file_data = {
-            "channel_id": f_chat_id,
-            "msg_id": msg.id,
-            "buttons": buttons_data
-        }
-        og_msg += 1
-        outlist.append(file_data)
-    with open(f"batchmode_{message.from_user.id}.json", "w+") as out:
-        json.dump(outlist, out)
-    post = await bot.send_document(LOG_CHANNEL, f"batchmode_{message.from_user.id}.json", file_name="Batch.json", caption="Batch Generated For Filestore.")
-    os.remove(f"batchmode_{message.from_user.id}.json")
-    string = str(post.id)
-    file_id = base64.urlsafe_b64encode(string.encode("ascii")).decode().strip("=")
-    user = await get_user(message.from_user.id)
-    if WEBSITE_URL_MODE:
-        share_link = f"{WEBSITE_URL}?BATCH-{file_id}"
-    else:
-        share_link = f"https://t.me/{username}?start=BATCH-{file_id}"
-    if user["base_site"] and user["shortener_api"]:
-        short_link = await get_short_link(user, share_link)
-        await sts.edit(f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\nContains `{og_msg}` files.\n\n🖇️ sʜᴏʀᴛ ʟɪɴᴋ :- {short_link}</b>")
-    else:
-        await sts.edit(f"<b>⭕ ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʟɪɴᴋ:\n\nContains `{og_msg}` files.\n\n🔗 ᴏʀɪɢɪɴᴀʟ ʟɪɴᴋ :- {share_link}</b>")
+        print(f"Error: {e}")
