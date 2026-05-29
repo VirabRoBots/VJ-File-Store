@@ -14,6 +14,7 @@ from Script import script
 from plugins.dbusers import db
 from plugins.users_api import get_user, update_user_info
 from utils import verify_user, check_token, check_verification, get_token
+from TechVJ.utils.file_properties import get_name, get_hash, get_media_file_size
 from config import *
 from auth_check import is_user_member
 import config
