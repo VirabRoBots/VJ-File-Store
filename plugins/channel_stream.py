@@ -3,7 +3,7 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram.errors import FloodWait
-from utils.file_properties import get_hash, get_name
+from TechVJ.utils.file_properties import get_hash, get_name
 from config import STREAM_MODE, URL, LOG_CHANNEL
 
 ALLOWED_CHANNELS = [-1003907302256]  # Add your channel IDs here
