@@ -1,7 +1,3 @@
-# Don't Remove Credit Tg - @VJ_Bots
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
 import os
 import logging
 import random
@@ -336,7 +332,17 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 ]])
             )
         return  # Don't process other callbacks if this is membership check
-    
+    elif query.data.startswith("remove_btn_"):
+        _, channel_id, msg_id = query.data.split("_")
+        channel_id = int(channel_id)
+        msg_id = int(msg_id)
+        
+        await client.edit_message_reply_markup(
+            chat_id=channel_id,
+            message_id=msg_id,
+            reply_markup=None
+        )
+        await query.answer("Buttons removed!", show_alert=True)
     # YOUR EXISTING CALLBACK CODE CONTINUES HERE.
     if query.data == "close_data":
         await query.message.delete()
@@ -357,11 +363,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-
-# Don't Remove Credit Tg - @VJ_Bots
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-    
+        
     elif query.data == "start":
         buttons = [[
             InlineKeyboardButton('💝 sᴜʙsᴄʀɪʙᴇ ᴍʏ ʏᴏᴜᴛᴜʙᴇ ᴄʜᴀɴɴᴇʟ', url='https://youtube.com/@Tech_VJ')
@@ -427,8 +429,4 @@ async def cb_handler(client: Client, query: CallbackQuery):
             text=script.HELP_TXT,
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
-        )  
-        
-# Don't Remove Credit Tg - @VJ_Bots
-# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
+        )
