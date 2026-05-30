@@ -159,14 +159,7 @@ async def start(client, message):
                             btn_rows.append(btn_row)
                     if btn_rows:
                         reply_markup = InlineKeyboardMarkup(btn_rows)
-                elif STREAM_MODE and (info.video or info.document):
-                    stream = f"{URL}watch/{str(info.id)}/{quote_plus(get_name(info))}?hash={get_hash(info)}"
-                    download = f"{URL}{str(info.id)}/{quote_plus(get_name(info))}?hash={get_hash(info)}"
-                    button = [[
-                        InlineKeyboardButton("Download", url=download),
-                        InlineKeyboardButton('Watch', url=stream)
-                    ]]
-                    reply_markup = InlineKeyboardMarkup(button)
+                
                 
                 try:
                     msg = await info.copy(chat_id=message.from_user.id, caption=f_caption, protect_content=False, reply_markup=reply_markup)
