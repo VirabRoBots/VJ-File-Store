@@ -277,6 +277,26 @@ async def base_site_handler(client, m: Message):
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
+    # ADD THIS BLOCK AT THE VERY TOP ↓
+    if query.data.startswith("remove_btn_"):
+        data = query.data.split("_")
+        chat_id = int(data[2])
+        msg_id = int(data[3])
+        
+        try:
+            await client.edit_message_reply_markup(
+                chat_id=chat_id,
+                message_id=msg_id,
+                reply_markup=None
+            )
+            await query.answer("Buttons removed successfully!", show_alert=True)
+            await query.message.edit_text(
+                text=query.message.text + "\n\n✅ Buttons removed from original message"
+            )
+        except Exception as e:
+            await query.answer(f"Error: {e}", show_alert=True)
+        return
+    # REST OF YOUR CALLBACKS BELOW...
     if query.data == "check_membership":
         user_id = query.from_user.id
         is_member = await is_user_member(client, user_id)
