@@ -300,9 +300,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
         return
     
     elif query.data.startswith("remove_btn_"):
-        _, channel_id, msg_id = query.data.split("_")
-        channel_id = int(channel_id)
-        msg_id = int(msg_id)
+        parts = query.data.split("_")
+        channel_id = int(parts[1])
+        msg_id = int(parts[2])
         await client.edit_message_reply_markup(
             chat_id=channel_id,
             message_id=msg_id,
