@@ -298,18 +298,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 ]])
             )
         return
-    
-    elif query.data.startswith("remove_btn_"):
-        parts = query.data.split("_")
-        channel_id = int(parts[1])
-        msg_id = int(parts[2])
-        await client.edit_message_reply_markup(
-            chat_id=channel_id,
-            message_id=msg_id,
-            reply_markup=None
-        )
-        await query.answer("Buttons removed!", show_alert=True)
-    
+        
     elif query.data == "close_data":
         await query.message.delete()
     
