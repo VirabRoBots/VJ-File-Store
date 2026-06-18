@@ -6,7 +6,7 @@ from pyrogram.errors import FloodWait
 from TechVJ.utils.file_properties import get_hash, get_name
 from config import STREAM_MODE, URL, LOG_CHANNEL
 
-ALLOWED_CHANNELS = [-1003772799863]  # Add your channel IDs here
+ALLOWED_CHANNELS = [-1002374491423]  # Add your channel IDs here
 
 @Client.on_message(filters.channel & (filters.document | filters.video) & ~filters.forwarded, group=-1)
 async def channel_receive_handler(bot: Client, broadcast: Message):
@@ -27,8 +27,8 @@ async def channel_receive_handler(bot: Client, broadcast: Message):
         
         # Log message with remove button
         log_buttons = InlineKeyboardMarkup([
-            [InlineKeyboardButton("🖥 WATCH NOW!", url=stream),
-             InlineKeyboardButton("📥 DOWNLOAD", url=download)],
+            [InlineKeyboardButton("🖥 Wᴀᴛᴄʜ Nᴏᴡ!", url=stream),
+             InlineKeyboardButton("📥 Dᴏᴡɴʟᴏᴀᴅ", url=download)],
             [InlineKeyboardButton("❌ REMOVE BUTTONS", callback_data=f"remove_btn_{broadcast.chat.id}_{broadcast.id}")]
         ])
         
@@ -40,8 +40,8 @@ async def channel_receive_handler(bot: Client, broadcast: Message):
         
         # Original message buttons
         buttons = InlineKeyboardMarkup([
-            [InlineKeyboardButton("🖥 WATCH NOW!", url=stream),
-             InlineKeyboardButton("📥 DOWNLOAD", url=download)]
+            [InlineKeyboardButton("🖥 Wᴀᴛᴄʜ Nᴏᴡ!", url=stream),
+             InlineKeyboardButton("📥 Dᴏᴡɴʟᴏᴀᴅ", url=download)]
         ])
         
         await bot.edit_message_reply_markup(
