@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,141 +16,402 @@
     }
 
     body {
-      background: #000;
+      background: #0a0a0f;
       font-family: 'Segoe UI', Arial, sans-serif;
       padding-bottom: 30px;
+      min-height: 100vh;
     }
 
     .header {
       display: flex;
       align-items: center;
-      padding: 8px 16px;
+      padding: 10px 16px;
       gap: 12px;
-      background: rgba(0, 0, 0, 0.95);
+      background: rgba(10, 10, 15, 0.98);
       position: sticky;
       top: 0;
       z-index: 100;
-    }
-
-    .plyr__controls__item {
-      ga: 1 margin-right: -11px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
     .logo-container {
       position: relative;
       display: flex;
       align-items: center;
-      height: 50px;
+      height: 44px;
     }
 
     .logo-circle {
       position: absolute;
-      right: -25px;
-      width: 45px;
-      height: 45px;
+      right: -22px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: linear-gradient(135deg, #00c6ff, #0072ff);
     }
 
     .logo-text {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 800;
       color: #fff;
       position: relative;
       z-index: 3;
+      letter-spacing: -0.3px;
     }
 
     .video-wrapper {
       width: 100%;
       max-width: 1280px;
       margin: 0 auto;
-      border-radius: 20px;
+      border-radius: 16px;
       overflow: hidden;
-      background: #0a0a0a;
+      background: #0a0a0f;
       position: relative;
     }
 
     .video-wrapper.active {
-      background: linear-gradient(#0a0a0a, #0a0a0a) padding-box,
+      background: linear-gradient(#0a0a0f, #0a0a0f) padding-box,
         linear-gradient(45deg, #00c6ff, #0072ff, #c822ff) border-box;
       border: 2px solid transparent;
       border-bottom: 0;
     }
 
     .plyr {
-      border-radius: 18px;
+      border-radius: 16px;
       width: 100%;
     }
 
-    /* Glassmorphic card */
+    /* ===== CLEAN CONTROLS - NO BG, NO VOLUME SLIDER ===== */
+    .plyr__controls {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 4px 8px !important;
+      padding: 10px 12px !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
+    }
+
+    .plyr__controls .plyr__control {
+      padding: 7px 8px !important;
+      border-radius: 8px !important;
+      transition: all 0.2s ease !important;
+      min-width: 34px !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
+      border: none !important;
+    }
+
+    .plyr__controls .plyr__control:hover {
+      background: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .plyr__controls .plyr__progress {
+      flex: 2 !important;
+      min-width: 60px !important;
+    }
+
+    .plyr__controls .plyr__time {
+      font-size: 12px !important;
+      font-weight: 500 !important;
+      padding: 0 4px !important;
+      background: transparent !important;
+    }
+
+    /* HIDE VOLUME SLIDER - SHOW ONLY ICON */
+    .plyr__controls .plyr__volume {
+      min-width: auto !important;
+      width: auto !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .plyr__controls .plyr__volume input[type="range"] {
+      display: none !important;
+    }
+
+    .plyr__controls .plyr__volume .plyr__control {
+      padding: 7px 8px !important;
+    }
+
+    /* HIDE REWIND AND FAST-FORWARD BUTTONS */
+    .plyr__controls .plyr__control[data-plyr="rewind"],
+    .plyr__controls .plyr__control[data-plyr="fast-forward"] {
+      display: none !important;
+    }
+
+    /* Audio track button */
+    .plyr__audio-track-btn {
+      background: transparent !important;
+      border: none !important;
+      color: #dbdbdb;
+      cursor: pointer;
+      padding: 7px 8px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .plyr__audio-track-btn:hover {
+      background: rgba(255, 255, 255, 0.08) !important;
+      color: #fff;
+    }
+
+    .plyr__audio-track-btn i {
+      font-size: 15px;
+    }
+
+    .plyr__audio-track-btn span {
+      display: inline;
+    }
+
+    .plyr__controls-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .plyr__audio-track-dropdown {
+      position: absolute;
+      bottom: 50px;
+      right: 0;
+      background: rgba(16, 18, 28, 0.96);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 6px 0;
+      min-width: 190px;
+      max-height: 240px;
+      overflow-y: auto;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+      z-index: 50;
+      display: none;
+    }
+
+    .plyr__audio-track-dropdown.show {
+      display: block;
+      animation: fadeUp 0.18s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .plyr__audio-track-option {
+      display: block;
+      width: 100%;
+      padding: 9px 16px;
+      background: transparent;
+      border: none;
+      color: #bbb;
+      font-size: 12.5px;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .plyr__audio-track-option:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+    }
+
+    .plyr__audio-track-option.active {
+      color: #60a5fa;
+      background: rgba(96, 165, 250, 0.08);
+    }
+
+    .plyr__audio-track-option .track-lang {
+      font-weight: 600;
+    }
+
+    .plyr__audio-track-option .track-codec {
+      font-size: 10px;
+      color: #666;
+      margin-left: 8px;
+    }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 768px) {
+      .plyr__controls {
+        gap: 3px 4px !important;
+        padding: 6px 6px !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .plyr__controls .plyr__control {
+        padding: 5px 5px !important;
+        min-width: 28px !important;
+        font-size: 12px !important;
+        flex-shrink: 0 !important;
+      }
+
+      .plyr__controls .plyr__time {
+        font-size: 9px !important;
+        padding: 1px 3px !important;
+        flex-shrink: 0 !important;
+      }
+
+      .plyr__controls .plyr__progress {
+        min-width: 50px !important;
+        flex: 1 !important;
+      }
+
+      .plyr__controls .plyr__volume {
+        min-width: auto !important;
+        flex-shrink: 0 !important;
+      }
+
+      .plyr__audio-track-btn {
+        padding: 5px 5px !important;
+        font-size: 11px !important;
+        flex-shrink: 0 !important;
+      }
+
+      .plyr__audio-track-btn span {
+        display: none;
+      }
+
+      .plyr__audio-track-btn i {
+        font-size: 13px;
+      }
+
+      .plyr__audio-track-dropdown {
+        right: -8px;
+        min-width: 160px;
+      }
+
+      .plyr__controls .plyr__control[data-plyr="pip"],
+      .plyr__controls .plyr__control[data-plyr="airplay"],
+      .plyr__controls .plyr__control[data-plyr="settings"],
+      .plyr__controls .plyr__control[data-plyr="download"] {
+        display: flex !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .plyr__controls {
+        gap: 2px 3px !important;
+        padding: 4px 4px !important;
+      }
+
+      .plyr__controls .plyr__control {
+        padding: 4px 4px !important;
+        min-width: 24px !important;
+        font-size: 10px !important;
+      }
+
+      .plyr__controls .plyr__time {
+        font-size: 8px !important;
+        padding: 1px 2px !important;
+      }
+
+      .plyr__controls .plyr__progress {
+        min-width: 30px !important;
+      }
+
+      .plyr__audio-track-btn {
+        padding: 4px 4px !important;
+        font-size: 10px !important;
+      }
+
+      .plyr__audio-track-btn i {
+        font-size: 11px;
+      }
+    }
+
+    /* ===== GLASS CARD ===== */
     .glass-card {
-      background: rgba(12, 16, 26, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(96, 165, 250, 0.25);
-      border-radius: var(--card-radius);
-      padding: 1.5rem;
-      margin: 20px auto;
+      background: rgba(12, 16, 26, 0.7);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(96, 165, 250, 0.12);
+      border-radius: 20px;
+      padding: 1.2rem;
+      margin: 16px 12px;
       max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
       transition: all 0.2s;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
 
     .file-info-title {
       color: #60a5fa;
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 18px;
-      border-bottom: 1px solid rgba(96, 165, 250, 0.3);
-      padding-bottom: 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.15);
+      padding-bottom: 10px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+    }
+
+    .file-info-title i {
+      font-size: 0.9rem;
     }
 
     .info-item {
+      display: flex;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       flex-wrap: wrap;
+      gap: 4px;
+      font-size: 0.85rem;
     }
 
     .info-label {
-      color: #9ca3af;
+      color: #8a8fa8;
       font-weight: 500;
     }
 
     .info-value {
-      color: #f0f3fa;
-      font-family: 'Outfit', monospace;
+      color: #e8ecf5;
       font-weight: 500;
       word-break: break-word;
     }
 
-    /* Engagement row */
     .engagement-stats .d-flex {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 14px;
-      margin: 20px 0 10px;
+      gap: 10px;
+      margin: 14px 0 8px;
     }
 
     .btn-like,
     .btn-dislike,
     .view-badge,
     .btn-subscribe {
-      border-radius: 60px;
-      padding: 10px 24px;
-      font-size: 0.95rem;
+      border-radius: 10px;
+      padding: 8px 18px;
+      font-size: 0.8rem;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       transition: all 0.2s ease;
       cursor: pointer;
       border: none;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.04);
       backdrop-filter: blur(4px);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .btn-like {
@@ -190,67 +450,92 @@
       background: linear-gradient(135deg, #1e8f7e, #38b2a5);
     }
 
-    /* External players row */
     .players-row {
       display: flex;
-      gap: 14px;
-      margin: 25px 0 20px;
+      gap: 10px;
+      margin: 16px 0 10px;
       flex-wrap: wrap;
     }
 
     .btn-custom {
-      border-radius: 50px;
-      padding: 14px 10px;
-      font-weight: 700;
+      flex: 1;
+      min-width: 90px;
+      border-radius: 12px;
+      padding: 12px 8px;
+      font-weight: 600;
       text-align: center;
       cursor: pointer;
-      transition: all 0.25s;
-      border: none;
-      color: white;
-      flex: 1;
-      font-size: 1rem;
-      letter-spacing: 0.5px;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #e8ecf5;
+      font-size: 0.78rem;
+      letter-spacing: 0.3px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      background: rgba(20, 25, 40, 0.8);
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-custom i {
+      font-size: 0.9rem;
+      opacity: 0.9;
     }
 
     .btn-custom:hover {
-      transform: translateY(-3px);
-      filter: brightness(1.08);
-      box-shadow: 0 12px 20px -10px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .btn-custom:active {
+      transform: scale(0.97);
     }
 
     .btn-mx {
-      background: linear-gradient(115deg, #1e3a5f, #0f4c5c);
       border-left: 3px solid #3b82f6;
     }
 
+    .btn-mx:hover {
+      background: rgba(59, 130, 246, 0.12);
+      border-color: #3b82f6;
+    }
+
     .btn-vlc {
-      background: linear-gradient(115deg, #e67e22, #b45309);
       border-left: 3px solid #f97316;
     }
 
+    .btn-vlc:hover {
+      background: rgba(249, 115, 22, 0.12);
+      border-color: #f97316;
+    }
+
     .btn-playit {
-      background: linear-gradient(115deg, #b91c1c, #7f1d1d);
       border-left: 3px solid #ef4444;
     }
 
-    /* compatibility alert */
+    .btn-playit:hover {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: #ef4444;
+    }
+
     .compat-box {
-      background: rgba(251, 191, 36, 0.12);
-      border-left: 4px solid #fbbf24;
-      border-radius: 24px;
-      padding: 14px 20px;
-      margin: 18px 0 6px;
+      background: rgba(251, 191, 36, 0.06);
+      border-left: 3px solid #fbbf24;
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin: 12px 0 4px;
       text-align: center;
-      color: #ffdf8c;
-      font-size: 0.9rem;
+      color: #d4c48a;
+      font-size: 0.75rem;
       font-weight: 500;
+    }
+
+    .compat-box i {
+      margin-right: 6px;
+      color: #fbbf24;
     }
 
     .file-name-truncate {
@@ -258,60 +543,56 @@
       word-break: break-word;
     }
 
-    @media (max-width: 768px) {
-      .header {
-        padding: 10px 16px;
-      }
+    .plyr__audio-track-dropdown::-webkit-scrollbar {
+      width: 4px;
+    }
 
-      .logo-text {
-        font-size: 1.3rem;
-      }
+    .plyr__audio-track-dropdown::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-      .logo-circle {
-        width: 36px;
-        height: 36px;
-      }
+    .plyr__audio-track-dropdown::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
 
+    @media (max-width: 480px) {
       .glass-card {
-        padding: 1.2rem;
-        margin: 12px;
-        border-radius: 24px;
+        padding: 1rem;
+        margin: 12px 8px;
+        border-radius: 16px;
+      }
+
+      .players-row {
+        gap: 6px;
       }
 
       .btn-custom {
-        padding: 12px 8px;
-        font-size: 0.8rem;
+        padding: 10px 6px;
+        font-size: 0.7rem;
+        min-width: 70px;
+        border-radius: 10px;
+      }
+
+      .btn-custom i {
+        font-size: 0.75rem;
       }
 
       .btn-like,
       .btn-dislike,
       .view-badge,
       .btn-subscribe {
-        padding: 7px 18px;
-        font-size: 0.8rem;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .plyr__controls {
-        flex-wrap: nowrap !important;
-        justify-content: space-between !important;
-        gap: 2px !important;
-        padding: 8px 5px !important;
+        padding: 6px 14px;
+        font-size: 0.7rem;
+        gap: 5px;
       }
 
-      .plyr__control {
-        padding: 6px 4px !important;
-        min-width: auto !important;
+      .file-info-title {
+        font-size: 0.9rem;
       }
 
-      .plyr__time {
-        font-size: 10px !important;
-        padding: 0 4px !important;
-      }
-
-      .plyr__progress {
-        min-width: 60px !important;
+      .info-item {
+        font-size: 0.75rem;
       }
     }
   </style>
@@ -333,22 +614,20 @@
     </div>
   </div>
 
-  <!-- File info & engagement -->
   <div class="glass-card">
     <div class="file-info-title">
       <i class="fas fa-film"></i>
       <span>File Information</span>
     </div>
     <div class="info-item">
-      <span class="info-label">📂Fɪʟᴇ-Nᴀᴍᴇ:</span>
+      <span class="info-label">📂 File Name</span>
       <span class="info-value file-name-truncate" id="displayFileName">{{file_name}}</span>
     </div>
     <div class="info-item">
-      <span class="info-label">📦Fɪʟᴇ-Sɪᴢᴇ:</span>
+      <span class="info-label">📦 File Size</span>
       <span class="info-value" id="file-size-display">{{file_size}}</span>
     </div>
 
-    <!-- Engagement stats row -->
     <div class="engagement-stats">
       <div class="d-flex">
         <button class="btn-like" id="likeBtn" onclick="likeVideo()">
@@ -361,7 +640,7 @@
         </button>
         <div class="view-badge">
           <i class="fas fa-eye"></i>
-          <span id="viewCount"></span> views
+          <span id="viewCount"></span>
         </div>
         <a href="https://t.me/Cinemaniacs_Hub" target="_blank" class="btn-subscribe" id="telegramSubscribe">
           <i class="fab fa-telegram-plane"></i> Subscribe
@@ -369,27 +648,41 @@
       </div>
     </div>
 
-    <!-- external players -->
     <div class="players-row">
       <div class="btn-custom btn-mx" onclick="mx_player()">
-        <i class="fas fa-play"></i> MX PLAYER
+        <i class="fas fa-play"></i> MX Player
       </div>
       <div class="btn-custom btn-vlc" onclick="vlc_player()">
-        <i class="fas fa-play-circle"></i> VLC PLAYER
+        <i class="fas fa-play-circle"></i> VLC
       </div>
       <div class="btn-custom btn-playit" onclick="playit_player()">
-        <i class="fas fa-bolt"></i> PLAY IT
+        <i class="fas fa-bolt"></i> Play It
       </div>
     </div>
 
     <div class="compat-box">
-      <i class="fas fa-exclamation-triangle"></i> Video Not Playing? Possibly because your browser or player doesn't support the codec. Please watch using external players
+      <i class="fas fa-exclamation-triangle"></i> Video not playing? Try an external player above.
     </div>
   </div>
+
   <script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
   <script>
+    function getRawLink() {
+      let currentUrl = window.location.href;
+      let rawLink = currentUrl.replace("/watch/", "/");
+      const templateUrl = "{{file_url}}";
+      if (templateUrl && templateUrl !== "{{file_url}}") return templateUrl;
+      return rawLink;
+    }
+    const videoLink = getRawLink();
+    // ===== PLYR CONFIG - NO REWIND/FORWARD BUTTONS =====
     const playerConfig = {
-      controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen'],
+      controls: [
+        'play-large', 'play',
+        'progress', 'current-time', 'duration',
+        'mute', 'volume',
+        'settings', 'pip', 'airplay', 'download', 'fullscreen'
+      ],
       invertTime: false,
       autoplay: false,
       speed: {
@@ -399,11 +692,320 @@
     };
     const player = new Plyr('#player', playerConfig);
     const video = document.getElementById('player');
+    // ===== DOUBLE-TAP SEEK GESTURE =====
+    let lastTapTime = 0;
+    let tapTimeout = null;
+    video.addEventListener('touchend', function(e) {
+      const touch = e.changedTouches[0];
+      const rect = video.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const width = rect.width;
+      const currentTime = video.currentTime;
+      const duration = video.duration;
+      const now = Date.now();
+      const timeSinceLastTap = now - lastTapTime;
+      if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
+        // Double tap detected
+        clearTimeout(tapTimeout);
+        if (x < width / 2) {
+          // Left side - rewind 10s
+          video.currentTime = Math.max(0, currentTime - 10);
+          showSeekFeedback('⏪ -10s');
+        } else {
+          // Right side - forward 10s
+          video.currentTime = Math.min(duration, currentTime + 10);
+          showSeekFeedback('⏩ +10s');
+        }
+        lastTapTime = 0;
+      } else {
+        lastTapTime = now;
+        tapTimeout = setTimeout(() => {
+          lastTapTime = 0;
+        }, 300);
+      }
+    });
+    // Also support mouse double-click for desktop
+    video.addEventListener('dblclick', function(e) {
+      const rect = video.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const width = rect.width;
+      const currentTime = video.currentTime;
+      const duration = video.duration;
+      if (x < width / 2) {
+        video.currentTime = Math.max(0, currentTime - 10);
+        showSeekFeedback('⏪ -10s');
+      } else {
+        video.currentTime = Math.min(duration, currentTime + 10);
+        showSeekFeedback('⏩ +10s');
+      }
+    });
+    // ===== SEEK FEEDBACK OVERLAY =====
+    function showSeekFeedback(text) {
+      let overlay = document.getElementById('seekFeedback');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'seekFeedback';
+        overlay.style.cssText = `
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-size: 2.5rem;
+          font-weight: 700;
+          text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+          background: rgba(0,0,0,0.3);
+          padding: 16px 28px;
+          border-radius: 16px;
+          pointer-events: none;
+          z-index: 60;
+          opacity: 0;
+          transition: opacity 0.15s ease;
+          backdrop-filter: blur(4px);
+          font-family: 'Segoe UI', Arial, sans-serif;
+        `;
+        document.querySelector('.video-wrapper').appendChild(overlay);
+      }
+      overlay.textContent = text;
+      overlay.style.opacity = '1';
+      clearTimeout(overlay._hideTimeout);
+      overlay._hideTimeout = setTimeout(() => {
+        overlay.style.opacity = '0';
+      }, 600);
+    }
+    // ===== AUDIO TRACK FEATURE =====
+    function buildTracksApiUrl() {
+      const u = new URL(videoLink);
+      const segs = u.pathname.split('/').filter(Boolean);
+      const fileId = segs[segs.length - 1] || 'xp1ca9v';
+      u.pathname = '/api/tracks/' + fileId;
+      u.search = '';
+      return u.toString();
+    }
+    let audioTracks = [];
+    let activeTrackIndex = null;
+
+    function insertAudioTrackSelector() {
+      const plyrEl = document.querySelector('.plyr');
+      if (!plyrEl) return;
+      if (plyrEl.querySelector('.plyr__audio-track-btn')) return;
+      const controls = plyrEl.querySelector('.plyr__controls');
+      if (!controls) return;
+      const volumeControl = controls.querySelector('.plyr__volume');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'plyr__controls-wrapper';
+      wrapper.style.position = 'relative';
+      const btn = document.createElement('button');
+      btn.className = 'plyr__audio-track-btn';
+      btn.type = 'button';
+      btn.title = 'Audio Tracks';
+      btn.innerHTML = `<i class="fas fa-music"></i> <span>Audio</span>`;
+      const dropdown = document.createElement('div');
+      dropdown.className = 'plyr__audio-track-dropdown';
+      wrapper.appendChild(btn);
+      wrapper.appendChild(dropdown);
+      if (volumeControl) {
+        controls.insertBefore(wrapper, volumeControl.nextSibling);
+      } else {
+        controls.appendChild(wrapper);
+      }
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('show');
+        const settingsMenu = plyrEl.querySelector('.plyr__settings__menu');
+        if (settingsMenu) settingsMenu.classList.remove('plyr__menu__container--open');
+      });
+      document.addEventListener('click', () => {
+        dropdown.classList.remove('show');
+      });
+      window.__audioBtn = btn;
+      window.__audioDropdown = dropdown;
+    }
+
+    function populateAudioTracks(tracks) {
+      const dropdown = document.querySelector('.plyr__audio-track-dropdown');
+      if (!dropdown) return;
+      dropdown.innerHTML = '';
+      const defaultOpt = document.createElement('button');
+      defaultOpt.className = 'plyr__audio-track-option' + (activeTrackIndex === null ? ' active' : '');
+      defaultOpt.innerHTML = `<span class="track-lang">Default (Embedded)</span>`;
+      defaultOpt.addEventListener('click', () => {
+        switchToDefaultAudio();
+        dropdown.classList.remove('show');
+        updateAudioTrackUI();
+      });
+      dropdown.appendChild(defaultOpt);
+      tracks.forEach((track) => {
+        const opt = document.createElement('button');
+        const isActive = (activeTrackIndex === track.index);
+        opt.className = 'plyr__audio-track-option' + (isActive ? ' active' : '');
+        const meta = track.tags || {};
+        const lang = (meta.language || meta.LANGUAGE || meta.Language || '').trim() || 'Unknown';
+        const codec = track.codec_name || track.codec || '';
+        const title = (meta.title || meta.TITLE || meta.Title || '').trim();
+        let label = lang;
+        if (title && title.length > 0 && title.length < 20) {
+          label = title;
+        } else if (title && title.length >= 20) {
+          label = lang + ' (' + title.substring(0, 16) + '…)';
+        }
+        opt.innerHTML = `<span class="track-lang">${label}</span><span class="track-codec">${codec}</span>`;
+        opt.addEventListener('click', () => {
+          switchToAudioTrack(track.index);
+          dropdown.classList.remove('show');
+          updateAudioTrackUI();
+        });
+        dropdown.appendChild(opt);
+      });
+    }
+
+    function switchToAudioTrack(streamIndex) {
+      const vid = document.querySelector('.player');
+      if (!vid) return;
+      const currentTime = vid.currentTime;
+      const wasPlaying = !vid.paused;
+      const u = new URL(videoLink);
+      u.searchParams.set('auds', streamIndex);
+      if (currentTime > 0) {
+        u.searchParams.set('ss', currentTime.toFixed(3));
+      }
+      const newSrc = u.toString();
+      activeTrackIndex = streamIndex;
+      player.source = {
+        type: 'video',
+        sources: [{
+          src: newSrc,
+          type: 'video/mp4'
+        }]
+      };
+      const restore = () => {
+        player.currentTime = currentTime;
+        if (wasPlaying) {
+          player.play().catch(() => {});
+        }
+      };
+      if (vid.readyState >= 3) {
+        restore();
+      } else {
+        player.once('canplay', restore);
+      }
+      updateAudioTrackUI();
+    }
+
+    function switchToDefaultAudio() {
+      const vid = document.querySelector('.player');
+      if (!vid) return;
+      const currentTime = vid.currentTime;
+      const wasPlaying = !vid.paused;
+      const u = new URL(videoLink);
+      u.searchParams.delete('auds');
+      u.searchParams.delete('ss');
+      const newSrc = u.toString();
+      activeTrackIndex = null;
+      player.source = {
+        type: 'video',
+        sources: [{
+          src: newSrc,
+          type: 'video/mp4'
+        }]
+      };
+      const restore = () => {
+        player.currentTime = currentTime;
+        if (wasPlaying) {
+          player.play().catch(() => {});
+        }
+      };
+      if (vid.readyState >= 3) {
+        restore();
+      } else {
+        player.once('canplay', restore);
+      }
+      updateAudioTrackUI();
+    }
+
+    function updateAudioTrackUI() {
+      const dropdown = document.querySelector('.plyr__audio-track-dropdown');
+      if (!dropdown) return;
+      const options = dropdown.querySelectorAll('.plyr__audio-track-option');
+      options.forEach((opt, idx) => {
+        opt.classList.remove('active');
+        if (idx === 0 && activeTrackIndex === null) {
+          opt.classList.add('active');
+        } else if (audioTracks[idx - 1] && activeTrackIndex === audioTracks[idx - 1].index) {
+          opt.classList.add('active');
+        }
+      });
+      const btn = document.querySelector('.plyr__audio-track-btn');
+      if (btn) {
+        const span = btn.querySelector('span');
+        if (span) {
+          if (activeTrackIndex === null) {
+            span.textContent = 'Audio';
+          } else {
+            const track = audioTracks.find(t => t.index === activeTrackIndex);
+            if (track) {
+              const meta = track.tags || {};
+              const lang = (meta.language || meta.LANGUAGE || meta.Language || '').trim() || 'Track';
+              span.textContent = lang.length > 10 ? lang.substring(0, 8) + '…' : lang;
+            } else {
+              span.textContent = 'Audio';
+            }
+          }
+        }
+      }
+    }
+
+    function fetchAudioTracks() {
+      const apiUrl = buildTracksApiUrl();
+      fetch(apiUrl)
+        .then(r => {
+          if (!r.ok) throw new Error('Failed to fetch tracks');
+          return r.json();
+        })
+        .then(tracks => {
+          if (Array.isArray(tracks) && tracks.length > 0) {
+            audioTracks = tracks;
+            insertAudioTrackSelector();
+            populateAudioTracks(tracks);
+            updateAudioTrackUI();
+            const urlParams = new URLSearchParams(window.location.search);
+            const audsParam = urlParams.get('auds');
+            if (audsParam) {
+              const idx = parseInt(audsParam);
+              const track = tracks.find(t => t.index === idx);
+              if (track) {
+                activeTrackIndex = idx;
+                updateAudioTrackUI();
+              }
+            }
+          }
+        })
+        .catch(err => {
+          console.log('[AudioTrack] Not available:', err.message);
+          const btn = document.querySelector('.plyr__audio-track-btn');
+          if (btn) btn.style.display = 'none';
+        });
+    }
+    player.on('ready', () => {
+      fetchAudioTracks();
+    });
+    // ===== EXTERNAL PLAYERS =====
+    function vlc_player() {
+      window.location.href = `vlc://${videoLink}`;
+    }
+
+    function mx_player() {
+      window.location.href = `intent:${videoLink}#Intent;package=com.mxtech.videoplayer.ad;end`;
+    }
+
+    function playit_player() {
+      window.location.href = `playit://playerv2/video?url=${encodeURIComponent(videoLink)}`;
+    }
+    // ===== FILE SIZE =====
     async function detectFileSize() {
-      const fileSizeSpan = document.getElementById('file-size');
-      const videoUrl = getRawLink();
+      const fileSizeSpan = document.getElementById('file-size-display');
       try {
-        const response = await fetch(videoUrl, {
+        const response = await fetch(videoLink, {
           method: 'HEAD'
         });
         const contentLength = response.headers.get('content-length');
@@ -421,27 +1023,6 @@
       }
     }
     setTimeout(detectFileSize, 1000);
-
-    function getRawLink() {
-      let currentUrl = window.location.href;
-      let rawLink = currentUrl.replace("/watch/", "/");
-      const templateUrl = "{{file_url}}";
-      if (templateUrl && templateUrl !== "{{file_url}}") return templateUrl;
-      return rawLink;
-    }
-    const videoLink = getRawLink();
-
-    function vlc_player() {
-      window.location.href = `vlc://${videoLink}`;
-    }
-
-    function mx_player() {
-      window.location.href = `intent:${videoLink}#Intent;package=com.mxtech.videoplayer.ad;end`;
-    }
-
-    function playit_player() {
-      window.location.href = `playit://playerv2/video?url=${encodeURIComponent(videoLink)}`;
-    }
     document.addEventListener("contextmenu", function(e) {
       e.preventDefault();
     });
@@ -474,8 +1055,7 @@
     player.on('pause', () => {
       wrapper.classList.remove('active');
     });
-  </script>
-  <script>
+    // ===== LIKES =====
     const BIN_ID = "69ece842856a682189706426";
     const API_KEY = "$2a$10$TyOXeu0PPOnyzTfOreJzhOKiw3NyMQtnURo0koS2JFiOFMatKoDgq";
     const CACHE_KEY = "video_data_cache";
@@ -576,16 +1156,6 @@
       ui();
       mark();
       push();
-    }
-
-    function addView() {
-      let v = localStorage.getItem(videoId + "_viewed");
-      if (!v) {
-        videoData.views++;
-        localStorage.setItem(videoId + "_viewed", "1");
-        ui();
-        push();
-      }
     }
     async function push() {
       let cache = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
