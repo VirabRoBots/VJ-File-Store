@@ -2,1167 +2,2410 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Now Streaming | {{file_name}}</title>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.6.9/plyr.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8" />
+  <title></title>
+  <link rel="icon" href="https://telegra.ph/file/5a53e66bb148003666d62.jpg" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.6.12/plyr.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    * {
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+    :root {
+      --cyan: #00f5d4;
+      --cyan2: #06d6b0;
+      --violet: #9d6fff;
+      --violet2: #7c3aed;
+      --pink: #ff6eb4;
+      --gold: #ffd60a;
+      --green: #00e676;
+      --red: #ff4d6d;
+      --bg0: #04040f;
+      --bg1: #08081a;
+      --bg2: #0e0e24;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass2: rgba(255, 255, 255, 0.09);
+      --border: rgba(255, 255, 255, 0.09);
+      --border2: rgba(157, 111, 255, 0.25);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+      --r: 16px;
+      --font-head: 'Space Grotesk', 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: #0a0a0f;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      padding-bottom: 30px;
+      background: var(--bg0);
+      color: var(--text-primary);
+      font-family: var(--font-body);
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
     }
 
-    .header {
-      display: flex;
-      align-items: center;
-      padding: 10px 16px;
-      gap: 12px;
-      background: rgba(10, 10, 15, 0.98);
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 15% 5%, rgba(157, 111, 255, .18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 45% at 85% 90%, rgba(0, 245, 212, .13) 0%, transparent 55%),
+        radial-gradient(ellipse 45% 40% at 50% 50%, rgba(255, 110, 180, .07) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 30% at 30% 80%, rgba(0, 230, 118, .06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+      animation: bgPulse 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgPulse {
+      from {
+        opacity: 0.8;
+      }
+
+      to {
+        opacity: 1.2;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg0);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--violet);
+      border-radius: 4px;
+    }
+
+    @keyframes gradShift {
+      0% {
+        background-position: 0% 50%
+      }
+
+      50% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: 0% 50%
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes pulseDot {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(.65)
+      }
+    }
+
+    @keyframes glowPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 16px rgba(157, 111, 255, .35)
+      }
+
+      50% {
+        box-shadow: 0 0 32px rgba(157, 111, 255, .65)
+      }
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% center
+      }
+
+      100% {
+        background-position: 200% center
+      }
+    }
+
+    /* ── NAV ── */
+    .topbar {
       position: sticky;
       top: 0;
-      z-index: 100;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      z-index: 1000;
+      background: rgba(4, 4, 15, .92);
+      backdrop-filter: blur(24px) saturate(200%);
+      border-bottom: 1px solid var(--border2);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .logo-container {
       position: relative;
       display: flex;
       align-items: center;
-      height: 44px;
+      height: 50px;
     }
 
     .logo-circle {
       position: absolute;
-      right: -22px;
-      width: 40px;
-      height: 40px;
+      right: -25px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       background: linear-gradient(135deg, #00c6ff, #0072ff);
     }
 
     .logo-text {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 800;
       color: #fff;
       position: relative;
       z-index: 3;
-      letter-spacing: -0.3px;
     }
 
-    .video-wrapper {
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-      border-radius: 16px;
-      overflow: hidden;
-      background: #0a0a0f;
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 230, 118, .1);
+      border: 1px solid rgba(0, 230, 118, .35);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: .7rem;
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulseDot 1.4s ease infinite;
+    }
+
+    /* ── MAIN ── */
+    main {
       position: relative;
-    }
-
-    .video-wrapper.active {
-      background: linear-gradient(#0a0a0f, #0a0a0f) padding-box,
-        linear-gradient(45deg, #00c6ff, #0072ff, #c822ff) border-box;
-      border: 2px solid transparent;
-      border-bottom: 0;
-    }
-
-    .plyr {
-      border-radius: 16px;
+      z-index: 1;
+      padding: 16px 14px 44px;
+      max-width: 760px;
+      margin: 0 auto;
       width: 100%;
     }
 
-    /* ===== CLEAN CONTROLS - NO BG, NO VOLUME SLIDER ===== */
-    .plyr__controls {
-      display: flex !important;
-      flex-wrap: wrap !important;
-      align-items: center !important;
-      justify-content: center !important;
-      gap: 4px 8px !important;
-      padding: 10px 12px !important;
-      background: transparent !important;
-      backdrop-filter: none !important;
+    /* ── PLAYER ── */
+    .player-shell {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: 0 0 0 1px rgba(157, 111, 255, .3), 0 24px 64px rgba(0, 0, 0, .9), 0 0 80px rgba(157, 111, 255, .1);
+      animation: fadeUp .5s ease both;
     }
 
-    .plyr__controls .plyr__control {
-      padding: 7px 8px !important;
-      border-radius: 8px !important;
-      transition: all 0.2s ease !important;
-      min-width: 34px !important;
-      background: transparent !important;
-      backdrop-filter: none !important;
-      border: none !important;
+    .player-shell::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--violet), var(--cyan), var(--pink), var(--violet));
+      background-size: 300% 300%;
+      animation: gradShift 3s ease infinite;
+      z-index: -1;
+      opacity: .8;
     }
 
-    .plyr__controls .plyr__control:hover {
-      background: rgba(255, 255, 255, 0.08) !important;
+    .video-loader {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(4, 4, 15, .75);
+      backdrop-filter: blur(6px);
+      z-index: 10;
     }
 
-    .plyr__controls .plyr__progress {
-      flex: 2 !important;
-      min-width: 60px !important;
+    .spinner-ring {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, .06);
+      border-top-color: var(--cyan);
+      border-right-color: var(--violet);
+      animation: spin .75s linear infinite;
     }
 
-    .plyr__controls .plyr__time {
-      font-size: 12px !important;
-      font-weight: 500 !important;
-      padding: 0 4px !important;
-      background: transparent !important;
+    .plyr--video .plyr__control--overlaid {
+      background: rgba(157, 111, 255, .9) !important;
     }
 
-    /* HIDE VOLUME SLIDER - SHOW ONLY ICON */
-    .plyr__controls .plyr__volume {
+    .plyr--video .plyr__control:hover {
+      background: var(--violet) !important;
+    }
+
+    .plyr--full-ui input[type=range] {
+      color: var(--cyan) !important;
+    }
+
+    .plyr__poster {
+      background-size: cover !important;
+      background-position: center !important;
+      transform: scale(1) !important;
+    }
+
+    /* hide volume slider, keep icon */
+    .plyr__volume input[type="range"] {
+      display: none !important;
+    }
+
+    .plyr__volume {
       min-width: auto !important;
       width: auto !important;
       display: flex !important;
       align-items: center !important;
     }
 
-    .plyr__controls .plyr__volume input[type="range"] {
-      display: none !important;
+    .plyr__volume .plyr__control {
+      padding: 6px 8px !important;
     }
 
-    .plyr__controls .plyr__volume .plyr__control {
-      padding: 7px 8px !important;
+    .plyr__video-wrapper {
+      background: #000 !important;
+      overflow: hidden !important;
     }
 
-    /* HIDE REWIND AND FAST-FORWARD BUTTONS */
-    .plyr__controls .plyr__control[data-plyr="rewind"],
-    .plyr__controls .plyr__control[data-plyr="fast-forward"] {
-      display: none !important;
+    .plyr__video-wrapper video {
+      object-fit: cover !important;
     }
 
-    /* Audio track button */
-    .plyr__audio-track-btn {
-      background: transparent !important;
-      border: none !important;
-      color: #dbdbdb;
-      cursor: pointer;
-      padding: 7px 8px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-
-    .plyr__audio-track-btn:hover {
-      background: rgba(255, 255, 255, 0.08) !important;
-      color: #fff;
-    }
-
-    .plyr__audio-track-btn i {
-      font-size: 15px;
-    }
-
-    .plyr__audio-track-btn span {
-      display: inline;
-    }
-
-    .plyr__controls-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .plyr__audio-track-dropdown {
+    /* ── SKIP INTRO/CREDITS BUTTONS ── */
+    .skip-btn {
       position: absolute;
-      bottom: 50px;
-      right: 0;
-      background: rgba(16, 18, 28, 0.96);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 6px 0;
-      min-width: 190px;
-      max-height: 240px;
-      overflow-y: auto;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
-      z-index: 50;
+      right: 14px;
+      background: rgba(8, 8, 26, .88);
+      border: 1px solid rgba(157, 111, 255, .5);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: var(--font-head);
+      font-size: .82rem;
+      font-weight: 800;
+      cursor: pointer;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      gap: 7px;
+      backdrop-filter: blur(10px);
+      transition: all .2s;
+      letter-spacing: .3px;
+    }
+
+    .skip-btn:hover {
+      background: rgba(157, 111, 255, .25);
+      border-color: var(--violet);
+      transform: scale(1.04);
+    }
+
+    #skipIntroBtn {
+      bottom: 60px;
+    }
+
+    #skipCreditsBtn {
+      bottom: 60px;
+    }
+
+    /* ── FILE TITLE STRIP ── */
+    .file-title-strip {
+      background: linear-gradient(135deg, rgba(157, 111, 255, .08), rgba(0, 245, 212, .05));
+      border: 1px solid rgba(157, 111, 255, .25);
+      border-radius: var(--r);
+      padding: 13px 16px;
+      margin-bottom: 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: fadeUp .5s .1s ease both;
+      box-shadow: 0 4px 20px rgba(157, 111, 255, .08);
+    }
+
+    .file-title-icon {
+      font-size: 1.7rem;
+      flex-shrink: 0;
+    }
+
+    .file-title-text {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-primary);
+      line-height: 1.45;
+      word-break: break-word;
+      letter-spacing: .2px;
+    }
+
+    /* ── REACTION BAR ── */
+    .reaction-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+      margin-bottom: 13px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      animation: fadeUp .5s .15s ease both;
+    }
+
+    .reaction-bar::-webkit-scrollbar {
       display: none;
     }
 
-    .plyr__audio-track-dropdown.show {
-      display: block;
-      animation: fadeUp 0.18s ease;
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(8px) scale(0.97);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .plyr__audio-track-option {
-      display: block;
-      width: 100%;
-      padding: 9px 16px;
-      background: transparent;
-      border: none;
-      color: #bbb;
-      font-size: 12.5px;
-      font-weight: 500;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      font-family: inherit;
-    }
-
-    .plyr__audio-track-option:hover {
-      background: rgba(255, 255, 255, 0.06);
-      color: #fff;
-    }
-
-    .plyr__audio-track-option.active {
-      color: #60a5fa;
-      background: rgba(96, 165, 250, 0.08);
-    }
-
-    .plyr__audio-track-option .track-lang {
-      font-weight: 600;
-    }
-
-    .plyr__audio-track-option .track-codec {
-      font-size: 10px;
-      color: #666;
-      margin-left: 8px;
-    }
-
-    /* ===== MOBILE ===== */
-    @media (max-width: 768px) {
-      .plyr__controls {
-        gap: 3px 4px !important;
-        padding: 6px 6px !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .plyr__controls .plyr__control {
-        padding: 5px 5px !important;
-        min-width: 28px !important;
-        font-size: 12px !important;
-        flex-shrink: 0 !important;
-      }
-
-      .plyr__controls .plyr__time {
-        font-size: 9px !important;
-        padding: 1px 3px !important;
-        flex-shrink: 0 !important;
-      }
-
-      .plyr__controls .plyr__progress {
-        min-width: 50px !important;
-        flex: 1 !important;
-      }
-
-      .plyr__controls .plyr__volume {
-        min-width: auto !important;
-        flex-shrink: 0 !important;
-      }
-
-      .plyr__audio-track-btn {
-        padding: 5px 5px !important;
-        font-size: 11px !important;
-        flex-shrink: 0 !important;
-      }
-
-      .plyr__audio-track-btn span {
-        display: none;
-      }
-
-      .plyr__audio-track-btn i {
-        font-size: 13px;
-      }
-
-      .plyr__audio-track-dropdown {
-        right: -8px;
-        min-width: 160px;
-      }
-
-      .plyr__controls .plyr__control[data-plyr="pip"],
-      .plyr__controls .plyr__control[data-plyr="airplay"],
-      .plyr__controls .plyr__control[data-plyr="settings"],
-      .plyr__controls .plyr__control[data-plyr="download"] {
-        display: flex !important;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .plyr__controls {
-        gap: 2px 3px !important;
-        padding: 4px 4px !important;
-      }
-
-      .plyr__controls .plyr__control {
-        padding: 4px 4px !important;
-        min-width: 24px !important;
-        font-size: 10px !important;
-      }
-
-      .plyr__controls .plyr__time {
-        font-size: 8px !important;
-        padding: 1px 2px !important;
-      }
-
-      .plyr__controls .plyr__progress {
-        min-width: 30px !important;
-      }
-
-      .plyr__audio-track-btn {
-        padding: 4px 4px !important;
-        font-size: 10px !important;
-      }
-
-      .plyr__audio-track-btn i {
-        font-size: 11px;
-      }
-    }
-
-    /* ===== GLASS CARD ===== */
-    .glass-card {
-      background: rgba(12, 16, 26, 0.7);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(96, 165, 250, 0.12);
-      border-radius: 20px;
-      padding: 1.2rem;
-      margin: 16px 12px;
-      max-width: 1280px;
-      margin-left: auto;
-      margin-right: auto;
-      transition: all 0.2s;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }
-
-    .file-info-title {
-      color: #60a5fa;
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 14px;
-      border-bottom: 1px solid rgba(96, 165, 250, 0.15);
-      padding-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .file-info-title i {
-      font-size: 0.9rem;
-    }
-
-    .info-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-      gap: 4px;
-      font-size: 0.85rem;
-    }
-
-    .info-label {
-      color: #8a8fa8;
-      font-weight: 500;
-    }
-
-    .info-value {
-      color: #e8ecf5;
-      font-weight: 500;
-      word-break: break-word;
-    }
-
-    .engagement-stats .d-flex {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 14px 0 8px;
-    }
-
-    .btn-like,
-    .btn-dislike,
-    .view-badge,
-    .btn-subscribe {
-      border-radius: 10px;
-      padding: 8px 18px;
-      font-size: 0.8rem;
-      font-weight: 600;
+    .react-btn {
       display: inline-flex;
       align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--glass2);
+      color: var(--text-secondary);
+      font-family: var(--font-body);
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .react-btn:hover {
+      background: rgba(255, 255, 255, .12);
+      border-color: rgba(255, 255, 255, .2);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .vote-group {
+      display: inline-flex;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .vote-group .react-btn {
+      border-radius: 0;
+      border: none;
+      border-right: 1px solid var(--border);
+    }
+
+    .vote-group .react-btn:last-child {
+      border-right: none;
+    }
+
+    .react-btn.liked {
+      background: rgba(0, 245, 212, .15);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .react-btn.disliked {
+      background: rgba(255, 110, 180, .15);
+      border-color: var(--pink);
+      color: var(--pink);
+    }
+
+    .subscribe-btn {
+      background: linear-gradient(135deg, var(--violet2), #a855f7) !important;
+      border: none !important;
+      color: #fff !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 18px rgba(157, 111, 255, .4) !important;
+      letter-spacing: .3px;
+    }
+
+    .subscribe-btn:hover {
+      filter: brightness(1.15) !important;
+      box-shadow: 0 6px 24px rgba(157, 111, 255, .55) !important;
+    }
+
+    /* ── MEDIA CONTROLS PANEL (Audio/Subtitle/Quality) ── */
+    .media-controls-panel {
+      background: linear-gradient(135deg, rgba(157, 111, 255, .06), rgba(0, 245, 212, .03));
+      border: 1px solid rgba(157, 111, 255, .2);
+      border-radius: var(--r);
+      margin-bottom: 13px;
+      overflow: hidden;
+      animation: fadeUp .5s .17s ease both;
+    }
+
+    .mcp-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      background: rgba(157, 111, 255, .05);
+      border-bottom: 1px solid rgba(157, 111, 255, .1);
+    }
+
+    .mcp-title {
+      font-family: var(--font-head);
+      font-size: .8rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
       gap: 8px;
-      transition: all 0.2s ease;
+    }
+
+    .mcp-title i {
+      color: var(--cyan);
+    }
+
+    .mcp-tabs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mcp-tab {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(157, 111, 255, .2);
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-head);
+      font-size: .72rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    .mcp-tab:hover {
+      color: var(--text-primary);
+      border-color: rgba(157, 111, 255, .4);
+      background: rgba(157, 111, 255, .08);
+    }
+
+    .mcp-tab.active {
+      background: rgba(157, 111, 255, .18);
+      border-color: rgba(157, 111, 255, .5);
+      color: var(--violet);
+    }
+
+    .mcp-body {
+      padding: 14px 16px;
+    }
+
+    .mcp-panel {
+      display: none;
+    }
+
+    .mcp-panel.active {
+      display: block;
+    }
+
+    /* Audio Track List */
+    .track-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .track-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .track-item:hover {
+      border-color: rgba(157, 111, 255, .4);
+      background: rgba(157, 111, 255, .08);
+    }
+
+    .track-item.active-track {
+      border-color: var(--cyan);
+      background: rgba(0, 245, 212, .08);
+    }
+
+    .track-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .track-lang {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: .85rem;
+      color: var(--text-primary);
+    }
+
+    .track-badge {
+      font-size: .65rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    .track-badge.default {
+      background: rgba(0, 245, 212, .15);
+      border: 1px solid rgba(0, 245, 212, .3);
+      color: var(--cyan);
+    }
+
+    .track-badge.active {
+      background: rgba(0, 230, 118, .15);
+      border: 1px solid rgba(0, 230, 118, .3);
+      color: var(--green);
+    }
+
+    .track-check {
+      color: var(--cyan);
+      font-size: .85rem;
+      display: none;
+    }
+
+    .track-item.active-track .track-check {
+      display: block;
+    }
+
+    /* Subtitle Controls */
+    .sub-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sub-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sub-toggle-label {
+      font-family: var(--font-head);
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid var(--border);
+      transition: .3s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      left: 2px;
+      top: 2px;
+      background: var(--text-muted);
+      transition: .3s;
+    }
+
+    .toggle-switch input:checked+.toggle-slider {
+      background: rgba(0, 245, 212, .2);
+      border-color: var(--cyan);
+    }
+
+    .toggle-switch input:checked+.toggle-slider::before {
+      transform: translateX(20px);
+      background: var(--cyan);
+    }
+
+    .sub-customizer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sub-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sub-label {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      min-width: 60px;
+      font-family: var(--font-head);
+    }
+
+    .sub-select,
+    .sub-input {
+      flex: 1;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(157, 111, 255, .2);
+      border-radius: 10px;
+      padding: 6px 10px;
+      color: var(--text-primary);
+      font-size: .8rem;
+      font-family: var(--font-body);
+      outline: none;
+    }
+
+    .sub-select option {
+      background: #0d0d20;
+    }
+
+    .sub-preview {
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, .5);
+      text-align: center;
+      font-size: .9rem;
+      border: 1px solid rgba(157, 111, 255, .15);
+      margin-top: 4px;
+    }
+
+    /* Quality Selector */
+    .quality-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quality-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .quality-item:hover {
+      border-color: rgba(157, 111, 255, .4);
+      background: rgba(157, 111, 255, .08);
+    }
+
+    .quality-item.active-quality {
+      border-color: var(--violet);
+      background: rgba(157, 111, 255, .1);
+    }
+
+    .q-label {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: .85rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .q-badge {
+      font-size: .65rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: .5px;
+    }
+
+    .q-best {
+      background: rgba(255, 214, 10, .15);
+      border: 1px solid rgba(255, 214, 10, .3);
+      color: var(--gold);
+    }
+
+    .q-good {
+      background: rgba(0, 245, 212, .12);
+      border: 1px solid rgba(0, 245, 212, .3);
+      color: var(--cyan);
+    }
+
+    .q-low {
+      background: rgba(100, 116, 139, .15);
+      border: 1px solid rgba(100, 116, 139, .3);
+      color: var(--text-secondary);
+    }
+
+    .q-note {
+      font-size: .72rem;
+      color: var(--text-muted);
+    }
+
+    .q-check {
+      color: var(--violet);
+      font-size: .85rem;
+      display: none;
+    }
+
+    .quality-item.active-quality .q-check {
+      display: block;
+    }
+
+    /* ── RESUME PLAYBACK BANNER ── */
+    #resumeBanner {
+      display: none;
+      background: linear-gradient(135deg, rgba(0, 245, 212, .1), rgba(157, 111, 255, .08));
+      border: 1px solid rgba(0, 245, 212, .35);
+      border-radius: var(--r);
+      padding: 12px 16px;
+      margin-bottom: 13px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      animation: fadeUp .4s ease both;
+    }
+
+    .resume-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .resume-icon {
+      font-size: 1.3rem;
+    }
+
+    .resume-text {
+      font-family: var(--font-head);
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .resume-sub {
+      font-size: .72rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .resume-btns {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .resume-btn {
+      padding: 7px 14px;
+      border-radius: 10px;
+      font-family: var(--font-head);
+      font-size: .75rem;
+      font-weight: 800;
       cursor: pointer;
       border: none;
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(4px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: all .2s;
     }
 
-    .btn-like {
-      background: linear-gradient(115deg, #059669, #10b981);
-      color: white;
+    .resume-yes {
+      background: var(--cyan);
+      color: #04040f;
     }
 
-    .btn-like:hover {
-      transform: scale(1.03);
-      filter: brightness(1.05);
+    .resume-yes:hover {
+      filter: brightness(1.1);
     }
 
-    .btn-dislike {
-      background: linear-gradient(115deg, #be123c, #e11d48);
-      color: white;
+    .resume-no {
+      background: rgba(255, 255, 255, .08);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
     }
 
-    .btn-dislike:hover {
-      transform: scale(1.03);
+    .resume-no:hover {
+      background: rgba(255, 255, 255, .14);
     }
 
-    .view-badge {
-      background: linear-gradient(125deg, #1e3a8a, #3b82f6);
-      color: white;
-      font-weight: 600;
-    }
-
-    .btn-subscribe {
-      background: linear-gradient(135deg, #0f7b6e, #2a9d8f);
-      text-decoration: none;
-      color: white;
-    }
-
-    .btn-subscribe:hover {
-      transform: translateY(-2px);
-      background: linear-gradient(135deg, #1e8f7e, #38b2a5);
-    }
-
-    .players-row {
-      display: flex;
+    /* ── CHROMECAST BANNER ── */
+    #castBanner {
+      display: none;
+      background: linear-gradient(135deg, rgba(255, 214, 10, .08), rgba(157, 111, 255, .06));
+      border: 1px solid rgba(255, 214, 10, .3);
+      border-radius: var(--r);
+      padding: 11px 15px;
+      margin-bottom: 13px;
+      align-items: center;
       gap: 10px;
-      margin: 16px 0 10px;
-      flex-wrap: wrap;
+      animation: fadeUp .4s ease both;
     }
 
-    .btn-custom {
+    .cast-icon {
+      font-size: 1.1rem;
+      color: var(--gold);
+    }
+
+    .cast-text {
       flex: 1;
-      min-width: 90px;
-      border-radius: 12px;
-      padding: 12px 8px;
-      font-weight: 600;
-      text-align: center;
+      font-family: var(--font-head);
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .cast-sub {
+      font-size: .7rem;
+      color: var(--text-muted);
+    }
+
+    .cast-btn {
+      padding: 7px 16px;
+      border-radius: 10px;
+      background: rgba(255, 214, 10, .15);
+      border: 1px solid rgba(255, 214, 10, .4);
+      color: var(--gold);
+      font-family: var(--font-head);
+      font-size: .75rem;
+      font-weight: 800;
       cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      color: #e8ecf5;
-      font-size: 0.78rem;
-      letter-spacing: 0.3px;
+      transition: all .2s;
+    }
+
+    .cast-btn:hover {
+      background: rgba(255, 214, 10, .25);
+    }
+
+    /* ── SECTION LABELS ── */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--font-head);
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .section-label i {
+      color: var(--cyan);
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(157, 111, 255, .3), transparent);
+    }
+
+    /* ── ACTION BUTTONS ── */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+      animation: fadeUp .5s .22s ease both;
+    }
+
+    .actions-grid.triple {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .action-btn {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+      padding: 13px 10px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: .8rem;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .22s;
+      position: relative;
+      overflow: hidden;
     }
 
-    .btn-custom i {
-      font-size: 0.9rem;
-      opacity: 0.9;
+    .action-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0);
+      transition: background .2s;
     }
 
-    .btn-custom:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    .action-btn:hover::after {
+      background: rgba(255, 255, 255, .07);
     }
 
-    .btn-custom:active {
-      transform: scale(0.97);
+    .action-btn:hover {
+      transform: translateY(-3px);
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+    }
+
+    .action-btn:active {
+      transform: scale(.96);
     }
 
     .btn-mx {
-      border-left: 3px solid #3b82f6;
-    }
-
-    .btn-mx:hover {
-      background: rgba(59, 130, 246, 0.12);
-      border-color: #3b82f6;
+      background: linear-gradient(135deg, #1a3a6e, #1e6fc0);
+      border-color: rgba(30, 111, 192, .5);
+      color: #93c5fd;
+      box-shadow: 0 4px 16px rgba(30, 111, 192, .2);
     }
 
     .btn-vlc {
-      border-left: 3px solid #f97316;
-    }
-
-    .btn-vlc:hover {
-      background: rgba(249, 115, 22, 0.12);
-      border-color: #f97316;
+      background: linear-gradient(135deg, #8b1a00, #d94f00);
+      border-color: rgba(217, 79, 0, .5);
+      color: #fdba74;
+      box-shadow: 0 4px 16px rgba(217, 79, 0, .2);
     }
 
     .btn-playit {
-      border-left: 3px solid #ef4444;
+      background: linear-gradient(135deg, #4c1d95, #8b5cf6);
+      border-color: rgba(139, 92, 246, .5);
+      color: #ddd6fe;
+      box-shadow: 0 4px 16px rgba(139, 92, 246, .2);
     }
 
-    .btn-playit:hover {
-      background: rgba(239, 68, 68, 0.12);
-      border-color: #ef4444;
+    .btn-xplayer {
+      background: linear-gradient(135deg, #1a1a40, #3b3baa);
+      border-color: rgba(99, 102, 241, .5);
+      color: #c7d2fe;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, .2);
     }
 
-    .compat-box {
-      background: rgba(251, 191, 36, 0.06);
-      border-left: 3px solid #fbbf24;
-      border-radius: 10px;
-      padding: 10px 16px;
-      margin: 12px 0 4px;
+    .btn-nplayer {
+      background: linear-gradient(135deg, #1a0a3a, #5b21b6);
+      border-color: rgba(91, 33, 182, .5);
+      color: #c4b5fd;
+      box-shadow: 0 4px 16px rgba(91, 33, 182, .2);
+    }
+
+    .btn-kmplayer {
+      background: linear-gradient(135deg, #052e16, #166534);
+      border-color: rgba(22, 101, 52, .5);
+      color: #86efac;
+      box-shadow: 0 4px 16px rgba(22, 101, 52, .2);
+    }
+
+    .btn-bsplayer {
+      background: linear-gradient(135deg, #1c1917, #57534e);
+      border-color: rgba(87, 83, 78, .5);
+      color: #e7e5e4;
+      box-shadow: 0 4px 16px rgba(87, 83, 78, .2);
+    }
+
+    .download-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 13px;
+      animation: fadeUp .5s .25s ease both;
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, #052e16, #059669);
+      border-color: rgba(5, 150, 105, .5);
+      color: #6ee7b7;
+      box-shadow: 0 6px 22px rgba(5, 150, 105, .25);
+    }
+
+    .btn-telegram {
+      background: linear-gradient(135deg, #082f49, #0ea5e9);
+      border-color: rgba(14, 165, 233, .5);
+      color: #7dd3fc;
+      box-shadow: 0 6px 22px rgba(14, 165, 233, .25);
+    }
+
+    .btn-idm {
+      background: linear-gradient(135deg, #1e3a5f, #2563eb);
+      border-color: rgba(37, 99, 235, .5);
+      color: #93c5fd;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, .2);
+    }
+
+    .btn-adm {
+      background: linear-gradient(135deg, #3b0764, #9333ea);
+      border-color: rgba(147, 51, 234, .5);
+      color: #d8b4fe;
+      box-shadow: 0 4px 16px rgba(147, 51, 234, .2);
+    }
+
+    .btn-1dm {
+      background: linear-gradient(135deg, #0c4a6e, #0369a1);
+      border-color: rgba(3, 105, 161, .5);
+      color: #7dd3fc;
+      box-shadow: 0 4px 16px rgba(3, 105, 161, .2);
+    }
+
+    .btn-jdownloader {
+      background: linear-gradient(135deg, #451a03, #b45309);
+      border-color: rgba(180, 83, 9, .5);
+      color: #fcd34d;
+      box-shadow: 0 4px 16px rgba(180, 83, 9, .2);
+    }
+
+    .btn-browser {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      border-color: rgba(51, 65, 85, .5);
+      color: #cbd5e1;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .3);
+    }
+
+    .share-row {
+      margin-bottom: 14px;
+      animation: fadeUp .5s .28s ease both;
+    }
+
+    .btn-share {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(157, 111, 255, .08), rgba(0, 245, 212, .05));
+      border: 1px solid rgba(157, 111, 255, .25) !important;
+      color: var(--text-secondary) !important;
+      letter-spacing: 1.2px;
+    }
+
+    .btn-share:hover {
+      color: var(--text-primary) !important;
+      border-color: rgba(157, 111, 255, .5) !important;
+      background: rgba(157, 111, 255, .12) !important;
+    }
+
+    /* ── MORE APPS BUTTON ── */
+    .apps-expand-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px dashed rgba(157, 111, 255, .35);
+      background: rgba(157, 111, 255, .05);
+      color: var(--violet);
+      font-family: var(--font-head);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all .2s;
+      text-transform: uppercase;
+      margin-top: 7px;
+    }
+
+    .apps-expand-btn:hover {
+      border-color: rgba(157, 111, 255, .6);
+      background: rgba(157, 111, 255, .12);
+      box-shadow: 0 0 16px rgba(157, 111, 255, .15);
+    }
+
+    .extra-apps {
+      display: none;
+      margin-top: 8px;
+    }
+
+    .extra-apps.open {
+      display: grid;
+    }
+
+    .dl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 7px;
+    }
+
+    .section-sub {
+      font-family: var(--font-head);
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: 10px 0 7px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .section-sub::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, .06);
+    }
+
+    /* ── DISCLAIMER / FOOTER ── */
+    .disclaimer {
       text-align: center;
-      color: #d4c48a;
-      font-size: 0.75rem;
+      font-size: .72rem;
+      color: var(--text-muted);
+      padding: 0 8px 10px;
+      line-height: 1.7;
+      animation: fadeUp .5s .35s ease both;
+    }
+
+    .disclaimer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .disclaimer a:hover {
+      color: var(--text-secondary);
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+      background: rgba(4, 4, 15, .95);
+      border-top: 1px solid var(--border2);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: .76rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--violet);
+      text-decoration: none;
+    }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(8, 8, 26, .97);
+      border: 1px solid rgba(0, 245, 212, .4);
+      color: var(--text-primary);
+      padding: 10px 26px;
+      border-radius: 100px;
+      font-size: .87rem;
+      font-weight: 600;
+      z-index: 99999;
+      opacity: 0;
+      transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), opacity .35s;
+      pointer-events: none;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 36px rgba(0, 0, 0, .6), 0 0 18px rgba(0, 245, 212, .15);
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .watermark {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      opacity: .05;
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.9rem;
+      color: #fff;
+      z-index: 99998;
+      pointer-events: none;
+      user-select: none;
+      transform: rotate(-12deg);
+      letter-spacing: 2px;
+    }
+
+    /* ── REPORT MODAL ── */
+    .modal-content {
+      background: #08081f;
+      border: 1px solid rgba(157, 111, 255, .3);
+      color: var(--text-primary);
+      border-radius: var(--r);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .9);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .report-option {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 14px;
+      cursor: pointer;
+      transition: all .18s;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--text-secondary);
+      font-size: .88rem;
       font-weight: 500;
     }
 
-    .compat-box i {
-      margin-right: 6px;
-      color: #fbbf24;
+    .report-option:hover {
+      border-color: rgba(157, 111, 255, .4);
+      background: rgba(157, 111, 255, .08);
+      color: var(--text-primary);
     }
 
-    .file-name-truncate {
-      max-width: 100%;
-      word-break: break-word;
+    .report-option input {
+      accent-color: var(--violet);
     }
 
-    .plyr__audio-track-dropdown::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .plyr__audio-track-dropdown::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .plyr__audio-track-dropdown::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 4px;
-    }
-
-    @media (max-width: 480px) {
-      .glass-card {
-        padding: 1rem;
-        margin: 12px 8px;
-        border-radius: 16px;
-      }
-
-      .players-row {
-        gap: 6px;
-      }
-
-      .btn-custom {
-        padding: 10px 6px;
-        font-size: 0.7rem;
-        min-width: 70px;
-        border-radius: 10px;
-      }
-
-      .btn-custom i {
-        font-size: 0.75rem;
-      }
-
-      .btn-like,
-      .btn-dislike,
-      .view-badge,
-      .btn-subscribe {
-        padding: 6px 14px;
-        font-size: 0.7rem;
-        gap: 5px;
-      }
-
-      .file-info-title {
-        font-size: 0.9rem;
-      }
-
-      .info-item {
-        font-size: 0.75rem;
-      }
+    /* ── SUBTITLE STYLE INJECTION ── */
+    video::cue {
+      font-size: 1em;
+      color: white;
+      background: rgba(0, 0, 0, 0.6);
     }
   </style>
 </head>
 
 <body>
-  <div class="header">
+
+  <!-- NAV -->
+  <nav class="topbar">
     <div class="logo-container">
       <div class="logo-circle"></div>
       <div class="logo-text">Cinemaniacs Hub</div>
     </div>
-  </div>
+    <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+  </nav>
 
-  <div style="padding: 0 12px;">
-    <div class="video-wrapper" id="videoWrapper">
-      <video id="player" class="player" playsinline crossorigin poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
-        <source src="{{file_url}}">
+  <main>
+
+    <!-- PLAYER -->
+    <div class="player-shell">
+      <div id="videoLoader" class="video-loader">
+        <div class="spinner-ring"></div>
+      </div>
+      <video id="myVideo" playsinline controls preload="auto" class="w-100" poster="https://i.ibb.co/6cgJGJ3p/x.jpg">
+        <source src="{{file_url}}" type="video/mp4" />
+        <source src="{{file_url}}" type="video/x-matroska" />
       </video>
-    </div>
-  </div>
-
-  <div class="glass-card">
-    <div class="file-info-title">
-      <i class="fas fa-film"></i>
-      <span>File Information</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">📂 File Name</span>
-      <span class="info-value file-name-truncate" id="displayFileName">{{file_name}}</span>
-    </div>
-    <div class="info-item">
-      <span class="info-label">📦 File Size</span>
-      <span class="info-value" id="file-size-display">{{file_size}}</span>
+      <!-- Skip Intro Button -->
+      <button id="skipIntroBtn" class="skip-btn" onclick="skipIntro()">
+        <i class="fa-solid fa-forward-fast"></i> Skip Intro
+      </button>
+      <!-- Skip Credits Button -->
+      <button id="skipCreditsBtn" class="skip-btn" onclick="skipCredits()">
+        <i class="fa-solid fa-forward-step"></i> Skip Credits
+      </button>
     </div>
 
-    <div class="engagement-stats">
-      <div class="d-flex">
-        <button class="btn-like" id="likeBtn" onclick="likeVideo()">
-          <i class="fas fa-thumbs-up"></i>
-          <span id="likeCount"></span>
-        </button>
-        <button class="btn-dislike" id="dislikeBtn" onclick="dislikeVideo()">
-          <i class="fas fa-thumbs-down"></i>
-          <span id="dislikeCount"></span>
-        </button>
-        <div class="view-badge">
-          <i class="fas fa-eye"></i>
-          <span id="viewCount"></span>
+    <!-- RESUME PLAYBACK BANNER -->
+    <div id="resumeBanner">
+      <div class="resume-left">
+        <span class="resume-icon">⏱️</span>
+        <div>
+          <div class="resume-text">Resume where you left off?</div>
+          <div class="resume-sub" id="resumeSubText">Continue from 00:00</div>
         </div>
-        <a href="https://t.me/Cinemaniacs_Hub" target="_blank" class="btn-subscribe" id="telegramSubscribe">
-          <i class="fab fa-telegram-plane"></i> Subscribe
-        </a>
+      </div>
+      <div class="resume-btns">
+        <button class="resume-btn resume-yes" onclick="doResume()">Resume</button>
+        <button class="resume-btn resume-no" onclick="dismissResume()">Start Over</button>
       </div>
     </div>
 
-    <div class="players-row">
-      <div class="btn-custom btn-mx" onclick="mx_player()">
-        <i class="fas fa-play"></i> MX Player
+    <!-- CHROMECAST BANNER -->
+    <div id="castBanner">
+      <span class="cast-icon"><i class="fa-solid fa-tv"></i></span>
+      <div>
+        <div class="cast-text">Chromecast Available</div>
+        <div class="cast-sub" id="castDeviceName">Found a device on your network</div>
       </div>
-      <div class="btn-custom btn-vlc" onclick="vlc_player()">
-        <i class="fas fa-play-circle"></i> VLC
+      <button class="cast-btn" onclick="startCast()">
+        <i class="fa-solid fa-cast" style="margin-right:5px"></i>Cast
+      </button>
+    </div>
+
+    <!-- TITLE -->
+    <div class="file-title-strip">
+      <span style="font-size:1.6rem;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(157,111,255,.5))">🎬</span>
+      <span class="file-title-text">{{file_name}}</span>
+    </div>
+
+    <!-- REACTION BAR -->
+    <div class="reaction-bar">
+      <div class="vote-group">
+        <button class="react-btn" id="btnLike" onclick="castVote('like')">
+          <i class="fa-solid fa-thumbs-up"></i> <span id="likeCount" style="font-weight:800;font-family:var(--font-head)">0</span>
+        </button>
+        <button class="react-btn" id="btnDislike" onclick="castVote('dislike')">
+          <i class="fa-solid fa-thumbs-down"></i> <span id="dislikeCount" style="font-weight:800;font-family:var(--font-head)">0</span>
+        </button>
       </div>
-      <div class="btn-custom btn-playit" onclick="playit_player()">
-        <i class="fas fa-bolt"></i> Play It
+      <button class="react-btn" onclick="openReport()" style="color:#f87171"><i class="fa-solid fa-flag" style="color:#f87171"></i> Report</button>
+      <a class="react-btn subscribe-btn" href="https://t.me/Prime_SpoT" target="_blank" style="animation:glowPulse 2.5s ease-in-out infinite">
+        <i class="fa-solid fa-bell"></i> Subscribe
+      </a>
+    </div>
+
+    <!-- ══════════════════════════════════════
+       MEDIA CONTROLS PANEL
+       (Audio Tracks · Subtitles · Quality)
+  ══════════════════════════════════════ -->
+    <div class="section-label">
+      <i class="fa-solid fa-sliders"></i> Media Controls
+    </div>
+
+    <div class="media-controls-panel" id="mediaControlsPanel">
+      <div class="mcp-header">
+
+        <div class="mcp-tabs">
+          <button class="mcp-tab" onclick="switchMCP('audio',this)">🎵 Audio</button>
+          <button class="mcp-tab" onclick="switchMCP('subtitle',this)">💬 Subtitles</button>
+          <button class="mcp-tab" onclick="switchMCP('quality',this)">📺 Quality</button>
+        </div>
+      </div>
+      <div class="mcp-body" style="display:none">
+
+        <!-- AUDIO TRACK PANEL -->
+        <div class="mcp-panel active" id="mcp-audio">
+          <div class="track-list" id="audioTrackList">
+            <div style="color:var(--text-muted);font-size:.82rem;text-align:center;padding:10px 0">
+              <i class="fa-solid fa-circle-info" style="margin-right:6px;color:rgba(157,111,255,.5)"></i>
+              Loading audio tracks…
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBTITLE PANEL -->
+        <div class="mcp-panel" id="mcp-subtitle">
+          <div class="sub-controls">
+            <div class="sub-toggle-row">
+              <span class="sub-toggle-label"><i class="fa-solid fa-closed-captioning" style="color:var(--violet);margin-right:6px"></i>Subtitles</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="subToggle" onchange="toggleSubtitles(this.checked)">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="sub-customizer" id="subCustomizer" style="display:none">
+              <div class="sub-row">
+                <span class="sub-label">Font Size</span>
+                <input type="range" class="sub-input" id="subFontSize" min="60" max="200" value="100" oninput="updateSubStyle()">
+                <span id="subFontSizeVal" style="font-size:.75rem;color:var(--cyan);font-family:var(--font-head);font-weight:800;min-width:34px">100%</span>
+              </div>
+              <div class="sub-row">
+                <span class="sub-label">Color</span>
+                <select class="sub-select" id="subColor" onchange="updateSubStyle()">
+                  <option value="white">White</option>
+                  <option value="#ffd60a">Yellow</option>
+                  <option value="#00f5d4">Cyan</option>
+                  <option value="#ff6eb4">Pink</option>
+                  <option value="#00e676">Green</option>
+                </select>
+              </div>
+              <div class="sub-row">
+                <span class="sub-label">Background</span>
+                <select class="sub-select" id="subBg" onchange="updateSubStyle()">
+                  <option value="rgba(0,0,0,0.6)">Semi-dark</option>
+                  <option value="rgba(0,0,0,0.9)">Dark</option>
+                  <option value="transparent">None</option>
+                </select>
+              </div>
+              <div class="sub-preview" id="subPreview" style="color:white">
+                Sample subtitle text appears here
+              </div>
+            </div>
+            <div id="subTrackList" style="margin-top:8px"></div>
+          </div>
+        </div>
+
+        <!-- QUALITY PANEL -->
+        <div class="mcp-panel" id="mcp-quality">
+          <div class="quality-list" id="qualityList">
+            <!-- filled by JS -->
+          </div>
+          <div style="margin-top:10px;padding:9px 12px;background:rgba(157,111,255,.05);border-radius:10px;border:1px solid rgba(157,111,255,.15)">
+            <div style="font-size:.72rem;color:var(--text-muted);font-family:var(--font-head);font-weight:700;line-height:1.6">
+              <i class="fa-solid fa-circle-info" style="color:var(--violet);margin-right:5px"></i>
+              Quality options depend on the source file. The stream always serves the original resolution — these are your player-side display preferences.
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <div class="compat-box">
-      <i class="fas fa-exclamation-triangle"></i> Video not playing? Try an external player above.
+    <!-- PLAY WITH -->
+    <div class="section-label">
+      <i class="fa-solid fa-play-circle"></i> Play With
+    </div>
+
+    <!-- Primary 3 players -->
+    <div class="actions-grid triple" style="margin-bottom:6px">
+      <a onclick="mx_player()" class="action-btn btn-mx"> <i class="fa-solid fa-play"></i> MX </a>
+      <a onclick="vlc_player()" class="action-btn btn-vlc"> <i class="fa-solid fa-play"></i> VLC </a>
+      <a onclick="playit_player()" class="action-btn btn-playit"><i class="fa-solid fa-play"></i> PlayIt </a>
+    </div>
+
+    <!-- More players toggle -->
+    <button class="apps-expand-btn" onclick="toggleExtraApps(this)">
+      <i class="fa-solid fa-grip"></i> More Players <i class="fa-solid fa-chevron-down" style="font-size:.6rem;opacity:.6"></i>
+    </button>
+    <div class="extra-apps" id="extraApps" style="display:none;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+      <a onclick="xplayer()" class="action-btn btn-xplayer"> <i class="fa-solid fa-play"></i> XPlayer </a>
+      <a onclick="nplayer()" class="action-btn btn-nplayer"> <i class="fa-solid fa-play"></i> nPlayer </a>
+      <a onclick="kmplayer()" class="action-btn btn-kmplayer"><i class="fa-solid fa-play"></i> KMPlayer </a>
+      <a onclick="bsplayer()" class="action-btn btn-bsplayer"><i class="fa-solid fa-play"></i> BSPlayer </a>
+    </div>
+
+    <div style="margin-bottom:14px"></div>
+
+    <!-- GET FILE -->
+    <div class="section-label">
+      <i class="fa-solid fa-download"></i> Get File
+    </div>
+
+    <!-- Primary downloads -->
+    <div class="dl-grid" style="margin-bottom:6px">
+      <a onclick="streamDownload()" class="action-btn btn-download"><i class="fa-solid fa-cloud-arrow-down"></i> Download</a>
+      <a onclick="showLinkModal('https://t.me/FileStream_MsBot?start=file_25036')" class="action-btn btn-telegram"><i class="fa-brands fa-telegram"></i> Telegram</a>
+    </div>
+
+    <!-- More download options toggle -->
+    <button class="apps-expand-btn" onclick="toggleExtraDL(this)">
+      <i class="fa-solid fa-layer-group"></i> More Download Options <i class="fa-solid fa-chevron-down" style="font-size:.6rem;opacity:.6"></i>
+    </button>
+    <div class="extra-apps" id="extraDL" style="display:none;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+      <div style="grid-column:1/-1">
+        <div class="section-sub"><i class="fa-solid fa-bolt" style="color:var(--gold)"></i> Download Managers</div>
+      </div>
+      <a onclick="openIDM()" class="action-btn btn-idm"> <i class="fa-solid fa-bolt"></i> IDM </a>
+      <a onclick="openADM()" class="action-btn btn-adm"> <i class="fa-solid fa-bolt"></i> ADM </a>
+      <a onclick="open1DM()" class="action-btn btn-1dm"> <i class="fa-solid fa-bolt"></i> 1DM </a>
+      <a onclick="openJDownloader()" class="action-btn btn-jdownloader"><i class="fa-solid fa-bolt"></i> JDownloader</a>
+      <div style="grid-column:1/-1">
+        <div class="section-sub"><i class="fa-solid fa-globe" style="color:var(--cyan)"></i> Open In Browser</div>
+      </div>
+      <a onclick="openInBrowser()" style="grid-column:1/-1" class="action-btn btn-browser">
+        <i class="fa-solid fa-globe"></i> Open in External Browser
+      </a>
+    </div>
+
+    <div style="margin-bottom:6px"></div>
+
+    <!-- SHARE -->
+    <div class="share-row">
+      <a onclick="shareVideo()" class="action-btn btn-share"><i class="fa-solid fa-share-nodes"></i> Share This File</a>
+    </div>
+
+    <div class="disclaimer" style="color:#334155">This platform provides high-speed streaming and download services. Strictly for personal use. Report any copyright infringements or inappropriate content to our support team.<br><a href="https://t.me/Prime_SpoT" style="color:#475569;text-decoration:underline;text-underline-offset:3px">⚑ Report Issue</a></div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <i class="fa-solid fa-robot" style="color:var(--violet);font-size:.78rem"></i>
+      &copy; 2025 Prime SpoT. All rights reserved.
+    </div>
+  </footer>
+
+  <div class="watermark">Prime SpoT</div>
+  <div id="toast"></div>
+
+  <!-- REPORT MODAL -->
+  <div class="modal fade" id="reportModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fa-solid fa-flag me-2" style="color:var(--pink)"></i>Report Content</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p style="color:#475569;font-size:.84rem;margin-bottom:12px">Why are you reporting this?</p>
+          <div class="d-flex flex-column gap-2">
+            <label class="report-option"><input type="radio" name="rr" value="copyright"> Copyright Infringement</label>
+            <label class="report-option"><input type="radio" name="rr" value="inappropriate"> Inappropriate Content</label>
+            <label class="report-option"><input type="radio" name="rr" value="spam"> Spam or Misleading</label>
+            <label class="report-option"><input type="radio" name="rr" value="Video"> ❌ Video Not Playing</label>
+            <label class="report-option"><input type="radio" name="rr" value="Buffering"> 🌀 Buffering / Loading</label>
+            <label class="report-option"><input type="radio" name="rr" value="Audio"> 📢 Audio Not Playing</label>
+            <label class="report-option"><input type="radio" name="rr" value="other"> Other</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-sm" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;padding:6px 18px;border-radius:8px" onclick="submitReport()">
+            <i class="fa-solid fa-paper-plane me-1"></i>Submit
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
+  <script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    function getRawLink() {
-      let currentUrl = window.location.href;
-      let rawLink = currentUrl.replace("/watch/", "/");
-      const templateUrl = "{{file_url}}";
-      if (templateUrl && templateUrl !== "{{file_url}}") return templateUrl;
-      return rawLink;
-    }
-    const videoLink = getRawLink();
-    // ===== PLYR CONFIG - NO REWIND/FORWARD BUTTONS =====
-    const playerConfig = {
-      controls: [
-        'play-large', 'play',
-        'progress', 'current-time', 'duration',
-        'mute', 'volume',
-        'settings', 'pip', 'airplay', 'download', 'fullscreen'
-      ],
-      invertTime: false,
-      autoplay: false,
-      speed: {
-        selected: 1,
-        options: [0.5, 0.75, 1, 1.25, 1.5, 2]
+    /* ══ CONSTANTS ══ */
+    const FILE_ID = "{{file_id}}";
+    const FILE_URL = "{{file_url}}";
+    const FILE_NAME = "{{file_name}}";
+    const IS_AUDIO = ("false" === "true");
+    const COMMENT_KEY = "ps_cmts_" + FILE_ID;
+    const RESUME_KEY = "ps_resume_" + FILE_ID;
+    const PAGE_SIZE = 3;
+    /* ══ FILENAME TRACK DETECTION ══
+       Chrome/Android does NOT support video.audioTracks or embedded MKV
+       subtitles — so we parse the filename as a reliable fallback.
+    ══════════════════════════════ */
+    const AUDIO_LANG_MAP = [{
+        key: "Hindi",
+        re: /\bHindi\b/i
       },
-    };
-    const player = new Plyr('#player', playerConfig);
-    const video = document.getElementById('player');
-    // ===== DOUBLE-TAP SEEK GESTURE =====
-    let lastTapTime = 0;
-    let tapTimeout = null;
-    video.addEventListener('touchend', function(e) {
-      const touch = e.changedTouches[0];
-      const rect = video.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const width = rect.width;
-      const currentTime = video.currentTime;
-      const duration = video.duration;
-      const now = Date.now();
-      const timeSinceLastTap = now - lastTapTime;
-      if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
-        // Double tap detected
-        clearTimeout(tapTimeout);
-        if (x < width / 2) {
-          // Left side - rewind 10s
-          video.currentTime = Math.max(0, currentTime - 10);
-          showSeekFeedback('⏪ -10s');
-        } else {
-          // Right side - forward 10s
-          video.currentTime = Math.min(duration, currentTime + 10);
-          showSeekFeedback('⏩ +10s');
+      {
+        key: "Tamil",
+        re: /\bTamil\b/i
+      },
+      {
+        key: "Telugu",
+        re: /\bTelugu\b/i
+      },
+      {
+        key: "Malayalam",
+        re: /\bMalayalam\b/i
+      },
+      {
+        key: "Kannada",
+        re: /\bKannada\b/i
+      },
+      {
+        key: "Bengali",
+        re: /\bBengali\b/i
+      },
+      {
+        key: "English",
+        re: /\bEnglish\b/i
+      },
+      {
+        key: "Punjabi",
+        re: /\bPunjabi\b/i
+      },
+      {
+        key: "Marathi",
+        re: /\bMarathi\b/i
+      },
+      {
+        key: "Japanese",
+        re: /\bJapanese\b/i
+      },
+      {
+        key: "Korean",
+        re: /\bKorean\b/i
+      },
+      {
+        key: "Chinese",
+        re: /\bChinese\b/i
+      },
+      {
+        key: "Russian",
+        re: /\bRussian\b/i
+      },
+    ];
+
+    function detectAudioLangs(fname) {
+      if (/\bDual\s*Audio\b/i.test(fname)) return ["Audio 1", "Audio 2"];
+      if (/\bMulti\s*Audio\b/i.test(fname)) return ["Audio 1", "Audio 2", "Audio 3"];
+      const found = [];
+      for (const {
+          key,
+          re
+        } of AUDIO_LANG_MAP) {
+        if (re.test(fname)) found.push(key);
+      }
+      return found;
+    }
+
+    function detectSubtitleLangs(fname) {
+      const subs = [];
+      if (/\bE\.?[Ss]ubs?\b/.test(fname)) subs.push("English");
+      if (/\bH\.?[Ss]ubs?\b/.test(fname)) subs.push("Hindi");
+      if (/\bEng(?:lish)?\s*[Ss]ub/i.test(fname)) subs.push("English");
+      if (/\bHin(?:di)?\s*[Ss]ub/i.test(fname)) subs.push("Hindi");
+      // "... + E.ext" pattern (E = English subtitles, not audio)
+      if (/\+\s*E\b[^a-z]/i.test(fname + " ") && !subs.includes("English")) subs.push("English");
+      return [...new Set(subs)];
+    }
+    /* ══════════════════════════════════════════════════
+       FEATURE 1 — MULTI AUDIO SELECTOR
+       Reads AudioTrack API or MediaSource audio groups
+    ══════════════════════════════════════════════════ */
+    const video = document.getElementById("myVideo");
+    const loader = document.getElementById("videoLoader");
+
+    function initAudioTracks() {
+      const list = document.getElementById("audioTrackList");
+      const native = video.audioTracks;
+      // ── Try native AudioTrack API (works in Safari/Edge, not Chrome Android) ──
+      if (native && native.length > 1) {
+        list.innerHTML = "";
+        for (let i = 0; i < native.length; i++) {
+          const t = native[i];
+          const lang = t.language || t.label || ("Track " + (i + 1));
+          const isDefault = t.enabled;
+          const el = document.createElement("div");
+          el.className = "track-item" + (isDefault ? " active-track" : "");
+          el.id = "atrack_" + i;
+          el.innerHTML = `
+        <div class="track-left">
+          <span class="track-lang">${lang}</span>
+          ${isDefault ? '<span class="track-badge default">Default</span>' : ""}
+          ${isDefault ? '<span class="track-badge active" id="activeBadge_' + i + '">Active</span>' : ""}
+        </div>
+        <i class="fa-solid fa-check track-check"></i>`;
+          el.onclick = () => selectAudioTrack(i);
+          list.appendChild(el);
         }
-        lastTapTime = 0;
+        return;
+      }
+      // ── Fallback: detect languages from filename ──
+      const detected = detectAudioLangs(FILE_NAME);
+      if (detected.length === 0) {
+        list.innerHTML = `
+      <div style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:10px 0">
+        <i class="fa-solid fa-info-circle" style="margin-right:6px;color:rgba(157,111,255,.5)"></i>
+        Single audio track
+      </div>`;
+        return;
+      }
+      // Show info banner + detected language tracks
+      const banner = document.createElement("div");
+      banner.style.cssText = "font-size:.72rem;font-weight:700;color:var(--text-secondary);font-family:var(--font-head);margin-bottom:9px;padding:8px 10px;background:rgba(157,111,255,.07);border-radius:10px;border:1px solid rgba(157,111,255,.2);line-height:1.5";
+      banner.innerHTML = `<i class="fa-solid fa-circle-info" style="color:var(--violet);margin-right:5px"></i>Multi-audio detected. To switch audio tracks, use <b style="color:var(--cyan)">MX Player</b> or <b style="color:var(--gold)">VLC</b>.`;
+      list.innerHTML = "";
+      list.appendChild(banner);
+      detected.forEach((lang, i) => {
+        const el = document.createElement("div");
+        el.className = "track-item" + (i === 0 ? " active-track" : "");
+        el.innerHTML = `
+      <div class="track-left">
+        <span class="track-lang">${lang}</span>
+        ${i === 0 ? '<span class="track-badge default">Default</span>' : ""}
+      </div>
+      <i class="fa-solid fa-check track-check"></i>`;
+        el.onclick = () => {
+          document.querySelectorAll(".track-item").forEach((e, j) => e.classList.toggle("active-track", j === i + 1));
+          showToast("🎵 Open in MX/VLC to play " + lang + " audio");
+        };
+        list.appendChild(el);
+      });
+    }
+
+    function selectAudioTrack(idx) {
+      const tracks = video.audioTracks;
+      if (!tracks) return;
+      for (let i = 0; i < tracks.length; i++) {
+        tracks[i].enabled = (i === idx);
+      }
+      document.querySelectorAll(".track-item").forEach((el, i) => {
+        el.classList.toggle("active-track", i === idx);
+      });
+      showToast("🎵 Audio track switched!");
+    }
+    /* ══════════════════════════════════════════════════
+       FEATURE 2 — SUBTITLE SELECTOR + CUSTOMIZER
+       Supports native TextTracks from the <video> element
+    ══════════════════════════════════════════════════ */
+    let subStyleEl = null;
+
+    function initSubtitles() {
+      const trackList = document.getElementById("subTrackList");
+      const tracks = video.textTracks;
+      // ── Try native TextTrack API first ──
+      if (tracks && tracks.length > 0) {
+        let html = '<div style="font-size:.72rem;font-weight:800;color:var(--text-secondary);font-family:var(--font-head);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Subtitle Tracks</div>';
+        for (let i = 0; i < tracks.length; i++) {
+          const t = tracks[i];
+          const lang = t.label || t.language || ("Track " + (i + 1));
+          const isActive = t.mode === "showing";
+          html += `
+        <div class="track-item ${isActive ? "active-track" : ""}" onclick="selectSubTrack(${i})" id="strack_${i}">
+          <div class="track-left">
+            <span class="track-lang">${lang}</span>
+            ${t.kind ? `<span class="track-badge default">${t.kind}</span>` : ""}
+          </div>
+          <i class="fa-solid fa-check track-check"></i>
+        </div>`;
+        }
+        trackList.innerHTML = html;
+        return;
+      }
+      // ── Fallback: detect subtitles from filename ──
+      const detected = detectSubtitleLangs(FILE_NAME);
+      if (detected.length === 0) {
+        trackList.innerHTML = `
+      <div style="color:var(--text-secondary);font-size:.8rem;padding:8px 0;text-align:center">
+        <i class="fa-solid fa-info-circle" style="color:rgba(157,111,255,.5);margin-right:5px"></i>
+        No subtitle tracks found
+      </div>`;
+        return;
+      }
+      let html = `
+    <div style="font-size:.72rem;font-weight:700;color:var(--text-secondary);font-family:var(--font-head);margin-bottom:9px;padding:8px 10px;background:rgba(0,245,212,.05);border-radius:10px;border:1px solid rgba(0,245,212,.2);line-height:1.5">
+      <i class="fa-solid fa-closed-captioning" style="color:var(--cyan);margin-right:5px"></i>
+      Embedded subs detected. Browser may not render MKV subs — use <b style="color:var(--gold)">VLC</b> or <b style="color:var(--cyan)">MX Player</b> for full subtitle support.
+    </div>
+    <div style="font-size:.72rem;font-weight:800;color:var(--text-secondary);font-family:var(--font-head);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Detected Subtitles</div>`;
+      detected.forEach((lang, i) => {
+        html += `
+      <div class="track-item${i === 0 ? " active-track" : ""}" onclick="showToast('💬 ${lang} subs embedded — open in VLC/MX for display')">
+        <div class="track-left">
+          <span class="track-lang">${lang}</span>
+          <span class="track-badge default">Embedded</span>
+        </div>
+        <i class="fa-solid fa-check track-check"></i>
+      </div>`;
+      });
+      trackList.innerHTML = html;
+    }
+
+    function selectSubTrack(idx) {
+      const tracks = video.textTracks;
+      for (let i = 0; i < tracks.length; i++) {
+        tracks[i].mode = (i === idx) ? "showing" : "hidden";
+      }
+      document.querySelectorAll("[id^='strack_']").forEach((el, i) => {
+        el.classList.toggle("active-track", i === idx);
+      });
+      // Enable toggle if off
+      document.getElementById("subToggle").checked = true;
+      document.getElementById("subCustomizer").style.display = "flex";
+      showToast("💬 Subtitle track changed!");
+    }
+
+    function toggleSubtitles(on) {
+      const tracks = video.textTracks;
+      document.getElementById("subCustomizer").style.display = on ? "flex" : "none";
+      for (let i = 0; i < tracks.length; i++) {
+        if (tracks[i].mode !== "disabled") {
+          tracks[i].mode = on ? "showing" : "hidden";
+        }
+      }
+      showToast(on ? "💬 Subtitles ON" : "💬 Subtitles OFF");
+    }
+
+    function updateSubStyle() {
+      const size = document.getElementById("subFontSize").value;
+      const color = document.getElementById("subColor").value;
+      const bg = document.getElementById("subBg").value;
+      document.getElementById("subFontSizeVal").textContent = size + "%";
+      const preview = document.getElementById("subPreview");
+      preview.style.color = color;
+      preview.style.background = bg;
+      preview.style.fontSize = (size / 100) + "em";
+      if (!subStyleEl) {
+        subStyleEl = document.createElement("style");
+        document.head.appendChild(subStyleEl);
+      }
+      subStyleEl.textContent = `
+    video::cue {
+      font-size: ${size / 100}em;
+      color: ${color};
+      background: ${bg};
+    }`;
+    }
+    /* ══════════════════════════════════════════════════
+       FEATURE 3 — QUALITY SELECTOR
+       Simulates resolution preference (display only for
+       single-stream MKV/MP4 files from Telegram)
+    ══════════════════════════════════════════════════ */
+    const QUALITY_OPTS = [{
+        label: "Auto (Best)",
+        note: "Adaptive — recommended",
+        badge: "q-best",
+        icon: "⭐"
+      },
+      {
+        label: "1080p FHD",
+        note: "Full HD — large file",
+        badge: "q-good",
+        icon: "🎬"
+      },
+      {
+        label: "720p HD",
+        note: "High quality",
+        badge: "q-good",
+        icon: "📺"
+      },
+      {
+        label: "480p SD",
+        note: "Standard — data-saving",
+        badge: "q-low",
+        icon: "💾"
+      },
+      {
+        label: "360p Low",
+        note: "Minimal data usage",
+        badge: "q-low",
+        icon: "📶"
+      },
+    ];
+    let activeQuality = 0;
+
+    function initQualityList() {
+      const el = document.getElementById("qualityList");
+      el.innerHTML = QUALITY_OPTS.map((q, i) => `
+    <div class="quality-item ${i === 0 ? "active-quality" : ""}" onclick="selectQuality(${i})" id="qi_${i}">
+      <span class="q-label">
+        <span style="font-size:1.1rem">${q.icon}</span>
+        ${q.label}
+        ${i === 0 ? `<span class="q-badge q-best">Best</span>` : ""}
+      </span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="q-note">${q.note}</span>
+        <i class="fa-solid fa-check q-check"></i>
+      </div>
+    </div>`).join("");
+    }
+
+    function selectQuality(idx) {
+      activeQuality = idx;
+      document.querySelectorAll(".quality-item").forEach((el, i) => {
+        el.classList.toggle("active-quality", i === idx);
+      });
+      const q = QUALITY_OPTS[idx];
+      // For Telegram streams there's only one source — inform user
+      if (idx === 0) {
+        showToast("📺 Auto quality — optimal stream");
       } else {
-        lastTapTime = now;
-        tapTimeout = setTimeout(() => {
-          lastTapTime = 0;
-        }, 300);
+        showToast(`📺 Preference saved: ${q.label} — stream quality depends on source`);
+      }
+    }
+    /* ══════════════════════════════════════════════════
+       FEATURE 4 — RESUME PLAYBACK
+       Saves position to localStorage every 5s, restores on next load
+    ══════════════════════════════════════════════════ */
+    let resumePos = 0;
+    let resumeSaveInterval = null;
+    let resumeBannerDismissed = false;
+
+    function fmtTime(s) {
+      s = Math.floor(s);
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = s % 60;
+      return h > 0 ?
+        `${h}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}` :
+        `${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+    }
+
+    function initResume() {
+      try {
+        const saved = parseFloat(localStorage.getItem(RESUME_KEY) || "0");
+        if (saved > 5) {
+          resumePos = saved;
+          const banner = document.getElementById("resumeBanner");
+          document.getElementById("resumeSubText").textContent = `Continue from ${fmtTime(saved)}`;
+          banner.style.display = "flex";
+          // Auto-dismiss after 10s if not clicked
+          setTimeout(() => {
+            if (!resumeBannerDismissed) dismissResume();
+          }, 10000);
+        }
+      } catch (e) {}
+    }
+
+    function doResume() {
+      resumeBannerDismissed = true;
+      document.getElementById("resumeBanner").style.display = "none";
+      video.currentTime = resumePos;
+      video.play().catch(() => {});
+      showToast(`▶️ Resumed from ${fmtTime(resumePos)}`);
+    }
+
+    function dismissResume() {
+      resumeBannerDismissed = true;
+      document.getElementById("resumeBanner").style.display = "none";
+    }
+
+    function startResumeSaving() {
+      resumeSaveInterval = setInterval(() => {
+        if (!video.paused && video.currentTime > 5) {
+          try {
+            localStorage.setItem(RESUME_KEY, String(video.currentTime));
+          } catch (e) {}
+        }
+      }, 5000);
+    }
+    // Clear saved position when user finishes (within 30s of end)
+    video.addEventListener("ended", () => {
+      try {
+        localStorage.removeItem(RESUME_KEY);
+      } catch (e) {}
+      showToast("✅ Playback complete!");
+    });
+    /* ══════════════════════════════════════════════════
+       FEATURE 5 — SKIP INTRO / CREDITS
+       Auto-detect likely intro/credits windows, show skip button
+    ══════════════════════════════════════════════════ */
+    const INTRO_END = 90; // seconds — intro likely in first 90s
+    const CREDITS_START_OFFSET = 300; // seconds before end for credits
+    let skipIntroShown = false;
+    let skipCreditsShown = false;
+    video.addEventListener("timeupdate", () => {
+      const t = video.currentTime;
+      const dur = video.duration || 0;
+      // Skip Intro: visible from 5s to INTRO_END
+      const inIntroZone = t >= 5 && t < INTRO_END;
+      if (inIntroZone && !skipIntroShown) {
+        showSkipBtn("intro");
+        skipIntroShown = true;
+      } else if (!inIntroZone && skipIntroShown && t >= INTRO_END) {
+        hideSkipBtn("intro");
+      }
+      // Skip Credits: visible when within CREDITS_START_OFFSET of end
+      if (dur > 0) {
+        const inCreditsZone = t >= dur - CREDITS_START_OFFSET && t < dur - 5;
+        if (inCreditsZone && !skipCreditsShown) {
+          showSkipBtn("credits");
+          skipCreditsShown = true;
+        } else if (!inCreditsZone && skipCreditsShown && t < dur - CREDITS_START_OFFSET) {
+          hideSkipBtn("credits");
+          skipCreditsShown = false;
+        }
       }
     });
-    // Also support mouse double-click for desktop
-    video.addEventListener('dblclick', function(e) {
-      const rect = video.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const width = rect.width;
-      const currentTime = video.currentTime;
-      const duration = video.duration;
-      if (x < width / 2) {
-        video.currentTime = Math.max(0, currentTime - 10);
-        showSeekFeedback('⏪ -10s');
-      } else {
-        video.currentTime = Math.min(duration, currentTime + 10);
-        showSeekFeedback('⏩ +10s');
-      }
-    });
-    // ===== SEEK FEEDBACK OVERLAY =====
-    function showSeekFeedback(text) {
-      let overlay = document.getElementById('seekFeedback');
-      if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'seekFeedback';
-        overlay.style.cssText = `
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          color: white;
-          font-size: 2.5rem;
-          font-weight: 700;
-          text-shadow: 0 2px 20px rgba(0,0,0,0.8);
-          background: rgba(0,0,0,0.3);
-          padding: 16px 28px;
-          border-radius: 16px;
-          pointer-events: none;
-          z-index: 60;
-          opacity: 0;
-          transition: opacity 0.15s ease;
-          backdrop-filter: blur(4px);
-          font-family: 'Segoe UI', Arial, sans-serif;
-        `;
-        document.querySelector('.video-wrapper').appendChild(overlay);
-      }
-      overlay.textContent = text;
-      overlay.style.opacity = '1';
-      clearTimeout(overlay._hideTimeout);
-      overlay._hideTimeout = setTimeout(() => {
-        overlay.style.opacity = '0';
-      }, 600);
-    }
-    // ===== AUDIO TRACK FEATURE =====
-    function buildTracksApiUrl() {
-      const u = new URL(videoLink);
-      const segs = u.pathname.split('/').filter(Boolean);
-      const fileId = segs[segs.length - 1] || 'xp1ca9v';
-      u.pathname = '/api/tracks/' + fileId;
-      u.search = '';
-      return u.toString();
-    }
-    let audioTracks = [];
-    let activeTrackIndex = null;
 
-    function insertAudioTrackSelector() {
-      const plyrEl = document.querySelector('.plyr');
-      if (!plyrEl) return;
-      if (plyrEl.querySelector('.plyr__audio-track-btn')) return;
-      const controls = plyrEl.querySelector('.plyr__controls');
-      if (!controls) return;
-      const volumeControl = controls.querySelector('.plyr__volume');
-      const wrapper = document.createElement('div');
-      wrapper.className = 'plyr__controls-wrapper';
-      wrapper.style.position = 'relative';
-      const btn = document.createElement('button');
-      btn.className = 'plyr__audio-track-btn';
-      btn.type = 'button';
-      btn.title = 'Audio Tracks';
-      btn.innerHTML = `<i class="fas fa-music"></i> <span>Audio</span>`;
-      const dropdown = document.createElement('div');
-      dropdown.className = 'plyr__audio-track-dropdown';
-      wrapper.appendChild(btn);
-      wrapper.appendChild(dropdown);
-      if (volumeControl) {
-        controls.insertBefore(wrapper, volumeControl.nextSibling);
-      } else {
-        controls.appendChild(wrapper);
-      }
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdown.classList.toggle('show');
-        const settingsMenu = plyrEl.querySelector('.plyr__settings__menu');
-        if (settingsMenu) settingsMenu.classList.remove('plyr__menu__container--open');
-      });
-      document.addEventListener('click', () => {
-        dropdown.classList.remove('show');
-      });
-      window.__audioBtn = btn;
-      window.__audioDropdown = dropdown;
+    function showSkipBtn(type) {
+      const btn = document.getElementById(type === "intro" ? "skipIntroBtn" : "skipCreditsBtn");
+      btn.style.display = "flex";
     }
 
-    function populateAudioTracks(tracks) {
-      const dropdown = document.querySelector('.plyr__audio-track-dropdown');
-      if (!dropdown) return;
-      dropdown.innerHTML = '';
-      const defaultOpt = document.createElement('button');
-      defaultOpt.className = 'plyr__audio-track-option' + (activeTrackIndex === null ? ' active' : '');
-      defaultOpt.innerHTML = `<span class="track-lang">Default (Embedded)</span>`;
-      defaultOpt.addEventListener('click', () => {
-        switchToDefaultAudio();
-        dropdown.classList.remove('show');
-        updateAudioTrackUI();
-      });
-      dropdown.appendChild(defaultOpt);
-      tracks.forEach((track) => {
-        const opt = document.createElement('button');
-        const isActive = (activeTrackIndex === track.index);
-        opt.className = 'plyr__audio-track-option' + (isActive ? ' active' : '');
-        const meta = track.tags || {};
-        const lang = (meta.language || meta.LANGUAGE || meta.Language || '').trim() || 'Unknown';
-        const codec = track.codec_name || track.codec || '';
-        const title = (meta.title || meta.TITLE || meta.Title || '').trim();
-        let label = lang;
-        if (title && title.length > 0 && title.length < 20) {
-          label = title;
-        } else if (title && title.length >= 20) {
-          label = lang + ' (' + title.substring(0, 16) + '…)';
-        }
-        opt.innerHTML = `<span class="track-lang">${label}</span><span class="track-codec">${codec}</span>`;
-        opt.addEventListener('click', () => {
-          switchToAudioTrack(track.index);
-          dropdown.classList.remove('show');
-          updateAudioTrackUI();
-        });
-        dropdown.appendChild(opt);
-      });
+    function hideSkipBtn(type) {
+      const btn = document.getElementById(type === "intro" ? "skipIntroBtn" : "skipCreditsBtn");
+      btn.style.display = "none";
     }
 
-    function switchToAudioTrack(streamIndex) {
-      const vid = document.querySelector('.player');
-      if (!vid) return;
-      const currentTime = vid.currentTime;
-      const wasPlaying = !vid.paused;
-      const u = new URL(videoLink);
-      u.searchParams.set('auds', streamIndex);
-      if (currentTime > 0) {
-        u.searchParams.set('ss', currentTime.toFixed(3));
-      }
-      const newSrc = u.toString();
-      activeTrackIndex = streamIndex;
-      player.source = {
-        type: 'video',
-        sources: [{
-          src: newSrc,
-          type: 'video/mp4'
-        }]
-      };
-      const restore = () => {
-        player.currentTime = currentTime;
-        if (wasPlaying) {
-          player.play().catch(() => {});
-        }
-      };
-      if (vid.readyState >= 3) {
-        restore();
-      } else {
-        player.once('canplay', restore);
-      }
-      updateAudioTrackUI();
+    function skipIntro() {
+      video.currentTime = INTRO_END;
+      hideSkipBtn("intro");
+      showToast("⏭ Intro skipped!");
     }
 
-    function switchToDefaultAudio() {
-      const vid = document.querySelector('.player');
-      if (!vid) return;
-      const currentTime = vid.currentTime;
-      const wasPlaying = !vid.paused;
-      const u = new URL(videoLink);
-      u.searchParams.delete('auds');
-      u.searchParams.delete('ss');
-      const newSrc = u.toString();
-      activeTrackIndex = null;
-      player.source = {
-        type: 'video',
-        sources: [{
-          src: newSrc,
-          type: 'video/mp4'
-        }]
-      };
-      const restore = () => {
-        player.currentTime = currentTime;
-        if (wasPlaying) {
-          player.play().catch(() => {});
-        }
-      };
-      if (vid.readyState >= 3) {
-        restore();
-      } else {
-        player.once('canplay', restore);
-      }
-      updateAudioTrackUI();
+    function skipCredits() {
+      const dur = video.duration || 0;
+      if (dur > 0) video.currentTime = dur - 2;
+      hideSkipBtn("credits");
+      showToast("⏭ Credits skipped!");
     }
+    /* ══════════════════════════════════════════════════
+       FEATURE 6 — CHROMECAST
+       Uses Cast API if available (Chrome + Chromecast device on LAN)
+    ══════════════════════════════════════════════════ */
+    let castSession = null;
+    let castContext = null;
 
-    function updateAudioTrackUI() {
-      const dropdown = document.querySelector('.plyr__audio-track-dropdown');
-      if (!dropdown) return;
-      const options = dropdown.querySelectorAll('.plyr__audio-track-option');
-      options.forEach((opt, idx) => {
-        opt.classList.remove('active');
-        if (idx === 0 && activeTrackIndex === null) {
-          opt.classList.add('active');
-        } else if (audioTracks[idx - 1] && activeTrackIndex === audioTracks[idx - 1].index) {
-          opt.classList.add('active');
-        }
+    function initChromecast() {
+      if (!window.chrome || !chrome.cast) return;
+      const ctx = cast.framework.CastContext.getInstance();
+      castContext = ctx;
+      ctx.setOptions({
+        receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+        autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
       });
-      const btn = document.querySelector('.plyr__audio-track-btn');
-      if (btn) {
-        const span = btn.querySelector('span');
-        if (span) {
-          if (activeTrackIndex === null) {
-            span.textContent = 'Audio';
+      ctx.addEventListener(
+        cast.framework.CastContextEventType.CAST_STATE_CHANGED,
+        (e) => {
+          if (e.castState === cast.framework.CastState.CONNECTED) {
+            const banner = document.getElementById("castBanner");
+            const session = ctx.getCurrentSession();
+            if (session) {
+              const devName = session.getCastDevice().friendlyName || "TV";
+              document.getElementById("castDeviceName").textContent = `Connected to: ${devName}`;
+              banner.style.display = "flex";
+              castSession = session;
+            }
+          } else if (e.castState === cast.framework.CastState.NOT_CONNECTED) {
+            document.getElementById("castBanner").style.display = "none";
+            castSession = null;
+          } else if (e.castState === cast.framework.CastState.NO_DEVICES_AVAILABLE) {
+            // No Chromecast devices found — stay hidden
           } else {
-            const track = audioTracks.find(t => t.index === activeTrackIndex);
-            if (track) {
-              const meta = track.tags || {};
-              const lang = (meta.language || meta.LANGUAGE || meta.Language || '').trim() || 'Track';
-              span.textContent = lang.length > 10 ? lang.substring(0, 8) + '…' : lang;
-            } else {
-              span.textContent = 'Audio';
-            }
+            // Device available but not connected
+            document.getElementById("castBanner").style.display = "flex";
           }
         }
+      );
+    }
+
+    function startCast() {
+      if (!castContext) {
+        showToast("🔴 Chromecast not available on this browser");
+        return;
+      }
+      const session = castContext.getCurrentSession();
+      if (!session) {
+        // Prompt user to pick a device
+        castContext.requestSession().then(() => {
+          sendMediaToCast();
+        }).catch((err) => {
+          if (err !== chrome.cast.ErrorCode.CANCEL) {
+            showToast("⚠️ Could not connect to Chromecast");
+          }
+        });
+      } else {
+        sendMediaToCast();
       }
     }
 
-    function fetchAudioTracks() {
-      const apiUrl = buildTracksApiUrl();
-      fetch(apiUrl)
-        .then(r => {
-          if (!r.ok) throw new Error('Failed to fetch tracks');
-          return r.json();
-        })
-        .then(tracks => {
-          if (Array.isArray(tracks) && tracks.length > 0) {
-            audioTracks = tracks;
-            insertAudioTrackSelector();
-            populateAudioTracks(tracks);
-            updateAudioTrackUI();
-            const urlParams = new URLSearchParams(window.location.search);
-            const audsParam = urlParams.get('auds');
-            if (audsParam) {
-              const idx = parseInt(audsParam);
-              const track = tracks.find(t => t.index === idx);
-              if (track) {
-                activeTrackIndex = idx;
-                updateAudioTrackUI();
-              }
-            }
-          }
-        })
-        .catch(err => {
-          console.log('[AudioTrack] Not available:', err.message);
-          const btn = document.querySelector('.plyr__audio-track-btn');
-          if (btn) btn.style.display = 'none';
-        });
+    function sendMediaToCast() {
+      const session = castContext.getCurrentSession();
+      if (!session) return;
+      const mediaInfo = new chrome.cast.media.MediaInfo(FILE_URL, "video/mp4");
+      mediaInfo.metadata = new chrome.cast.media.GenericMediaMetadata();
+      mediaInfo.metadata.title = "Dhurandhar The Revenge 2026 Hindi - 720p HQ HDRip - x264 - .mkv";
+      const req = new chrome.cast.media.LoadRequest(mediaInfo);
+      req.currentTime = video.currentTime;
+      session.loadMedia(req).then(() => {
+        video.pause();
+        showToast("📺 Now casting to TV!");
+      }).catch(() => {
+        showToast("⚠️ Cast failed — check device");
+      });
     }
-    player.on('ready', () => {
-      fetchAudioTracks();
+    // Load Cast API
+    (function loadCastSDK() {
+      if (!window.chrome) return;
+      window.__onGCastApiAvailable = function(isAvailable) {
+        if (isAvailable) {
+          initChromecast();
+        }
+      };
+      const s = document.createElement("script");
+      s.src = "https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1";
+      s.async = true;
+      document.head.appendChild(s);
+    })();
+    /* ══ PLAYER INIT ══ */
+    const plyrCfg = IS_AUDIO ? {
+      controls: ['play', 'progress', 'current-time', 'mute', 'download']
+    } : {
+      controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+      settings: ['captions', 'quality', 'speed'],
+      ratio: '16:9'
+    };
+    const player = new Plyr("#myVideo", plyrCfg);
+    // Force unmute and full volume on ready
+    player.on('ready', function() {
+      player.muted = false;
+      player.volume = 1.0; // Full volume
     });
-    // ===== EXTERNAL PLAYERS =====
-    function vlc_player() {
-      window.location.href = `vlc://${videoLink}`;
+    // Also force on video element
+    video.muted = false;
+    video.volume = 1.0; // Full volume
+    video.addEventListener("waiting", () => loader.style.display = "flex");
+    video.addEventListener("playing", () => loader.style.display = "none");
+    video.addEventListener("canplay", () => loader.style.display = "none");
+    // ✅ FIX: Hide spinner and notify user on stream error (network drop, codec unsupported, etc.)
+    // Without this the spinner spins forever and the user has no idea what went wrong.
+    video.addEventListener("error", () => {
+      loader.style.display = "none";
+      const code = video.error ? video.error.code : 0;
+      const msgs = {
+        1: "⏹️ Playback aborted. Try refreshing.",
+        2: "🌐 Network error. Check your connection and refresh.",
+        3: "⚙️ Video decode error. Try opening in VLC or MX Player below.",
+        4: "❌ This format is not supported by your browser. Use VLC or MX Player below."
+      };
+      showToast(msgs[code] || "❌ Failed to load video. Try an external player below.", 6000);
+    });
+    // Init all features after metadata loads
+    video.addEventListener("loadedmetadata", () => {
+      initAudioTracks();
+      initSubtitles();
+      initResume();
+      startResumeSaving();
+      // Hide media controls panel for audio-only files (no subs/quality needed either)
+      if (IS_AUDIO) {
+        document.getElementById("mediaControlsPanel").style.display = "none";
+      }
+    });
+    // Fallback: init quality list immediately (doesn't need metadata)
+    initQualityList();
+    // Init media controls tab switcher — first click opens, same-tab click collapses
+    function switchMCP(id, btn) {
+      const body = document.querySelector('.mcp-body');
+      const isAlreadyActive = btn.classList.contains('active');
+      // Always clear all active states first
+      document.querySelectorAll(".mcp-tab").forEach(b => b.classList.remove("active"));
+      if (isAlreadyActive) {
+        // Same tab clicked again → collapse the body
+        body.style.display = 'none';
+        return;
+      }
+      // Different tab (or first open) → switch panel and show body
+      document.querySelectorAll(".mcp-panel").forEach(p => p.classList.remove("active"));
+      document.getElementById("mcp-" + id).classList.add("active");
+      btn.classList.add("active");
+      body.style.display = 'block';
     }
+    /* ══ EXTERNAL PLAYERS ══ */
+    const toIntent = url => url.replace(/^https?:\/\//, "");
 
     function mx_player() {
-      window.location.href = `intent:${videoLink}#Intent;package=com.mxtech.videoplayer.ad;end`;
+      location.href = `intent://${toIntent(FILE_URL)}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;scheme=https;end`;
+    }
+
+    function vlc_player() {
+      location.href = `intent://${toIntent(FILE_URL)}#Intent;package=org.videolan.vlc;type=video/*;scheme=https;end`;
     }
 
     function playit_player() {
-      window.location.href = `playit://playerv2/video?url=${encodeURIComponent(videoLink)}`;
+      location.href = `intent://${toIntent(FILE_URL)}#Intent;package=com.playit.videoplayer;type=video/*;scheme=https;end`;
     }
-    // ===== FILE SIZE =====
-    async function detectFileSize() {
-      const fileSizeSpan = document.getElementById('file-size-display');
+
+    function streamDownload() {
+      location.href = FILE_URL + "&download=true";
+    }
+
+    function showLinkModal(u) {
+      if (u) window.open(u, "_blank");
+    }
+    /* ══ TOAST ══ */
+    function showToast(msg, dur = 2400) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), dur);
+    }
+    /* ══ SHARE ══ */
+    function shareVideo() {
+      if (navigator.share) navigator.share({
+        title: "Dhurandhar The Revenge 2026 Hindi - 720p HQ HDRip - x264 - .mkv",
+        url: location.href
+      });
+      else navigator.clipboard.writeText(location.href).then(() => showToast("✅ Link copied!"));
+    }
+    /* ══ REPORT ══ */
+    const reportModal = new bootstrap.Modal(document.getElementById("reportModal"));
+
+    function openReport() {
+      reportModal.show();
+    }
+    async function submitReport() {
+      const sel = document.querySelector("input[name='rr']:checked");
+      if (!sel) {
+        showToast("⚠️ Please select a reason.");
+        return;
+      }
+      reportModal.hide();
       try {
-        const response = await fetch(videoLink, {
-          method: 'HEAD'
+        const r = await fetch("/report", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            file_id: parseInt(FILE_ID),
+            reason: sel.value,
+            reporter_id: 0
+          })
         });
-        const contentLength = response.headers.get('content-length');
-        if (contentLength) {
-          const bytes = parseInt(contentLength);
-          const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-          const i = Math.floor(Math.log(bytes) / Math.log(1024));
-          const formattedSize = parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];
-          fileSizeSpan.textContent = formattedSize;
-        } else {
-          fileSizeSpan.innerHTML = 'Unknown (Streaming)';
-        }
-      } catch (error) {
-        fileSizeSpan.innerHTML = 'Not available';
+        showToast(r.ok ? "🚩 Report submitted!" : "⚠️ Could not submit.", 3000);
+      } catch {
+        showToast("⚠️ Network error.", 2800);
       }
     }
-    setTimeout(detectFileSize, 1000);
-    document.addEventListener("contextmenu", function(e) {
-      e.preventDefault();
-    });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
-        e.preventDefault();
+    /* ══ VOTES ══ */
+    let userVote = null;
+    fetch(`/votes/${FILE_ID}`).then(r => r.json()).then(d => {
+      document.getElementById("likeCount").textContent = fmt(d.likes || 0);
+      document.getElementById("dislikeCount").textContent = fmt(d.dislikes || 0);
+      userVote = d.user_vote || null;
+      applyVote(userVote);
+    }).catch(() => {});
+
+    function fmt(n) {
+      if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
+      if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
+      return String(n);
+    }
+
+    function applyVote(v) {
+      document.getElementById("btnLike").classList.toggle("liked", v === "like");
+      document.getElementById("btnDislike").classList.toggle("disliked", v === "dislike");
+    }
+
+    function castVote(type) {
+      fetch("/vote", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            file_id: parseInt(FILE_ID),
+            vote: type
+          })
+        })
+        .then(r => r.json()).then(d => {
+          document.getElementById("likeCount").textContent = fmt(d.likes || 0);
+          document.getElementById("dislikeCount").textContent = fmt(d.dislikes || 0);
+          userVote = d.user_vote || null;
+          applyVote(userVote);
+          showToast(userVote === "like" ? "👍 Liked this file!" : userVote === "dislike" ? "👎 Disliked!" : "↩ Vote removed", 1800);
+        }).catch(() => showToast("⚠️ Vote failed."));
+    }
+    /* ══ TABS ══ */
+    function switchTab(id, btn) {
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById("tab-" + id).classList.add("active");
+      btn.classList.add("active");
+    }
+    /* ══ EXTRA PLAYERS ══ */
+    const toI = u => u.replace(/^https?:\/\//, '');
+
+    function xplayer() {
+      location.href = `intent://${toI(FILE_URL)}#Intent;package=com.video.player.videoplayer;type=video/*;scheme=https;end`;
+    }
+
+    function nplayer() {
+      location.href = `intent://${toI(FILE_URL)}#Intent;package=com.newin.nplayer.pro;type=video/*;scheme=https;end`;
+    }
+
+    function kmplayer() {
+      location.href = `intent://${toI(FILE_URL)}#Intent;package=com.kmplayer;type=video/*;scheme=https;end`;
+    }
+
+    function bsplayer() {
+      location.href = `intent://${toI(FILE_URL)}#Intent;package=com.bsplayer;type=video/*;scheme=https;end`;
+    }
+    /* ══ EXTRA DOWNLOADS ══ */
+    function openIDM() {
+      location.href = `intent://${toI(FILE_URL)}#Intent;package=com.idm.internet.download.manager;type=*/*;scheme=https;end`;
+    }
+
+    function openADM() {
+      location.href = `intent://${toI(FILE_URL)}#Intent;package=com.dv.adm;type=*/*;scheme=https;end`;
+    }
+
+    function open1DM() {
+      location.href = `intent://${toI(FILE_URL)}#Intent;package=idm.internet.download.manager.plus;type=*/*;scheme=https;end`;
+    }
+
+    function openJDownloader() {
+      location.href = `intent://${toI(FILE_URL)}#Intent;package=com.icecoldapps.loaderdroid;type=*/*;scheme=https;end`;
+    }
+
+    function openInBrowser() {
+      window.open(FILE_URL, "_blank");
+    }
+    /* ══ TOGGLE PANELS ══ */
+    function toggleExtraApps(btn) {
+      const el = document.getElementById("extraApps");
+      const open = el.style.display === "grid";
+      el.style.display = open ? "none" : "grid";
+      btn.innerHTML = open ?
+        '<i class="fa-solid fa-ellipsis"></i> More Players' :
+        '<i class="fa-solid fa-chevron-up"></i> Less Players';
+    }
+
+    function toggleExtraDL(btn) {
+      const el = document.getElementById("extraDL");
+      const open = el.style.display === "grid";
+      el.style.display = open ? "none" : "grid";
+      btn.innerHTML = open ?
+        '<i class="fa-solid fa-ellipsis"></i> More Download Options' :
+        '<i class="fa-solid fa-chevron-up"></i> Less Options';
+    }
+    /* ══ CLEAR PASS ══ */
+    (function() {
+      const fid = "{{file_id}}";
+      if (!fid) return;
+
+      function cl() {
+        navigator.sendBeacon("/clear-pass", JSON.stringify({
+          file_id: parseInt(fid)
+        }));
+        document.cookie = "pga_" + fid + "=;max-age=0;path=/;SameSite=Lax";
       }
-    });
-    player.on('enterfullscreen', () => {
-      screen.orientation?.lock('landscape');
-    });
-    const fileNameSpan = document.getElementById('displayFileName');
-    if (fileNameSpan && fileNameSpan.innerText.length > 65) {
-      fileNameSpan.innerText = fileNameSpan.innerText.slice(0, 62) + '...';
-    }
-    const wrapper = document.querySelector('.video-wrapper');
-    const plyrContainer = document.querySelector('.plyr');
-    plyrContainer.addEventListener('click', (e) => {
-      e.stopPropagation();
-      wrapper.classList.add('active');
-    });
-    document.addEventListener('click', (e) => {
-      if (!wrapper.contains(e.target)) {
-        wrapper.classList.remove('active');
-      }
-    });
-    player.on('play', () => {
-      wrapper.classList.add('active');
-    });
-    player.on('pause', () => {
-      wrapper.classList.remove('active');
-    });
-    // ===== LIKES =====
-    const BIN_ID = "69ece842856a682189706426";
-    const API_KEY = "$2a$10$TyOXeu0PPOnyzTfOreJzhOKiw3NyMQtnURo0koS2JFiOFMatKoDgq";
-    const CACHE_KEY = "video_data_cache";
-    const videoId = "{{file_name}}";
-    let videoData = {
-      likes: 0,
-      dislikes: 0,
-      views: 0
-    };
-
-    function ui() {
-      document.getElementById("likeCount").innerText = videoData.likes || 0;
-      document.getElementById("dislikeCount").innerText = videoData.dislikes || 0;
-      document.getElementById("viewCount").innerText = videoData.views || 0;
-    }
-
-    function mark() {
-      let r = localStorage.getItem(videoId + "_reaction");
-      document.getElementById("likeBtn").style.opacity = r === "like" ? "1" : "0.5";
-      document.getElementById("dislikeBtn").style.opacity = r === "dislike" ? "1" : "0.5";
-    }
-
-    function random(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    async function getData() {
-      let r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-        headers: {
-          "X-Master-Key": API_KEY
-        }
+      window.addEventListener("beforeunload", cl);
+      window.addEventListener("pagehide", e => {
+        if (!e.persisted) cl();
       });
-      let j = await r.json();
-      return j.record || {};
-    }
-    async function save(data) {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-      await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Master-Key": API_KEY
-        },
-        body: JSON.stringify(data)
-      });
-    }
-    async function initStats() {
-      ui();
-      let cache = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
-      if (cache[videoId]) {
-        videoData = {
-          likes: +cache[videoId].likes || 0,
-          dislikes: +cache[videoId].dislikes || 0,
-          views: +cache[videoId].views || 0
-        };
-        ui();
-      }
-      let data = await getData();
-      if (!data[videoId]) {
-        data[videoId] = {
-          likes: random(500, 1000),
-          dislikes: random(10, 50),
-          views: random(500, 1500)
-        };
-        await save(data);
-      }
-      videoData = {
-        likes: +data[videoId].likes || 0,
-        dislikes: +data[videoId].dislikes || 0,
-        views: +data[videoId].views || 0
-      };
-      cache[videoId] = videoData;
-      localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-      ui();
-      mark();
-    }
-
-    function likeVideo() {
-      let r = localStorage.getItem(videoId + "_reaction");
-      if (r === "like") return;
-      if (r === "dislike") {
-        videoData.dislikes = Math.max(0, videoData.dislikes - 1);
-      }
-      videoData.likes++;
-      localStorage.setItem(videoId + "_reaction", "like");
-      ui();
-      mark();
-      push();
-    }
-
-    function dislikeVideo() {
-      let r = localStorage.getItem(videoId + "_reaction");
-      if (r === "dislike") return;
-      if (r === "like") {
-        videoData.likes = Math.max(0, videoData.likes - 1);
-      }
-      videoData.dislikes++;
-      localStorage.setItem(videoId + "_reaction", "dislike");
-      ui();
-      mark();
-      push();
-    }
-    async function push() {
-      let cache = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
-      cache[videoId] = videoData;
-      save(cache);
-    }
-    initStats();
+    })();
   </script>
 </body>
 
