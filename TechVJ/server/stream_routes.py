@@ -110,12 +110,10 @@ async def media_streamer(request: web.Request, id: int, secure_hash: str):
         logging.debug(f"Creating new ByteStreamer object for client {index}")
         tg_connect = ByteStreamer(faster_client)
         class_cache[faster_client] = tg_connect
-    logging.debug("before calling get_file_properties")
+
     file_id = await tg_connect.get_file_properties(id)
-    logging.debug("after calling get_file_properties")
     
     if file_id.unique_id[:6] != secure_hash:
-        logging.debug(f"Invalid hash for message with ID {id}")
         raise InvalidHash
     
     file_size = file_id.file_size
@@ -177,34 +175,36 @@ async def media_streamer(request: web.Request, id: int, secure_hash: str):
         },
     )
 
-@routes.get("/votes/{file_id}", allow_head=True)
+@routes.get("/votes/{file_name}", allow_head=True)
 async def get_votes(request):
-    file_id = request.match_info["file_id"]
+    file_name = request.match_info["file_name"]
     try:
         with open(VOTES_FILE, 'r') as f:
             data = json.load(f)
     except:
         data = {}
     
-    if file_id not in data:
-        data[file_id] = {
+    if file_name not in data:
+        data[file_name] = {
             'likes': random.randint(400, 500),
-            'dislikes': random.randint(5, 50)
+            'dislikes': random.randint(5, 50),
+            'users': {}
         }
         with open(VOTES_FILE, 'w') as f:
             json.dump(data, f, indent=2)
     
     return web.json_response({
-        'likes': data[file_id]['likes'],
-        'dislikes': data[file_id]['dislikes'],
+        'likes': data[file_name]['likes'],
+        'dislikes': data[file_name]['dislikes'],
         'user_vote': None
     })
 
 @routes.post("/vote")
 async def vote(request):
     data = await request.json()
-    file_id = str(data['file_id'])
+    file_name = data['file_name']
     vote_type = data['vote']
+    user_ip = request.remote
     
     try:
         with open(VOTES_FILE, 'r') as f:
@@ -212,24 +212,46 @@ async def vote(request):
     except:
         votes = {}
     
-    if file_id not in votes:
-        votes[file_id] = {
+    if file_name not in votes:
+        votes[file_name] = {
             'likes': random.randint(400, 500),
-            'dislikes': random.randint(5, 50)
+            'dislikes': random.randint(5, 50),
+            'users': {}
         }
     
-    if vote_type == 'like':
-        votes[file_id]['likes'] += 1
-    elif vote_type == 'dislike':
-        votes[file_id]['dislikes'] += 1
+    if user_ip in votes[file_name]['users']:
+        existing = votes[file_name]['users'][user_ip]
+        if existing == vote_type:
+            if vote_type == 'like':
+                votes[file_name]['likes'] -= 1
+            else:
+                votes[file_name]['dislikes'] -= 1
+            del votes[file_name]['users'][user_ip]
+            user_vote = None
+        else:
+            if existing == 'like':
+                votes[file_name]['likes'] -= 1
+                votes[file_name]['dislikes'] += 1
+            else:
+                votes[file_name]['dislikes'] -= 1
+                votes[file_name]['likes'] += 1
+            votes[file_name]['users'][user_ip] = vote_type
+            user_vote = vote_type
+    else:
+        if vote_type == 'like':
+            votes[file_name]['likes'] += 1
+        else:
+            votes[file_name]['dislikes'] += 1
+        votes[file_name]['users'][user_ip] = vote_type
+        user_vote = vote_type
     
     with open(VOTES_FILE, 'w') as f:
         json.dump(votes, f, indent=2)
     
     return web.json_response({
-        'likes': votes[file_id]['likes'],
-        'dislikes': votes[file_id]['dislikes'],
-        'user_vote': vote_type
+        'likes': votes[file_name]['likes'],
+        'dislikes': votes[file_name]['dislikes'],
+        'user_vote': user_vote
     })
 
 @routes.post("/report")
