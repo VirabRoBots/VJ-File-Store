@@ -160,7 +160,6 @@
       }
     }
 
-    /* ── NAV ── */
     .topbar {
       position: sticky;
       top: 0;
@@ -221,7 +220,6 @@
       animation: pulseDot 1.4s ease infinite;
     }
 
-    /* ── MAIN ── */
     main {
       position: relative;
       z-index: 1;
@@ -231,7 +229,6 @@
       width: 100%;
     }
 
-    /* ── PLAYER ── */
     .player-shell {
       position: relative;
       border-radius: 18px;
@@ -292,7 +289,6 @@
       transform: scale(1) !important;
     }
 
-    /* hide volume slider, keep icon */
     .plyr__volume input[type="range"] {
       display: none !important;
     }
@@ -324,7 +320,6 @@
       object-fit: contain !important;
     }
 
-    /* Make Plyr settings menu scrollable */
     .plyr__menu__container {
       max-height: 200px !important;
       overflow-y: auto !important;
@@ -361,7 +356,6 @@
       }
     }
 
-    /* ── SKIP INTRO/CREDITS BUTTONS ── */
     .skip-btn {
       position: absolute;
       right: 14px;
@@ -397,7 +391,6 @@
       bottom: 60px;
     }
 
-    /* ── FILE TITLE STRIP ── */
     .file-title-strip {
       background: linear-gradient(135deg, rgba(157, 111, 255, .08), rgba(0, 245, 212, .05));
       border: 1px solid rgba(157, 111, 255, .25);
@@ -426,7 +419,6 @@
       letter-spacing: .2px;
     }
 
-    /* ── REACTION BAR ── */
     .reaction-bar {
       display: flex;
       align-items: center;
@@ -512,7 +504,6 @@
       box-shadow: 0 6px 24px rgba(157, 111, 255, .55) !important;
     }
 
-    /* ── MEDIA CONTROLS PANEL (Audio/Subtitle/Quality) ── */
     .media-controls-panel {
       background: linear-gradient(135deg, rgba(157, 111, 255, .06), rgba(0, 245, 212, .03));
       border: 1px solid rgba(157, 111, 255, .2);
@@ -591,7 +582,6 @@
       display: block;
     }
 
-    /* Audio Track List */
     .track-list {
       display: flex;
       flex-direction: column;
@@ -664,7 +654,6 @@
       display: block;
     }
 
-    /* Subtitle Controls */
     .sub-controls {
       display: flex;
       flex-direction: column;
@@ -775,7 +764,6 @@
       margin-top: 4px;
     }
 
-    /* Quality Selector */
     .quality-list {
       display: flex;
       flex-direction: column;
@@ -855,7 +843,6 @@
       display: block;
     }
 
-    /* ── RESUME PLAYBACK BANNER ── */
     #resumeBanner {
       display: none;
       background: linear-gradient(135deg, rgba(0, 245, 212, .1), rgba(157, 111, 255, .08));
@@ -928,7 +915,6 @@
       background: rgba(255, 255, 255, .14);
     }
 
-    /* ── CHROMECAST BANNER ── */
     #castBanner {
       display: none;
       background: linear-gradient(135deg, rgba(255, 214, 10, .08), rgba(157, 111, 255, .06));
@@ -976,7 +962,6 @@
       background: rgba(255, 214, 10, .25);
     }
 
-    /* ── SECTION LABELS ── */
     .section-label {
       display: flex;
       align-items: center;
@@ -1001,7 +986,6 @@
       background: linear-gradient(90deg, rgba(157, 111, 255, .3), transparent);
     }
 
-    /* ── ACTION BUTTONS ── */
     .actions-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1181,7 +1165,6 @@
       background: rgba(157, 111, 255, .12) !important;
     }
 
-    /* ── MORE APPS BUTTON ── */
     .apps-expand-btn {
       width: 100%;
       display: flex;
@@ -1245,7 +1228,6 @@
       background: rgba(255, 255, 255, .06);
     }
 
-    /* ── DISCLAIMER / FOOTER ── */
     .disclaimer {
       text-align: center;
       font-size: .72rem;
@@ -1288,32 +1270,6 @@
       text-decoration: none;
     }
 
-    /* ── TOAST ── */
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: rgba(8, 8, 26, .97);
-      border: 1px solid rgba(0, 245, 212, .4);
-      color: var(--text-primary);
-      padding: 10px 26px;
-      border-radius: 100px;
-      font-size: .87rem;
-      font-weight: 600;
-      z-index: 99999;
-      opacity: 0;
-      transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), opacity .35s;
-      pointer-events: none;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 8px 36px rgba(0, 0, 0, .6), 0 0 18px rgba(0, 245, 212, .15);
-    }
-
-    #toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
-
     .watermark {
       position: fixed;
       bottom: 20px;
@@ -1330,7 +1286,6 @@
       letter-spacing: 2px;
     }
 
-    /* ── REPORT MODAL ── */
     .modal-content {
       background: #08081f;
       border: 1px solid rgba(157, 111, 255, .3);
@@ -1378,7 +1333,6 @@
       accent-color: var(--violet);
     }
 
-    /* ── SUBTITLE STYLE INJECTION ── */
     video::cue {
       font-size: 1em;
       color: white;
@@ -1389,7 +1343,6 @@
 
 <body>
 
-  <!-- NAV -->
   <nav class="topbar">
     <div class="logo-container">
       <div class="logo-circle"></div>
@@ -1400,7 +1353,6 @@
 
   <main>
 
-    <!-- PLAYER -->
     <div class="player-shell">
       <div id="videoLoader" class="video-loader">
         <div class="spinner-ring"></div>
@@ -1409,17 +1361,14 @@
         <source src="{{file_url}}" type="video/mp4" />
         <source src="{{file_url}}" type="video/x-matroska" />
       </video>
-      <!-- Skip Intro Button -->
       <button id="skipIntroBtn" class="skip-btn" onclick="skipIntro()">
         <i class="fa-solid fa-forward-fast"></i> Skip Intro
       </button>
-      <!-- Skip Credits Button -->
       <button id="skipCreditsBtn" class="skip-btn" onclick="skipCredits()">
         <i class="fa-solid fa-forward-step"></i> Skip Credits
       </button>
     </div>
 
-    <!-- RESUME PLAYBACK BANNER -->
     <div id="resumeBanner">
       <div class="resume-left">
         <span class="resume-icon">⏱️</span>
@@ -1434,7 +1383,6 @@
       </div>
     </div>
 
-    <!-- CHROMECAST BANNER -->
     <div id="castBanner">
       <span class="cast-icon"><i class="fa-solid fa-tv"></i></span>
       <div>
@@ -1445,7 +1393,7 @@
         <i class="fa-solid fa-cast" style="margin-right:5px"></i>Cast
       </button>
     </div>
-    <!-- TITLE & FILE INFO -->
+
     <div class="file-title-strip" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
       <span style="font-size:1.6rem;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(157,111,255,.5))"></span>
       <span class="file-title-text" style="flex:1;font-family:var(--font-head);font-weight:700;font-size:1rem;color:var(--text-primary);line-height:1.45;word-break:break-word">
@@ -1459,7 +1407,6 @@
       </div>
     </div>
 
-    <!-- REACTION BAR -->
     <div class="reaction-bar">
       <div class="vote-group">
         <button class="react-btn" id="btnLike" onclick="castVote('like')">
@@ -1475,10 +1422,6 @@
       </a>
     </div>
 
-    <!-- ══════════════════════════════════════
-       MEDIA CONTROLS PANEL
-       (Audio Tracks · Subtitles · Quality)
-  ══════════════════════════════════════ -->
     <div class="section-label">
       <i class="fa-solid fa-sliders"></i> Media Controls
     </div>
@@ -1494,7 +1437,6 @@
       </div>
       <div class="mcp-body" style="display:none">
 
-        <!-- AUDIO TRACK PANEL -->
         <div class="mcp-panel active" id="mcp-audio">
           <div class="track-list" id="audioTrackList">
             <div style="color:var(--text-muted);font-size:.82rem;text-align:center;padding:10px 0">
@@ -1504,7 +1446,6 @@
           </div>
         </div>
 
-        <!-- SUBTITLE PANEL -->
         <div class="mcp-panel" id="mcp-subtitle">
           <div class="sub-controls">
             <div class="sub-toggle-row">
@@ -1546,10 +1487,8 @@
           </div>
         </div>
 
-        <!-- QUALITY PANEL -->
         <div class="mcp-panel" id="mcp-quality">
           <div class="quality-list" id="qualityList">
-            <!-- filled by JS -->
           </div>
           <div style="margin-top:10px;padding:9px 12px;background:rgba(157,111,255,.05);border-radius:10px;border:1px solid rgba(157,111,255,.15)">
             <div style="font-size:.72rem;color:var(--text-muted);font-family:var(--font-head);font-weight:700;line-height:1.6">
@@ -1562,19 +1501,16 @@
       </div>
     </div>
 
-    <!-- PLAY WITH -->
     <div class="section-label">
       <i class="fa-solid fa-play-circle"></i> Play With
     </div>
 
-    <!-- Primary 3 players -->
     <div class="actions-grid triple" style="margin-bottom:6px">
       <a onclick="mx_player()" class="action-btn btn-mx"> <i class="fa-solid fa-play"></i> MX </a>
       <a onclick="vlc_player()" class="action-btn btn-vlc"> <i class="fa-solid fa-play"></i> VLC </a>
       <a onclick="playit_player()" class="action-btn btn-playit"><i class="fa-solid fa-play"></i> PlayIt </a>
     </div>
 
-    <!-- More players toggle -->
     <button class="apps-expand-btn" onclick="toggleExtraApps(this)">
       <i class="fa-solid fa-grip"></i> More Players <i class="fa-solid fa-chevron-down" style="font-size:.6rem;opacity:.6"></i>
     </button>
@@ -1587,17 +1523,14 @@
 
     <div style="margin-bottom:14px"></div>
 
-    <!-- GET FILE -->
     <div class="section-label">
       <i class="fa-solid fa-download"></i> Get File
     </div>
 
-    <!-- Primary downloads -->
     <div class="dl-grid" style="margin-bottom:6px">
       <a onclick="streamDownload()" class="action-btn btn-download"><i class="fa-solid fa-cloud-arrow-down"></i> Download</a><a onclick="showLinkModal('https://t.me/Moviesearcherxyzbot?start=file_{{file_id}}')" class="action-btn btn-telegram"><i class="fa-brands fa-telegram"></i> Telegram</a>
     </div>
 
-    <!-- More download options toggle -->
     <button class="apps-expand-btn" onclick="toggleExtraDL(this)">
       <i class="fa-solid fa-layer-group"></i> More Download Options <i class="fa-solid fa-chevron-down" style="font-size:.6rem;opacity:.6"></i>
     </button>
@@ -1619,7 +1552,6 @@
 
     <div style="margin-bottom:6px"></div>
 
-    <!-- SHARE -->
     <div class="share-row">
       <a onclick="shareVideo()" class="action-btn btn-share"><i class="fa-solid fa-share-nodes"></i> Share This File</a>
     </div>
@@ -1634,9 +1566,7 @@
   </footer>
 
   <div class="watermark"></div>
-  <div id="toast"></div>
 
-  <!-- REPORT MODAL -->
   <div class="modal fade" id="reportModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -1671,7 +1601,6 @@
   <script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    /* ══ CONSTANTS ══ */
     const FILE_ID = "{{file_id}}";
     const FILE_URL = "{{file_url}}";
     const FILE_NAME = "{{file_name}}";
@@ -1679,10 +1608,6 @@
     const COMMENT_KEY = "ps_cmts_" + FILE_ID;
     const RESUME_KEY = "ps_resume_" + FILE_ID;
     const PAGE_SIZE = 3;
-    /* ══ FILENAME TRACK DETECTION ══
-       Chrome/Android does NOT support video.audioTracks or embedded MKV
-       subtitles — so we parse the filename as a reliable fallback.
-    ══════════════════════════════ */
     const AUDIO_LANG_MAP = [{
         key: "Hindi",
         re: /\bHindi\b/i
@@ -1738,13 +1663,11 @@
     ];
 
     function detectAudioLangs(fname) {
-      // 1. Check for bracket patterns like [Tam + Tel + Hin] or [Hindi + Tamil]
       const bracketMatch = fname.match(/\[([^\]]+)\]/);
       if (bracketMatch) {
         const content = bracketMatch[1];
         if (content.includes('+')) {
           const langs = content.split('+').map(s => s.trim());
-          // Filter out non-language words
           const validLangs = langs.filter(l =>
             !/^(HQ|Clean|AAC|ESub|x264|HDRip|320kbps|DDP|Atmos|WEB-DL|BluRay|DVD|Rip|HD|SD|60fps|10bit|HEVC|AVC|DD5\.1|DTS|AC3)$/i.test(l)
           );
@@ -1753,15 +1676,11 @@
           }
         }
       }
-      // 2. Check for "Dual Audio" or "Multi Audio" keywords
       if (/\bDual\s*Audio\b/i.test(fname)) return ["Audio 1", "Audio 2"];
       if (/\bMulti\s*Audio\b/i.test(fname)) return ["Audio 1", "Audio 2", "Audio 3"];
-      // 3. Check for "Dual" or "Multi" without "Audio"
       if (/\bDual\b/i.test(fname) && /\bAudio\b/i.test(fname)) return ["Audio 1", "Audio 2"];
       if (/\bMulti\b/i.test(fname)) return ["Audio 1", "Audio 2", "Audio 3"];
-      // 4. Check for language abbreviations and full names
       const LANG_MAP = [
-        // Full names
         {
           key: "Hindi",
           re: /\bHindi\b/i
@@ -1886,7 +1805,6 @@
           key: "Hebrew",
           re: /\bHebrew\b/i
         },
-        // Abbreviations (3 letters)
         {
           key: "Hindi",
           re: /\bHin\b/i
@@ -2006,31 +1924,24 @@
 
     function detectSubtitleLangs(fname) {
       const subs = [];
-      // Check for ESub in brackets or anywhere
       if (/ESub/i.test(fname)) subs.push("English");
       if (/\bE\.?[Ss]ubs?\b/.test(fname)) subs.push("English");
       if (/\bH\.?[Ss]ubs?\b/.test(fname)) subs.push("Hindi");
       if (/\bEng(?:lish)?\s*[Ss]ub/i.test(fname)) subs.push("English");
       if (/\bHin(?:di)?\s*[Ss]ub/i.test(fname)) subs.push("Hindi");
       if (/\+\s*E\b[^a-z]/i.test(fname + " ") && !subs.includes("English")) subs.push("English");
-      // Check for subtitle abbreviations
       if (/\bSub\b/i.test(fname)) {
         if (/\bEng\b/i.test(fname)) subs.push("English");
         if (/\bHin\b/i.test(fname)) subs.push("Hindi");
       }
       return [...new Set(subs)];
     }
-    /* ══════════════════════════════════════════════════
-       FEATURE 1 — MULTI AUDIO SELECTOR
-       Reads AudioTrack API or MediaSource audio groups
-    ══════════════════════════════════════════════════ */
     const video = document.getElementById("myVideo");
     const loader = document.getElementById("videoLoader");
 
     function initAudioTracks() {
       const list = document.getElementById("audioTrackList");
       const native = video.audioTracks;
-      // ── Try native AudioTrack API (works in Safari/Edge, not Chrome Android) ──
       if (native && native.length > 1) {
         list.innerHTML = "";
         for (let i = 0; i < native.length; i++) {
@@ -2052,7 +1963,6 @@
         }
         return;
       }
-      // ── Fallback: detect languages from filename ──
       const detected = detectAudioLangs(FILE_NAME);
       if (detected.length === 0) {
         list.innerHTML = `
@@ -2062,7 +1972,6 @@
       </div>`;
         return;
       }
-      // Show info banner + detected language tracks
       const banner = document.createElement("div");
       banner.style.cssText = "font-size:.72rem;font-weight:700;color:var(--text-secondary);font-family:var(--font-head);margin-bottom:9px;padding:8px 10px;background:rgba(157,111,255,.07);border-radius:10px;border:1px solid rgba(157,111,255,.2);line-height:1.5";
       banner.innerHTML = `<i class="fa-solid fa-circle-info" style="color:var(--violet);margin-right:5px"></i>Multi-audio detected. To switch audio tracks, use <b style="color:var(--cyan)">MX Player</b> or <b style="color:var(--gold)">VLC</b>.`;
@@ -2079,7 +1988,6 @@
       <i class="fa-solid fa-check track-check"></i>`;
         el.onclick = () => {
           document.querySelectorAll(".track-item").forEach((e, j) => e.classList.toggle("active-track", j === i + 1));
-          showToast("🎵 Open in MX/VLC to play " + lang + " audio");
         };
         list.appendChild(el);
       });
@@ -2104,18 +2012,12 @@
       document.querySelectorAll(".track-item").forEach((el, i) => {
         el.classList.toggle("active-track", i === idx);
       });
-      showToast("🎵 Audio track switched!");
     }
-    /* ══════════════════════════════════════════════════
-       FEATURE 2 — SUBTITLE SELECTOR + CUSTOMIZER
-       Supports native TextTracks from the <video> element
-    ══════════════════════════════════════════════════ */
     let subStyleEl = null;
 
     function initSubtitles() {
       const trackList = document.getElementById("subTrackList");
       const tracks = video.textTracks;
-      // ── Try native TextTrack API first ──
       if (tracks && tracks.length > 0) {
         let html = '<div style="font-size:.72rem;font-weight:800;color:var(--text-secondary);font-family:var(--font-head);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Subtitle Tracks</div>';
         for (let i = 0; i < tracks.length; i++) {
@@ -2134,7 +2036,6 @@
         trackList.innerHTML = html;
         return;
       }
-      // ── Fallback: detect subtitles from filename ──
       const detected = detectSubtitleLangs(FILE_NAME);
       if (detected.length === 0) {
         trackList.innerHTML = `
@@ -2152,7 +2053,7 @@
     <div style="font-size:.72rem;font-weight:800;color:var(--text-secondary);font-family:var(--font-head);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Detected Subtitles</div>`;
       detected.forEach((lang, i) => {
         html += `
-      <div class="track-item${i === 0 ? " active-track" : ""}" onclick="showToast('💬 ${lang} subs embedded — open in VLC/MX for display')">
+      <div class="track-item${i === 0 ? " active-track" : ""}" onclick="selectSubTrack(${i})">
         <div class="track-left">
           <span class="track-lang">${lang}</span>
           <span class="track-badge default">Embedded</span>
@@ -2171,10 +2072,8 @@
       document.querySelectorAll("[id^='strack_']").forEach((el, i) => {
         el.classList.toggle("active-track", i === idx);
       });
-      // Enable toggle if off
       document.getElementById("subToggle").checked = true;
       document.getElementById("subCustomizer").style.display = "flex";
-      showToast("💬 Subtitle track changed!");
     }
 
     function toggleSubtitles(on) {
@@ -2185,7 +2084,6 @@
           tracks[i].mode = on ? "showing" : "hidden";
         }
       }
-      showToast(on ? "💬 Subtitles ON" : "💬 Subtitles OFF");
     }
 
     function updateSubStyle() {
@@ -2208,18 +2106,7 @@
       background: ${bg};
     }`;
     }
-    /* ══════════════════════════════════════════════════
-       FEATURE 3 — QUALITY SELECTOR
-       Simulates resolution preference (display only for
-       single-stream MKV/MP4 files from Telegram)
-    ══════════════════════════════════════════════════ */
     const QUALITY_OPTS = [{
-        label: "Auto (Best)",
-        note: "Adaptive — recommended",
-        badge: "q-best",
-        icon: "⭐"
-      },
-      {
         label: "1080p FHD",
         note: "Full HD — large file",
         badge: "q-good",
@@ -2253,7 +2140,7 @@
       <span class="q-label">
         <span style="font-size:1.1rem">${q.icon}</span>
         ${q.label}
-        ${i === 0 ? `<span class="q-badge q-best">Best</span>` : ""}
+        ${i === 0 ? `<span class="q-badge q-good">Best</span>` : ""}
       </span>
       <div style="display:flex;align-items:center;gap:8px">
         <span class="q-note">${q.note}</span>
@@ -2267,18 +2154,7 @@
       document.querySelectorAll(".quality-item").forEach((el, i) => {
         el.classList.toggle("active-quality", i === idx);
       });
-      const q = QUALITY_OPTS[idx];
-      // For Telegram streams there's only one source — inform user
-      if (idx === 0) {
-        showToast("📺 Auto quality — optimal stream");
-      } else {
-        showToast(`📺 Preference saved: ${q.label} — stream quality depends on source`);
-      }
     }
-    /* ══════════════════════════════════════════════════
-       FEATURE 4 — RESUME PLAYBACK
-       Saves position to localStorage every 5s, restores on next load
-    ══════════════════════════════════════════════════ */
     let resumePos = 0;
     let resumeSaveInterval = null;
     let resumeBannerDismissed = false;
@@ -2301,7 +2177,6 @@
           const banner = document.getElementById("resumeBanner");
           document.getElementById("resumeSubText").textContent = `Continue from ${fmtTime(saved)}`;
           banner.style.display = "flex";
-          // Auto-dismiss after 10s if not clicked
           setTimeout(() => {
             if (!resumeBannerDismissed) dismissResume();
           }, 10000);
@@ -2314,7 +2189,6 @@
       document.getElementById("resumeBanner").style.display = "none";
       video.currentTime = resumePos;
       video.play().catch(() => {});
-      showToast(`▶️ Resumed from ${fmtTime(resumePos)}`);
     }
 
     function dismissResume() {
@@ -2331,25 +2205,18 @@
         }
       }, 5000);
     }
-    // Clear saved position when user finishes (within 30s of end)
     video.addEventListener("ended", () => {
       try {
         localStorage.removeItem(RESUME_KEY);
       } catch (e) {}
-      showToast("✅ Playback complete!");
     });
-    /* ══════════════════════════════════════════════════
-       FEATURE 5 — SKIP INTRO / CREDITS
-       Auto-detect likely intro/credits windows, show skip button
-    ══════════════════════════════════════════════════ */
-    const INTRO_END = 90; // seconds — intro likely in first 90s
-    const CREDITS_START_OFFSET = 300; // seconds before end for credits
+    const INTRO_END = 90;
+    const CREDITS_START_OFFSET = 300;
     let skipIntroShown = false;
     let skipCreditsShown = false;
     video.addEventListener("timeupdate", () => {
       const t = video.currentTime;
       const dur = video.duration || 0;
-      // Skip Intro: visible from 5s to INTRO_END
       const inIntroZone = t >= 5 && t < INTRO_END;
       if (inIntroZone && !skipIntroShown) {
         showSkipBtn("intro");
@@ -2357,7 +2224,6 @@
       } else if (!inIntroZone && skipIntroShown && t >= INTRO_END) {
         hideSkipBtn("intro");
       }
-      // Skip Credits: visible when within CREDITS_START_OFFSET of end
       if (dur > 0) {
         const inCreditsZone = t >= dur - CREDITS_START_OFFSET && t < dur - 5;
         if (inCreditsZone && !skipCreditsShown) {
@@ -2383,19 +2249,13 @@
     function skipIntro() {
       video.currentTime = INTRO_END;
       hideSkipBtn("intro");
-      showToast("⏭ Intro skipped!");
     }
 
     function skipCredits() {
       const dur = video.duration || 0;
       if (dur > 0) video.currentTime = dur - 2;
       hideSkipBtn("credits");
-      showToast("⏭ Credits skipped!");
     }
-    /* ══════════════════════════════════════════════════
-       FEATURE 6 — CHROMECAST
-       Uses Cast API if available (Chrome + Chromecast device on LAN)
-    ══════════════════════════════════════════════════ */
     let castSession = null;
     let castContext = null;
 
@@ -2423,9 +2283,7 @@
             document.getElementById("castBanner").style.display = "none";
             castSession = null;
           } else if (e.castState === cast.framework.CastState.NO_DEVICES_AVAILABLE) {
-            // No Chromecast devices found — stay hidden
           } else {
-            // Device available but not connected
             document.getElementById("castBanner").style.display = "flex";
           }
         }
@@ -2434,17 +2292,14 @@
 
     function startCast() {
       if (!castContext) {
-        showToast("🔴 Chromecast not available on this browser");
         return;
       }
       const session = castContext.getCurrentSession();
       if (!session) {
-        // Prompt user to pick a device
         castContext.requestSession().then(() => {
           sendMediaToCast();
         }).catch((err) => {
           if (err !== chrome.cast.ErrorCode.CANCEL) {
-            showToast("⚠️ Could not connect to Chromecast");
           }
         });
       } else {
@@ -2462,12 +2317,8 @@
       req.currentTime = video.currentTime;
       session.loadMedia(req).then(() => {
         video.pause();
-        showToast("📺 Now casting to TV!");
-      }).catch(() => {
-        showToast("⚠️ Cast failed — check device");
-      });
+      }).catch(() => {});
     }
-    // Load Cast API
     (function loadCastSDK() {
       if (!window.chrome) return;
       window.__onGCastApiAvailable = function(isAvailable) {
@@ -2499,14 +2350,6 @@
     video.addEventListener("canplay", () => loader.style.display = "none");
     video.addEventListener("error", () => {
       loader.style.display = "none";
-      const code = video.error ? video.error.code : 0;
-      const msgs = {
-        1: "⏹️ Playback aborted. Try refreshing.",
-        2: "🌐 Network error. Check your connection and refresh.",
-        3: "⚙️ Video decode error. Try opening in VLC or MX Player below.",
-        4: "❌ This format is not supported by your browser. Use VLC or MX Player below."
-      };
-      showToast(msgs[code] || "❌ Failed to load video. Try an external player below.", 6000);
     });
     video.addEventListener("loadedmetadata", () => {
       initAudioTracks();
@@ -2524,7 +2367,6 @@
       const isAlreadyActive = btn.classList.contains('active');
       document.querySelectorAll(".mcp-tab").forEach(b => b.classList.remove("active"));
       if (isAlreadyActive) {
-        // Same tab clicked again → collapse the body
         body.style.display = 'none';
         return;
       }
@@ -2555,21 +2397,13 @@
       if (u) window.open(u, "_blank");
     }
 
-    function showToast(msg, dur = 2400) {
-      const t = document.getElementById("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      setTimeout(() => t.classList.remove("show"), dur);
-    }
-
     function shareVideo() {
       if (navigator.share) navigator.share({
         title: FILE_NAME,
         url: location.href
       });
-      else navigator.clipboard.writeText(location.href).then(() => showToast("✅ Link copied!"));
+      else navigator.clipboard.writeText(location.href).then(() => {});
     }
-    /* ══ REPORT ══ */
     const reportModal = new bootstrap.Modal(document.getElementById("reportModal"));
 
     function openReport() {
@@ -2578,14 +2412,12 @@
     async function submitReport() {
       const sel = document.querySelector("input[name='rr']:checked");
       if (!sel) {
-        showToast("⚠️ Please select a reason.");
         return;
       }
       let reason = sel.value;
       if (reason === "other") {
         const details = document.getElementById("otherReason").value.trim();
         if (!details) {
-          showToast("⚠️ Please describe the issue.");
           return;
         }
         reason = "Other: " + details;
@@ -2603,10 +2435,7 @@
             reporter_id: 0
           })
         });
-        showToast(r.ok ? "🚩 Report submitted!" : "⚠️ Could not submit.", 3000);
-      } catch {
-        showToast("⚠️ Network error.", 2800);
-      }
+      } catch {}
     }
     let likeCount = 0;
     let dislikeCount = 0;
@@ -2645,9 +2474,8 @@
           document.getElementById("dislikeCount").textContent = dislikeCount;
           userVote = data.user_vote;
           applyVote(userVote);
-          showToast(type === 'like' ? '👍 Liked!' : '👎 Disliked!', 1800);
         })
-        .catch(() => showToast('⚠️ Vote failed.'));
+        .catch(() => {});
     }
 
     function applyVote(v) {
@@ -2731,7 +2559,6 @@
         if (!e.persisted) cl();
       });
     })();
-    // Add this inside your Plyr ready event
     player.on('enterfullscreen', function() {
       if (screen.orientation && screen.orientation.lock) {
         screen.orientation.lock('landscape').catch(() => {});
