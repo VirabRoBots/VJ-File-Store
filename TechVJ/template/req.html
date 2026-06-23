@@ -2438,50 +2438,55 @@
       } catch {}
     }
     let likeCount = 0;
-    let dislikeCount = 0;
-    let userVote = null;
-    fetch('/votes/' + FILE_ID)
-      .then(r => r.json())
-      .then(data => {
-        likeCount = data.likes;
-        dislikeCount = data.dislikes;
-        document.getElementById("likeCount").textContent = likeCount;
-        document.getElementById("dislikeCount").textContent = dislikeCount;
-      })
-      .catch(() => {
-        likeCount = Math.floor(Math.random() * 100) + 400;
-        dislikeCount = Math.floor(Math.random() * 45) + 5;
-        document.getElementById("likeCount").textContent = likeCount;
-        document.getElementById("dislikeCount").textContent = dislikeCount;
-      });
+let dislikeCount = 0;
+let userVote = null;
 
-    function castVote(type) {
-      fetch('/vote', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            file_id: parseInt(FILE_ID),
-            vote: type
-          })
-        })
-        .then(r => r.json())
-        .then(data => {
-          likeCount = data.likes;
-          dislikeCount = data.dislikes;
-          document.getElementById("likeCount").textContent = likeCount;
-          document.getElementById("dislikeCount").textContent = dislikeCount;
-          userVote = data.user_vote;
-          applyVote(userVote);
-        })
-        .catch(() => {});
-    }
+fetch('/votes/' + encodeURIComponent(FILE_NAME))
+  .then(r => r.json())
+  .then(data => {
+    likeCount = data.likes;
+    dislikeCount = data.dislikes;
+    document.getElementById("likeCount").textContent = likeCount;
+    document.getElementById("dislikeCount").textContent = dislikeCount;
+  })
+  .catch(() => {
+    likeCount = Math.floor(Math.random() * 100) + 400;
+    dislikeCount = Math.floor(Math.random() * 45) + 5;
+    document.getElementById("likeCount").textContent = likeCount;
+    document.getElementById("dislikeCount").textContent = dislikeCount;
+  });
 
-    function applyVote(v) {
-      document.getElementById("btnLike").classList.toggle("liked", v === "like");
-      document.getElementById("btnDislike").classList.toggle("disliked", v === "dislike");
+function castVote(type) {
+  fetch('/vote', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      file_name: FILE_NAME,
+      vote: type
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    likeCount = data.likes;
+    dislikeCount = data.dislikes;
+    document.getElementById("likeCount").textContent = likeCount;
+    document.getElementById("dislikeCount").textContent = dislikeCount;
+    userVote = data.user_vote;
+    applyVote(userVote);
+    
+    if (userVote === null) {
+      showToast('↩ Vote removed', 1800);
+    } else {
+      showToast(type === 'like' ? '👍 Liked!' : '👎 Disliked!', 1800);
     }
+  })
+  .catch(() => showToast('⚠️ Vote failed.'));
+}
+
+function applyVote(v) {
+  document.getElementById("btnLike").classList.toggle("liked", v === "like");
+  document.getElementById("btnDislike").classList.toggle("disliked", v === "dislike");
+}
 
     function switchTab(id, btn) {
       document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
