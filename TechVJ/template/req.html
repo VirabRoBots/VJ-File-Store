@@ -1652,8 +1652,10 @@
             <label class="report-option"><input type="radio" name="rr" value="spam"> Spam or Misleading</label>
             <label class="report-option"><input type="radio" name="rr" value="Video"> ❌ Video Not Playing</label>
             <label class="report-option"><input type="radio" name="rr" value="Buffering"> 🌀 Buffering / Loading</label>
-            <label class="report-option"><input type="radio" name="rr" value="Audio"> 📢 Audio Not Playing</label>
-            <label class="report-option"><input type="radio" name="rr" value="other"> Other</label>
+            <label class="report-option"><input type="radio" name="rr" value="Audio"> 📢 Audio Not Playing</label><label class="report-option"><input type="radio" name="rr" value="other" onchange="toggleOtherInput()"> Other</label>
+            <div id="otherReasonDiv" style="display:none;margin-top:10px">
+              <textarea id="otherReason" placeholder="Please describe your issue..." style="width:100%;min-height:70px;background:rgba(255,255,255,0.06);border:1px solid rgba(157,111,255,0.2);border-radius:10px;padding:10px;color:white;font-family:inherit;resize:vertical;"></textarea>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -1736,26 +1738,286 @@
     ];
 
     function detectAudioLangs(fname) {
+      // 1. Check for bracket patterns like [Tam + Tel + Hin] or [Hindi + Tamil]
+      const bracketMatch = fname.match(/\[([^\]]+)\]/);
+      if (bracketMatch) {
+        const content = bracketMatch[1];
+        if (content.includes('+')) {
+          const langs = content.split('+').map(s => s.trim());
+          // Filter out non-language words
+          const validLangs = langs.filter(l =>
+            !/^(HQ|Clean|AAC|ESub|x264|HDRip|320kbps|DDP|Atmos|WEB-DL|BluRay|DVD|Rip|HD|SD|60fps|10bit|HEVC|AVC|DD5\.1|DTS|AC3)$/i.test(l)
+          );
+          if (validLangs.length > 1) {
+            return validLangs;
+          }
+        }
+      }
+      // 2. Check for "Dual Audio" or "Multi Audio" keywords
       if (/\bDual\s*Audio\b/i.test(fname)) return ["Audio 1", "Audio 2"];
       if (/\bMulti\s*Audio\b/i.test(fname)) return ["Audio 1", "Audio 2", "Audio 3"];
+      // 3. Check for "Dual" or "Multi" without "Audio"
+      if (/\bDual\b/i.test(fname) && /\bAudio\b/i.test(fname)) return ["Audio 1", "Audio 2"];
+      if (/\bMulti\b/i.test(fname)) return ["Audio 1", "Audio 2", "Audio 3"];
+      // 4. Check for language abbreviations and full names
+      const LANG_MAP = [
+        // Full names
+        {
+          key: "Hindi",
+          re: /\bHindi\b/i
+        },
+        {
+          key: "Tamil",
+          re: /\bTamil\b/i
+        },
+        {
+          key: "Telugu",
+          re: /\bTelugu\b/i
+        },
+        {
+          key: "Malayalam",
+          re: /\bMalayalam\b/i
+        },
+        {
+          key: "Kannada",
+          re: /\bKannada\b/i
+        },
+        {
+          key: "Bengali",
+          re: /\bBengali\b/i
+        },
+        {
+          key: "English",
+          re: /\bEnglish\b/i
+        },
+        {
+          key: "Punjabi",
+          re: /\bPunjabi\b/i
+        },
+        {
+          key: "Marathi",
+          re: /\bMarathi\b/i
+        },
+        {
+          key: "Japanese",
+          re: /\bJapanese\b/i
+        },
+        {
+          key: "Korean",
+          re: /\bKorean\b/i
+        },
+        {
+          key: "Chinese",
+          re: /\bChinese\b/i
+        },
+        {
+          key: "Russian",
+          re: /\bRussian\b/i
+        },
+        {
+          key: "French",
+          re: /\bFrench\b/i
+        },
+        {
+          key: "Spanish",
+          re: /\bSpanish\b/i
+        },
+        {
+          key: "German",
+          re: /\bGerman\b/i
+        },
+        {
+          key: "Italian",
+          re: /\bItalian\b/i
+        },
+        {
+          key: "Portuguese",
+          re: /\bPortuguese\b/i
+        },
+        {
+          key: "Arabic",
+          re: /\bArabic\b/i
+        },
+        {
+          key: "Turkish",
+          re: /\bTurkish\b/i
+        },
+        {
+          key: "Vietnamese",
+          re: /\bVietnamese\b/i
+        },
+        {
+          key: "Thai",
+          re: /\bThai\b/i
+        },
+        {
+          key: "Indonesian",
+          re: /\bIndonesian\b/i
+        },
+        {
+          key: "Dutch",
+          re: /\bDutch\b/i
+        },
+        {
+          key: "Greek",
+          re: /\bGreek\b/i
+        },
+        {
+          key: "Polish",
+          re: /\bPolish\b/i
+        },
+        {
+          key: "Swedish",
+          re: /\bSwedish\b/i
+        },
+        {
+          key: "Danish",
+          re: /\bDanish\b/i
+        },
+        {
+          key: "Finnish",
+          re: /\bFinnish\b/i
+        },
+        {
+          key: "Norwegian",
+          re: /\bNorwegian\b/i
+        },
+        {
+          key: "Hebrew",
+          re: /\bHebrew\b/i
+        },
+        // Abbreviations (3 letters)
+        {
+          key: "Hindi",
+          re: /\bHin\b/i
+        },
+        {
+          key: "Tamil",
+          re: /\bTam\b/i
+        },
+        {
+          key: "Telugu",
+          re: /\bTel\b/i
+        },
+        {
+          key: "Malayalam",
+          re: /\bMal\b/i
+        },
+        {
+          key: "Kannada",
+          re: /\bKan\b/i
+        },
+        {
+          key: "Bengali",
+          re: /\bBen\b/i
+        },
+        {
+          key: "English",
+          re: /\bEng\b/i
+        },
+        {
+          key: "Punjabi",
+          re: /\bPun\b/i
+        },
+        {
+          key: "Marathi",
+          re: /\bMar\b/i
+        },
+        {
+          key: "Japanese",
+          re: /\bJap\b/i
+        },
+        {
+          key: "Korean",
+          re: /\bKor\b/i
+        },
+        {
+          key: "Chinese",
+          re: /\bChi\b/i
+        },
+        {
+          key: "Russian",
+          re: /\bRus\b/i
+        },
+        {
+          key: "French",
+          re: /\bFre\b/i
+        },
+        {
+          key: "Spanish",
+          re: /\bSpa\b/i
+        },
+        {
+          key: "German",
+          re: /\bGer\b/i
+        },
+        {
+          key: "Italian",
+          re: /\bIta\b/i
+        },
+        {
+          key: "Portuguese",
+          re: /\bPor\b/i
+        },
+        {
+          key: "Arabic",
+          re: /\bAra\b/i
+        },
+        {
+          key: "Turkish",
+          re: /\bTur\b/i
+        },
+        {
+          key: "Vietnamese",
+          re: /\bVie\b/i
+        },
+        {
+          key: "Indonesian",
+          re: /\bInd\b/i
+        },
+        {
+          key: "Dutch",
+          re: /\bDut\b/i
+        },
+        {
+          key: "Greek",
+          re: /\bGre\b/i
+        },
+        {
+          key: "Polish",
+          re: /\bPol\b/i
+        },
+        {
+          key: "Thai",
+          re: /\bTha\b/i
+        },
+      ];
       const found = [];
       for (const {
           key,
           re
-        } of AUDIO_LANG_MAP) {
-        if (re.test(fname)) found.push(key);
+        } of LANG_MAP) {
+        if (re.test(fname) && !found.includes(key)) {
+          found.push(key);
+        }
       }
       return found;
     }
 
     function detectSubtitleLangs(fname) {
       const subs = [];
+      // Check for ESub in brackets or anywhere
+      if (/ESub/i.test(fname)) subs.push("English");
       if (/\bE\.?[Ss]ubs?\b/.test(fname)) subs.push("English");
       if (/\bH\.?[Ss]ubs?\b/.test(fname)) subs.push("Hindi");
       if (/\bEng(?:lish)?\s*[Ss]ub/i.test(fname)) subs.push("English");
       if (/\bHin(?:di)?\s*[Ss]ub/i.test(fname)) subs.push("Hindi");
-      // "... + E.ext" pattern (E = English subtitles, not audio)
       if (/\+\s*E\b[^a-z]/i.test(fname + " ") && !subs.includes("English")) subs.push("English");
+      // Check for subtitle abbreviations
+      if (/\bSub\b/i.test(fname)) {
+        if (/\bEng\b/i.test(fname)) subs.push("English");
+        if (/\bHin\b/i.test(fname)) subs.push("Hindi");
+      }
       return [...new Set(subs)];
     }
     /* ══════════════════════════════════════════════════
@@ -1821,6 +2083,16 @@
         };
         list.appendChild(el);
       });
+    }
+
+    function toggleOtherInput() {
+      const otherRadio = document.querySelector('input[name="rr"][value="other"]');
+      const div = document.getElementById('otherReasonDiv');
+      if (otherRadio && otherRadio.checked) {
+        div.style.display = 'block';
+      } else {
+        div.style.display = 'none';
+      }
     }
 
     function selectAudioTrack(idx) {
@@ -2208,7 +2480,6 @@
       s.async = true;
       document.head.appendChild(s);
     })();
-    /* ══ PLAYER INIT ══ */
     const plyrCfg = IS_AUDIO ? {
       controls: ['rewind', 'play', 'fast-forward', 'progress', 'current-time', 'mute', 'download']
     } : {
@@ -2217,19 +2488,15 @@
       ratio: '16:9'
     };
     const player = new Plyr("#myVideo", plyrCfg);
-    // Force unmute and full volume on ready
     player.on('ready', function() {
       player.muted = false;
-      player.volume = 1.0; // Full volume
+      player.volume = 1.0;
     });
-    // Also force on video element
     video.muted = false;
-    video.volume = 1.0; // Full volume
+    video.volume = 1.0;
     video.addEventListener("waiting", () => loader.style.display = "flex");
     video.addEventListener("playing", () => loader.style.display = "none");
     video.addEventListener("canplay", () => loader.style.display = "none");
-    // ✅ FIX: Hide spinner and notify user on stream error (network drop, codec unsupported, etc.)
-    // Without this the spinner spins forever and the user has no idea what went wrong.
     video.addEventListener("error", () => {
       loader.style.display = "none";
       const code = video.error ? video.error.code : 0;
@@ -2241,37 +2508,31 @@
       };
       showToast(msgs[code] || "❌ Failed to load video. Try an external player below.", 6000);
     });
-    // Init all features after metadata loads
     video.addEventListener("loadedmetadata", () => {
       initAudioTracks();
       initSubtitles();
       initResume();
       startResumeSaving();
-      // Hide media controls panel for audio-only files (no subs/quality needed either)
       if (IS_AUDIO) {
         document.getElementById("mediaControlsPanel").style.display = "none";
       }
     });
-    // Fallback: init quality list immediately (doesn't need metadata)
     initQualityList();
-    // Init media controls tab switcher — first click opens, same-tab click collapses
+
     function switchMCP(id, btn) {
       const body = document.querySelector('.mcp-body');
       const isAlreadyActive = btn.classList.contains('active');
-      // Always clear all active states first
       document.querySelectorAll(".mcp-tab").forEach(b => b.classList.remove("active"));
       if (isAlreadyActive) {
         // Same tab clicked again → collapse the body
         body.style.display = 'none';
         return;
       }
-      // Different tab (or first open) → switch panel and show body
       document.querySelectorAll(".mcp-panel").forEach(p => p.classList.remove("active"));
       document.getElementById("mcp-" + id).classList.add("active");
       btn.classList.add("active");
       body.style.display = 'block';
     }
-    /* ══ EXTERNAL PLAYERS ══ */
     const toIntent = url => url.replace(/^https?:\/\//, "");
 
     function mx_player() {
@@ -2293,14 +2554,14 @@
     function showLinkModal(u) {
       if (u) window.open(u, "_blank");
     }
-    /* ══ TOAST ══ */
+
     function showToast(msg, dur = 2400) {
       const t = document.getElementById("toast");
       t.textContent = msg;
       t.classList.add("show");
       setTimeout(() => t.classList.remove("show"), dur);
     }
-    /* ══ SHARE ══ */
+
     function shareVideo() {
       if (navigator.share) navigator.share({
         title: FILE_NAME,
@@ -2320,6 +2581,15 @@
         showToast("⚠️ Please select a reason.");
         return;
       }
+      let reason = sel.value;
+      if (reason === "other") {
+        const details = document.getElementById("otherReason").value.trim();
+        if (!details) {
+          showToast("⚠️ Please describe the issue.");
+          return;
+        }
+        reason = "Other: " + details;
+      }
       reportModal.hide();
       try {
         const r = await fetch("/report", {
@@ -2329,7 +2599,7 @@
           },
           body: JSON.stringify({
             file_id: parseInt(FILE_ID),
-            reason: sel.value,
+            reason: reason,
             reporter_id: 0
           })
         });
@@ -2338,7 +2608,6 @@
         showToast("⚠️ Network error.", 2800);
       }
     }
-    /* ══ VOTES SYSTEM ══ */
     let likeCount = 0;
     let dislikeCount = 0;
     let userVote = null;
@@ -2385,14 +2654,13 @@
       document.getElementById("btnLike").classList.toggle("liked", v === "like");
       document.getElementById("btnDislike").classList.toggle("disliked", v === "dislike");
     }
-    /* ══ TABS ══ */
+
     function switchTab(id, btn) {
       document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
       document.getElementById("tab-" + id).classList.add("active");
       btn.classList.add("active");
     }
-    /* ══ EXTRA PLAYERS ══ */
     const toI = u => u.replace(/^https?:\/\//, '');
 
     function xplayer() {
@@ -2410,7 +2678,7 @@
     function bsplayer() {
       location.href = `intent://${toI(FILE_URL)}#Intent;package=com.bsplayer;type=video/*;scheme=https;end`;
     }
-    /* ══ EXTRA DOWNLOADS ══ */
+
     function openIDM() {
       location.href = `intent://${toI(FILE_URL)}#Intent;package=com.idm.internet.download.manager;type=*/*;scheme=https;end`;
     }
@@ -2430,7 +2698,7 @@
     function openInBrowser() {
       window.open(FILE_URL, "_blank");
     }
-    /* ══ TOGGLE PANELS ══ */
+
     function toggleExtraApps(btn) {
       const el = document.getElementById("extraApps");
       const open = el.style.display === "grid";
@@ -2448,7 +2716,6 @@
         '<i class="fa-solid fa-ellipsis"></i> More Download Options' :
         '<i class="fa-solid fa-chevron-up"></i> Less Options';
     }
-    /* ══ CLEAR PASS ══ */
     (function() {
       const fid = "{{file_id}}";
       if (!fid) return;
