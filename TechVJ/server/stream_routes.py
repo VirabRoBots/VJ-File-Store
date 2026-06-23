@@ -1,13 +1,13 @@
-# Don't Remove Credit @VJ_Bots
-# Subscribe YouTube Channel For Amazing Bot @Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
 import re
 import time
 import math
 import logging
 import secrets
 import mimetypes
+import json
+import random
+import os
+from datetime import datetime
 from aiohttp import web
 from aiohttp.http_exceptions import BadStatusLine
 from TechVJ.bot import multi_clients, work_loads, StreamBot
@@ -18,8 +18,17 @@ from ..utils.custom_dl import ByteStreamer
 from TechVJ.utils.render_template import render_page
 from config import MULTI_CLIENT
 
-
 routes = web.RouteTableDef()
+
+VOTES_FILE = 'votes.json'
+REPORTS_FILE = 'reports.json'
+
+if not os.path.exists(VOTES_FILE):
+    with open(VOTES_FILE, 'w') as f:
+        json.dump({}, f)
+if not os.path.exists(REPORTS_FILE):
+    with open(REPORTS_FILE, 'w') as f:
+        json.dump([], f)
 
 @routes.get("/", allow_head=True)
 async def root_route_handler(_):
@@ -39,9 +48,8 @@ async def root_route_handler(_):
         }
     )
 
-
 @routes.get(r"/watch/{path:\S+}", allow_head=True)
-async def stream_handler(request: web.Request):
+async def watch_handler(request: web.Request):
     try:
         path = request.match_info["path"]
         match = re.search(r"^([a-zA-Z0-9_-]{6})(\d+)$", path)
@@ -168,3 +176,77 @@ async def media_streamer(request: web.Request, id: int, secure_hash: str):
             "Accept-Ranges": "bytes",
         },
     )
+
+@routes.get("/votes/{file_id}", allow_head=True)
+async def get_votes(request):
+    file_id = request.match_info["file_id"]
+    try:
+        with open(VOTES_FILE, 'r') as f:
+            data = json.load(f)
+    except:
+        data = {}
+    
+    if file_id not in data:
+        data[file_id] = {
+            'likes': random.randint(400, 500),
+            'dislikes': random.randint(5, 50)
+        }
+        with open(VOTES_FILE, 'w') as f:
+            json.dump(data, f, indent=2)
+    
+    return web.json_response({
+        'likes': data[file_id]['likes'],
+        'dislikes': data[file_id]['dislikes'],
+        'user_vote': None
+    })
+
+@routes.post("/vote")
+async def vote(request):
+    data = await request.json()
+    file_id = str(data['file_id'])
+    vote_type = data['vote']
+    
+    try:
+        with open(VOTES_FILE, 'r') as f:
+            votes = json.load(f)
+    except:
+        votes = {}
+    
+    if file_id not in votes:
+        votes[file_id] = {
+            'likes': random.randint(400, 500),
+            'dislikes': random.randint(5, 50)
+        }
+    
+    if vote_type == 'like':
+        votes[file_id]['likes'] += 1
+    elif vote_type == 'dislike':
+        votes[file_id]['dislikes'] += 1
+    
+    with open(VOTES_FILE, 'w') as f:
+        json.dump(votes, f, indent=2)
+    
+    return web.json_response({
+        'likes': votes[file_id]['likes'],
+        'dislikes': votes[file_id]['dislikes'],
+        'user_vote': vote_type
+    })
+
+@routes.post("/report")
+async def report(request):
+    data = await request.json()
+    try:
+        with open(REPORTS_FILE, 'r') as f:
+            reports = json.load(f)
+    except:
+        reports = []
+    
+    reports.append({
+        **data,
+        'timestamp': str(datetime.now())
+    })
+    
+    with open(REPORTS_FILE, 'w') as f:
+        json.dump(reports, f, indent=2)
+    
+    return web.json_response({'success': True})
