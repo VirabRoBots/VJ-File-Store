@@ -318,18 +318,16 @@ async def audio_stream_handler(request: web.Request):
                 offset = 0
                 
                 with open(temp_path, 'wb') as f:
-                    downloaded = 0
-                    while downloaded < file_size:
-                        remaining = file_size - downloaded
+                    while offset < file_size:
+                        remaining = file_size - offset
                         current_chunk = min(chunk_size, remaining)
                         
                         async for chunk in tg_connect.yield_file(
                             file_props, index, offset, 0, current_chunk, 1, current_chunk
                         ):
                             f.write(chunk)
-                            downloaded += len(chunk)
                             offset += len(chunk)
-                            if downloaded >= file_size:
+                            if offset >= file_size:
                                 break
                 
                 extract_cmd = [
@@ -353,7 +351,8 @@ async def audio_stream_handler(request: web.Request):
                     ]
                     subprocess.run(extract_cmd, capture_output=True, timeout=180)
                 
-                os.unlink(temp_path)
+                if os.path.exists(temp_path):
+                    os.unlink(temp_path)
                 
             except Exception as e:
                 logging.error(f"Audio extraction error: {e}")
