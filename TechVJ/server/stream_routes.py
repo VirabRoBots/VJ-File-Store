@@ -314,18 +314,23 @@ async def audio_stream_handler(request: web.Request):
             
             try:
                 file_size = file_props.file_size
-                chunk_size = 5 * 1024 * 1024
+                chunk_size = 1024 * 1024
                 offset = 0
-                first_part_cut = 0
-                last_part_cut = chunk_size
-                part_count = math.ceil(file_size / chunk_size)
                 
                 with open(temp_path, 'wb') as f:
-                    async for chunk in tg_connect.yield_file(
-                        file_props, index, offset, first_part_cut, last_part_cut,
-                        part_count, chunk_size
-                    ):
-                        f.write(chunk)
+                    downloaded = 0
+                    while downloaded < file_size:
+                        remaining = file_size - downloaded
+                        current_chunk = min(chunk_size, remaining)
+                        
+                        async for chunk in tg_connect.yield_file(
+                            file_props, index, offset, 0, current_chunk, 1, current_chunk
+                        ):
+                            f.write(chunk)
+                            downloaded += len(chunk)
+                            offset += len(chunk)
+                            if downloaded >= file_size:
+                                break
                 
                 extract_cmd = [
                     'ffmpeg', '-i', temp_path,
