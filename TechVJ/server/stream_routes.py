@@ -314,27 +314,21 @@ async def audio_stream_handler(request: web.Request):
             
             try:
                 file_size = file_props.file_size
+                chunk_size = 1024 * 1024
+                offset = 0
                 
                 with open(temp_path, 'wb') as f:
-                    downloaded = 0
-                    chunk_size = 1024 * 1024
-                    
-                    while downloaded < file_size:
-                        remaining = file_size - downloaded
+                    while offset < file_size:
+                        remaining = file_size - offset
                         current_chunk = min(chunk_size, remaining)
+                        part_count = math.ceil(current_chunk / chunk_size)
                         
                         async for chunk in tg_connect.yield_file(
-                            file_props, 
-                            index, 
-                            downloaded,
-                            0,
-                            current_chunk,
-                            1,
-                            current_chunk
+                            file_props, index, offset, 0, current_chunk, part_count, chunk_size
                         ):
                             f.write(chunk)
-                            downloaded += len(chunk)
-                            if downloaded >= file_size:
+                            offset += len(chunk)
+                            if offset >= file_size:
                                 break
                 
                 extract_cmd = [
@@ -346,17 +340,7 @@ async def audio_stream_handler(request: web.Request):
                     '-y', cache_file
                 ]
                 
-                result = subprocess.run(extract_cmd, capture_output=True, timeout=180)
-                
-                if result.returncode != 0:
-                    extract_cmd = [
-                        'ffmpeg', '-i', temp_path,
-                        '-map', f'0:a:{stream_index}',
-                        '-c:a', 'copy',
-                        '-vn',
-                        '-y', cache_file
-                    ]
-                    subprocess.run(extract_cmd, capture_output=True, timeout=180)
+                subprocess.run(extract_cmd, capture_output=True, timeout=300)
                 
                 if os.path.exists(temp_path):
                     os.unlink(temp_path)
