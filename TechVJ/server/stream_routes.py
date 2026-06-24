@@ -330,18 +330,20 @@ async def audio_stream_handler(request: web.Request):
                 extract_cmd = [
                     'ffmpeg', '-i', temp_path,
                     '-map', f'0:a:{stream_index}',
-                    '-c:a', 'copy',
+                    '-c:a', 'aac',
+                    '-b:a', '128k',
+                    '-vn',
                     '-y', cache_file
                 ]
                 
-                result = subprocess.run(extract_cmd, capture_output=True, timeout=120)
+                result = subprocess.run(extract_cmd, capture_output=True, timeout=180)
                 
                 if result.returncode != 0:
                     extract_cmd = [
                         'ffmpeg', '-i', temp_path,
                         '-map', f'0:a:{stream_index}',
-                        '-c:a', 'aac',
-                        '-b:a', '128k',
+                        '-c:a', 'copy',
+                        '-vn',
                         '-y', cache_file
                     ]
                     subprocess.run(extract_cmd, capture_output=True, timeout=180)
@@ -358,7 +360,7 @@ async def audio_stream_handler(request: web.Request):
             audio_size = os.path.getsize(cache_file)
             
             if seek_time > 0:
-                seek_bytes = int(seek_time * 50000)
+                seek_bytes = int(seek_time * 48000 * 2)
                 seek_bytes = min(seek_bytes, audio_size - 1)
             else:
                 seek_bytes = 0
