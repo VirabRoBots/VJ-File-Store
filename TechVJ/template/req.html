@@ -1684,15 +1684,20 @@
       if (activeTrackIdx === streamIndex && activeAudio) {
         return;
       }
-      if (!audioCtx) {
-        audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-      }
+      // Remove old audio
       if (activeAudio) {
         activeAudio.pause();
         activeAudio.src = '';
         activeAudio.remove();
         activeAudio = null;
       }
+      // Restore original video audio
+      if (gainNode) {
+        gainNode.gain.value = 1;
+      } else {
+        vid.muted = false;
+      }
+      // Create new audio element
       activeAudio = document.createElement('audio');
       activeAudio.style.display = 'none';
       document.body.appendChild(activeAudio);
@@ -1703,27 +1708,15 @@
       activeAudio.src = audioUrl;
       activeAudio.volume = vid.volume;
       activeAudio.playbackRate = vid.playbackRate;
-      if (!gainNode) {
-        try {
-          const source = audioCtx.createMediaElementSource(vid);
-          gainNode = audioCtx.createGain();
-          gainNode.connect(audioCtx.destination);
-          source.connect(gainNode);
-        } catch (e) {
-          vid.muted = true;
-        }
-      }
+      // Mute video, play audio
+      vid.muted = true;
       if (gainNode) {
         gainNode.gain.value = 0;
-      } else {
-        vid.muted = true;
       }
       activeAudio.play().catch(() => {});
-      if (!vid.paused) {
-        activeAudio.play().catch(() => {});
-      }
+      // Sync functions
       const syncHandler = () => {
-        if (activeAudio) {
+        if (activeAudio && !activeAudio.paused) {
           const drift = vid.currentTime - activeAudio.currentTime;
           if (Math.abs(drift) > 2) {
             activeAudio.currentTime = vid.currentTime;
@@ -1732,11 +1725,10 @@
       };
       vid.removeEventListener('timeupdate', syncHandler);
       vid.addEventListener('timeupdate', syncHandler);
+      // Remove old listeners
       vid.removeEventListener('play', playHandler);
       vid.removeEventListener('pause', pauseHandler);
       vid.removeEventListener('seeking', seekingHandler);
-      vid.removeEventListener('ratechange', rateHandler);
-      vid.removeEventListener('volumechange', volumeHandler);
 
       function playHandler() {
         if (activeAudio) activeAudio.play().catch(() => {});
@@ -1749,19 +1741,9 @@
       function seekingHandler() {
         if (activeAudio) activeAudio.currentTime = vid.currentTime;
       }
-
-      function rateHandler() {
-        if (activeAudio) activeAudio.playbackRate = vid.playbackRate;
-      }
-
-      function volumeHandler() {
-        if (activeAudio) activeAudio.volume = vid.volume;
-      }
       vid.addEventListener('play', playHandler);
       vid.addEventListener('pause', pauseHandler);
       vid.addEventListener('seeking', seekingHandler);
-      vid.addEventListener('ratechange', rateHandler);
-      vid.addEventListener('volumechange', volumeHandler);
       activeTrackIdx = streamIndex;
       document.querySelectorAll("#audioTrackList .track-item").forEach((el, i) => {
         el.classList.toggle("active-track", i === listIdx);
