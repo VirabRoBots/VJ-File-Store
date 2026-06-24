@@ -2,11 +2,10 @@
 # Subscribe YouTube Channel For Amazing Bot @Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-FROM python:3.10.8-slim-buster
+FROM python:3.10-slim-bookworm
 
 RUN apt update && apt upgrade -y
-RUN apt install git -y
-RUN apt install ffmpeg -y
+RUN apt install git ffmpeg -y
 COPY requirements.txt /requirements.txt
 
 RUN cd /
