@@ -288,7 +288,6 @@ async def get_audio_tracks(request: web.Request):
 async def audio_stream_handler(request: web.Request):
     stream_index = int(request.match_info["stream_index"])
     file_id = request.match_info["file_id"]
-    seek_time = float(request.rel_url.query.get("ss", 0))
     
     try:
         match = re.search(r"^([a-zA-Z0-9_-]{6})(\d+)$", file_id)
@@ -305,7 +304,7 @@ async def audio_stream_handler(request: web.Request):
         file_props = await tg_connect.get_file_properties(id)
         
         cache_key = f"audio_{stream_index}_{file_id}"
-        cache_file = os.path.join(AUDIO_CACHE_DIR, f"{cache_key}.aac")
+        cache_file = os.path.join(AUDIO_CACHE_DIR, f"{cache_key}.mp3")
         
         if not os.path.exists(cache_file):
             temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.mp4')
@@ -334,13 +333,17 @@ async def audio_stream_handler(request: web.Request):
                 extract_cmd = [
                     'ffmpeg', '-i', temp_path,
                     '-map', f'0:a:{stream_index}',
-                    '-c:a', 'aac',
+                    '-c:a', 'libmp3lame',
                     '-b:a', '128k',
                     '-vn',
                     '-y', cache_file
                 ]
                 
-                subprocess.run(extract_cmd, capture_output=True, timeout=300)
+                result = subprocess.run(extract_cmd, capture_output=True, timeout=300)
+                
+                if result.returncode != 0:
+                    logging.error(f"FFmpeg error: {result.stderr.decode()}")
+                    return web.Response(status=500, text="Audio extraction failed")
                 
                 if os.path.exists(temp_path):
                     os.unlink(temp_path)
@@ -354,12 +357,6 @@ async def audio_stream_handler(request: web.Request):
         if os.path.exists(cache_file):
             audio_size = os.path.getsize(cache_file)
             
-            if seek_time > 0:
-                seek_bytes = int(seek_time * 48000 * 2)
-                seek_bytes = min(seek_bytes, audio_size - 1)
-            else:
-                seek_bytes = 0
-            
             range_header = request.headers.get("Range", 0)
             
             if range_header:
@@ -367,7 +364,7 @@ async def audio_stream_handler(request: web.Request):
                 from_bytes = int(from_bytes)
                 until_bytes = int(until_bytes) if until_bytes else audio_size - 1
             else:
-                from_bytes = max(seek_bytes, 0)
+                from_bytes = 0
                 until_bytes = audio_size - 1
             
             if from_bytes < 0 or until_bytes >= audio_size or from_bytes > until_bytes:
@@ -389,7 +386,7 @@ async def audio_stream_handler(request: web.Request):
                 status=206 if range_header else 200,
                 body=file_generator(),
                 headers={
-                    "Content-Type": "audio/mp4",
+                    "Content-Type": "audio/mpeg",
                     "Content-Range": f"bytes {from_bytes}-{until_bytes}/{audio_size}",
                     "Content-Length": str(until_bytes - from_bytes + 1),
                     "Accept-Ranges": "bytes",
