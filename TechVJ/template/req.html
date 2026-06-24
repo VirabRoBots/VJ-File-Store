@@ -1,3 +1,4 @@
+HTML Result Skip Results Iframe
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1605,322 +1606,167 @@
     const FILE_URL = "{{file_url}}";
     const FILE_NAME = "{{file_name}}";
     const IS_AUDIO = ("false" === "true");
+    let audioCtx = null;
+    let gainNode = null;
+    let activeAudio = null;
+    let activeTrackIdx = null;
+    let audioTracks = [];
+
+    function fetchAudioTracks() {
+      const url = `/api/tracks/${FILE_ID}`;
+      const list = document.getElementById("audioTrackList");
+      fetch(url)
+        .then(r => r.json())
+        .then(tracks => {
+          audioTracks = tracks;
+          if (tracks.length > 1) {
+            renderAudioTracks(tracks);
+          } else {
+            list.innerHTML = `
+                    <div style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:10px 0">
+                        <i class="fa-solid fa-info-circle" style="margin-right:6px;color:rgba(157,111,255,.5)"></i>
+                        Single audio track
+                    </div>`;
+          }
+        })
+        .catch(() => {
+          list.innerHTML = `
+                <div style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:10px 0">
+                    <i class="fa-solid fa-exclamation-triangle" style="margin-right:6px;color:var(--gold)"></i>
+                    Could not load audio tracks
+                </div>`;
+        });
+    }
+
+    function renderAudioTracks(tracks) {
+      const list = document.getElementById("audioTrackList");
+      list.innerHTML = "";
+      tracks.forEach((track, idx) => {
+        const lang = track.tags.language || `Track ${idx + 1}`;
+        const codec = track.codec_name || 'aac';
+        const isActive = activeTrackIdx === track.index;
+        const el = document.createElement("div");
+        el.className = "track-item" + (isActive ? " active-track" : "");
+        el.innerHTML = `
+            <div class="track-left">
+                <span class="track-lang">${lang}</span>
+                <span style="font-size:.6rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">${codec}</span>
+                ${idx === 0 ? '<span class="track-badge default">Default</span>' : ""}
+                ${isActive ? '<span class="track-badge active">Active</span>' : ""}
+            </div>
+            <i class="fa-solid fa-check track-check"></i>`;
+        el.onclick = () => switchAudioTrack(track.index, idx);
+        list.appendChild(el);
+      });
+    }
+
+    function switchAudioTrack(streamIndex, listIdx) {
+      const vid = document.getElementById('myVideo');
+      if (activeTrackIdx === streamIndex && activeAudio) {
+        return;
+      }
+      if (!audioCtx) {
+        audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+      }
+      if (activeAudio) {
+        activeAudio.pause();
+        activeAudio.src = '';
+        activeAudio.remove();
+        activeAudio = null;
+      }
+      activeAudio = document.createElement('audio');
+      activeAudio.style.display = 'none';
+      document.body.appendChild(activeAudio);
+      const audioUrl = `/audio/${streamIndex}/${FILE_ID}?ss=${vid.currentTime.toFixed(3)}`;
+      activeAudio.src = audioUrl;
+      activeAudio.volume = vid.volume;
+      activeAudio.playbackRate = vid.playbackRate;
+      if (!gainNode) {
+        try {
+          const source = audioCtx.createMediaElementSource(vid);
+          gainNode = audioCtx.createGain();
+          gainNode.connect(audioCtx.destination);
+          source.connect(gainNode);
+        } catch (e) {
+          vid.muted = true;
+        }
+      }
+      if (gainNode) {
+        gainNode.gain.value = 0;
+      } else {
+        vid.muted = true;
+      }
+      activeAudio.play().catch(() => {});
+      if (!vid.paused) {
+        activeAudio.play().catch(() => {});
+      }
+      const syncHandler = () => {
+        if (activeAudio) {
+          const drift = vid.currentTime - activeAudio.currentTime;
+          if (Math.abs(drift) > 2) {
+            activeAudio.currentTime = vid.currentTime;
+          }
+        }
+      };
+      vid.removeEventListener('timeupdate', syncHandler);
+      vid.addEventListener('timeupdate', syncHandler);
+      vid.removeEventListener('play', playHandler);
+      vid.removeEventListener('pause', pauseHandler);
+      vid.removeEventListener('seeking', seekingHandler);
+      vid.removeEventListener('ratechange', rateHandler);
+      vid.removeEventListener('volumechange', volumeHandler);
+
+      function playHandler() {
+        if (activeAudio) activeAudio.play().catch(() => {});
+      }
+
+      function pauseHandler() {
+        if (activeAudio) activeAudio.pause();
+      }
+
+      function seekingHandler() {
+        if (activeAudio) activeAudio.currentTime = vid.currentTime;
+      }
+
+      function rateHandler() {
+        if (activeAudio) activeAudio.playbackRate = vid.playbackRate;
+      }
+
+      function volumeHandler() {
+        if (activeAudio) activeAudio.volume = vid.volume;
+      }
+      vid.addEventListener('play', playHandler);
+      vid.addEventListener('pause', pauseHandler);
+      vid.addEventListener('seeking', seekingHandler);
+      vid.addEventListener('ratechange', rateHandler);
+      vid.addEventListener('volumechange', volumeHandler);
+      activeTrackIdx = streamIndex;
+      document.querySelectorAll("#audioTrackList .track-item").forEach((el, i) => {
+        el.classList.toggle("active-track", i === listIdx);
+      });
+    }
+
+    function switchToDefaultAudio() {
+      const vid = document.getElementById('myVideo');
+      if (gainNode) {
+        gainNode.gain.value = 1;
+      } else {
+        vid.muted = false;
+      }
+      if (activeAudio) {
+        activeAudio.pause();
+        activeAudio.src = '';
+        activeAudio.remove();
+        activeAudio = null;
+      }
+      activeTrackIdx = null;
+      document.querySelectorAll("#audioTrackList .track-item").forEach(el => {
+        el.classList.remove("active-track");
+      });
+    }
     const COMMENT_KEY = "ps_cmts_" + FILE_ID;
     const RESUME_KEY = "ps_resume_" + FILE_ID;
     const PAGE_SIZE = 3;
-    const AUDIO_LANG_MAP = [{
-        key: "Hindi",
-        re: /\bHindi\b/i
-      },
-      {
-        key: "Tamil",
-        re: /\bTamil\b/i
-      },
-      {
-        key: "Telugu",
-        re: /\bTelugu\b/i
-      },
-      {
-        key: "Malayalam",
-        re: /\bMalayalam\b/i
-      },
-      {
-        key: "Kannada",
-        re: /\bKannada\b/i
-      },
-      {
-        key: "Bengali",
-        re: /\bBengali\b/i
-      },
-      {
-        key: "English",
-        re: /\bEnglish\b/i
-      },
-      {
-        key: "Punjabi",
-        re: /\bPunjabi\b/i
-      },
-      {
-        key: "Marathi",
-        re: /\bMarathi\b/i
-      },
-      {
-        key: "Japanese",
-        re: /\bJapanese\b/i
-      },
-      {
-        key: "Korean",
-        re: /\bKorean\b/i
-      },
-      {
-        key: "Chinese",
-        re: /\bChinese\b/i
-      },
-      {
-        key: "Russian",
-        re: /\bRussian\b/i
-      },
-    ];
-
-    function detectAudioLangs(fname) {
-      const bracketMatch = fname.match(/\[([^\]]+)\]/);
-      if (bracketMatch) {
-        const content = bracketMatch[1];
-        if (content.includes('+')) {
-          const langs = content.split('+').map(s => s.trim());
-          const validLangs = langs.filter(l =>
-            !/^(HQ|Clean|AAC|ESub|x264|HDRip|320kbps|DDP|Atmos|WEB-DL|BluRay|DVD|Rip|HD|SD|60fps|10bit|HEVC|AVC|DD5\.1|DTS|AC3)$/i.test(l)
-          );
-          if (validLangs.length > 1) {
-            return validLangs;
-          }
-        }
-      }
-      if (/\bDual\s*Audio\b/i.test(fname)) return ["Audio 1", "Audio 2"];
-      if (/\bMulti\s*Audio\b/i.test(fname)) return ["Audio 1", "Audio 2", "Audio 3"];
-      if (/\bDual\b/i.test(fname) && /\bAudio\b/i.test(fname)) return ["Audio 1", "Audio 2"];
-      if (/\bMulti\b/i.test(fname)) return ["Audio 1", "Audio 2", "Audio 3"];
-      const LANG_MAP = [
-        {
-          key: "Hindi",
-          re: /\bHindi\b/i
-        },
-        {
-          key: "Tamil",
-          re: /\bTamil\b/i
-        },
-        {
-          key: "Telugu",
-          re: /\bTelugu\b/i
-        },
-        {
-          key: "Malayalam",
-          re: /\bMalayalam\b/i
-        },
-        {
-          key: "Kannada",
-          re: /\bKannada\b/i
-        },
-        {
-          key: "Bengali",
-          re: /\bBengali\b/i
-        },
-        {
-          key: "English",
-          re: /\bEnglish\b/i
-        },
-        {
-          key: "Punjabi",
-          re: /\bPunjabi\b/i
-        },
-        {
-          key: "Marathi",
-          re: /\bMarathi\b/i
-        },
-        {
-          key: "Japanese",
-          re: /\bJapanese\b/i
-        },
-        {
-          key: "Korean",
-          re: /\bKorean\b/i
-        },
-        {
-          key: "Chinese",
-          re: /\bChinese\b/i
-        },
-        {
-          key: "Russian",
-          re: /\bRussian\b/i
-        },
-        {
-          key: "French",
-          re: /\bFrench\b/i
-        },
-        {
-          key: "Spanish",
-          re: /\bSpanish\b/i
-        },
-        {
-          key: "German",
-          re: /\bGerman\b/i
-        },
-        {
-          key: "Italian",
-          re: /\bItalian\b/i
-        },
-        {
-          key: "Portuguese",
-          re: /\bPortuguese\b/i
-        },
-        {
-          key: "Arabic",
-          re: /\bArabic\b/i
-        },
-        {
-          key: "Turkish",
-          re: /\bTurkish\b/i
-        },
-        {
-          key: "Vietnamese",
-          re: /\bVietnamese\b/i
-        },
-        {
-          key: "Thai",
-          re: /\bThai\b/i
-        },
-        {
-          key: "Indonesian",
-          re: /\bIndonesian\b/i
-        },
-        {
-          key: "Dutch",
-          re: /\bDutch\b/i
-        },
-        {
-          key: "Greek",
-          re: /\bGreek\b/i
-        },
-        {
-          key: "Polish",
-          re: /\bPolish\b/i
-        },
-        {
-          key: "Swedish",
-          re: /\bSwedish\b/i
-        },
-        {
-          key: "Danish",
-          re: /\bDanish\b/i
-        },
-        {
-          key: "Finnish",
-          re: /\bFinnish\b/i
-        },
-        {
-          key: "Norwegian",
-          re: /\bNorwegian\b/i
-        },
-        {
-          key: "Hebrew",
-          re: /\bHebrew\b/i
-        },
-        {
-          key: "Hindi",
-          re: /\bHin\b/i
-        },
-        {
-          key: "Tamil",
-          re: /\bTam\b/i
-        },
-        {
-          key: "Telugu",
-          re: /\bTel\b/i
-        },
-        {
-          key: "Malayalam",
-          re: /\bMal\b/i
-        },
-        {
-          key: "Kannada",
-          re: /\bKan\b/i
-        },
-        {
-          key: "Bengali",
-          re: /\bBen\b/i
-        },
-        {
-          key: "English",
-          re: /\bEng\b/i
-        },
-        {
-          key: "Punjabi",
-          re: /\bPun\b/i
-        },
-        {
-          key: "Marathi",
-          re: /\bMar\b/i
-        },
-        {
-          key: "Japanese",
-          re: /\bJap\b/i
-        },
-        {
-          key: "Korean",
-          re: /\bKor\b/i
-        },
-        {
-          key: "Chinese",
-          re: /\bChi\b/i
-        },
-        {
-          key: "Russian",
-          re: /\bRus\b/i
-        },
-        {
-          key: "French",
-          re: /\bFre\b/i
-        },
-        {
-          key: "Spanish",
-          re: /\bSpa\b/i
-        },
-        {
-          key: "German",
-          re: /\bGer\b/i
-        },
-        {
-          key: "Italian",
-          re: /\bIta\b/i
-        },
-        {
-          key: "Portuguese",
-          re: /\bPor\b/i
-        },
-        {
-          key: "Arabic",
-          re: /\bAra\b/i
-        },
-        {
-          key: "Turkish",
-          re: /\bTur\b/i
-        },
-        {
-          key: "Vietnamese",
-          re: /\bVie\b/i
-        },
-        {
-          key: "Indonesian",
-          re: /\bInd\b/i
-        },
-        {
-          key: "Dutch",
-          re: /\bDut\b/i
-        },
-        {
-          key: "Greek",
-          re: /\bGre\b/i
-        },
-        {
-          key: "Polish",
-          re: /\bPol\b/i
-        },
-        {
-          key: "Thai",
-          re: /\bTha\b/i
-        },
-      ];
-      const found = [];
-      for (const {
-          key,
-          re
-        } of LANG_MAP) {
-        if (re.test(fname) && !found.includes(key)) {
-          found.push(key);
-        }
-      }
-      return found;
-    }
 
     function detectSubtitleLangs(fname) {
       const subs = [];
@@ -1938,60 +1784,6 @@
     }
     const video = document.getElementById("myVideo");
     const loader = document.getElementById("videoLoader");
-
-    function initAudioTracks() {
-      const list = document.getElementById("audioTrackList");
-      const native = video.audioTracks;
-      if (native && native.length > 1) {
-        list.innerHTML = "";
-        for (let i = 0; i < native.length; i++) {
-          const t = native[i];
-          const lang = t.language || t.label || ("Track " + (i + 1));
-          const isDefault = t.enabled;
-          const el = document.createElement("div");
-          el.className = "track-item" + (isDefault ? " active-track" : "");
-          el.id = "atrack_" + i;
-          el.innerHTML = `
-        <div class="track-left">
-          <span class="track-lang">${lang}</span>
-          ${isDefault ? '<span class="track-badge default">Default</span>' : ""}
-          ${isDefault ? '<span class="track-badge active" id="activeBadge_' + i + '">Active</span>' : ""}
-        </div>
-        <i class="fa-solid fa-check track-check"></i>`;
-          el.onclick = () => selectAudioTrack(i);
-          list.appendChild(el);
-        }
-        return;
-      }
-      const detected = detectAudioLangs(FILE_NAME);
-      if (detected.length === 0) {
-        list.innerHTML = `
-      <div style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:10px 0">
-        <i class="fa-solid fa-info-circle" style="margin-right:6px;color:rgba(157,111,255,.5)"></i>
-        Single audio track
-      </div>`;
-        return;
-      }
-      const banner = document.createElement("div");
-      banner.style.cssText = "font-size:.72rem;font-weight:700;color:var(--text-secondary);font-family:var(--font-head);margin-bottom:9px;padding:8px 10px;background:rgba(157,111,255,.07);border-radius:10px;border:1px solid rgba(157,111,255,.2);line-height:1.5";
-      banner.innerHTML = `<i class="fa-solid fa-circle-info" style="color:var(--violet);margin-right:5px"></i>Multi-audio detected. To switch audio tracks, use <b style="color:var(--cyan)">MX Player</b> or <b style="color:var(--gold)">VLC</b>.`;
-      list.innerHTML = "";
-      list.appendChild(banner);
-      detected.forEach((lang, i) => {
-        const el = document.createElement("div");
-        el.className = "track-item" + (i === 0 ? " active-track" : "");
-        el.innerHTML = `
-      <div class="track-left">
-        <span class="track-lang">${lang}</span>
-        ${i === 0 ? '<span class="track-badge default">Default</span>' : ""}
-      </div>
-      <i class="fa-solid fa-check track-check"></i>`;
-        el.onclick = () => {
-          document.querySelectorAll(".track-item").forEach((e, j) => e.classList.toggle("active-track", j === i + 1));
-        };
-        list.appendChild(el);
-      });
-    }
 
     function toggleOtherInput() {
       const otherRadio = document.querySelector('input[name="rr"][value="other"]');
@@ -2282,8 +2074,7 @@
           } else if (e.castState === cast.framework.CastState.NOT_CONNECTED) {
             document.getElementById("castBanner").style.display = "none";
             castSession = null;
-          } else if (e.castState === cast.framework.CastState.NO_DEVICES_AVAILABLE) {
-          } else {
+          } else if (e.castState === cast.framework.CastState.NO_DEVICES_AVAILABLE) {} else {
             document.getElementById("castBanner").style.display = "flex";
           }
         }
@@ -2299,8 +2090,7 @@
         castContext.requestSession().then(() => {
           sendMediaToCast();
         }).catch((err) => {
-          if (err !== chrome.cast.ErrorCode.CANCEL) {
-          }
+          if (err !== chrome.cast.ErrorCode.CANCEL) {}
         });
       } else {
         sendMediaToCast();
@@ -2352,7 +2142,7 @@
       loader.style.display = "none";
     });
     video.addEventListener("loadedmetadata", () => {
-      initAudioTracks();
+      fetchAudioTracks();
       initSubtitles();
       initResume();
       startResumeSaving();
@@ -2438,55 +2228,55 @@
       } catch {}
     }
     let likeCount = 0;
-let dislikeCount = 0;
-let userVote = null;
+    let dislikeCount = 0;
+    let userVote = null;
+    fetch('/votes/' + encodeURIComponent(FILE_NAME))
+      .then(r => r.json())
+      .then(data => {
+        likeCount = data.likes;
+        dislikeCount = data.dislikes;
+        document.getElementById("likeCount").textContent = likeCount;
+        document.getElementById("dislikeCount").textContent = dislikeCount;
+      })
+      .catch(() => {
+        likeCount = Math.floor(Math.random() * 100) + 400;
+        dislikeCount = Math.floor(Math.random() * 45) + 5;
+        document.getElementById("likeCount").textContent = likeCount;
+        document.getElementById("dislikeCount").textContent = dislikeCount;
+      });
 
-fetch('/votes/' + encodeURIComponent(FILE_NAME))
-  .then(r => r.json())
-  .then(data => {
-    likeCount = data.likes;
-    dislikeCount = data.dislikes;
-    document.getElementById("likeCount").textContent = likeCount;
-    document.getElementById("dislikeCount").textContent = dislikeCount;
-  })
-  .catch(() => {
-    likeCount = Math.floor(Math.random() * 100) + 400;
-    dislikeCount = Math.floor(Math.random() * 45) + 5;
-    document.getElementById("likeCount").textContent = likeCount;
-    document.getElementById("dislikeCount").textContent = dislikeCount;
-  });
-
-function castVote(type) {
-  fetch('/vote', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      file_name: FILE_NAME,
-      vote: type
-    })
-  })
-  .then(r => r.json())
-  .then(data => {
-    likeCount = data.likes;
-    dislikeCount = data.dislikes;
-    document.getElementById("likeCount").textContent = likeCount;
-    document.getElementById("dislikeCount").textContent = dislikeCount;
-    userVote = data.user_vote;
-    applyVote(userVote);
-    
-    if (userVote === null) {
-      showToast('↩ Vote removed', 1800);
-    } else {
-      showToast(type === 'like' ? '👍 Liked!' : '👎 Disliked!', 1800);
+    function castVote(type) {
+      fetch('/vote', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            file_name: FILE_NAME,
+            vote: type
+          })
+        })
+        .then(r => r.json())
+        .then(data => {
+          likeCount = data.likes;
+          dislikeCount = data.dislikes;
+          document.getElementById("likeCount").textContent = likeCount;
+          document.getElementById("dislikeCount").textContent = dislikeCount;
+          userVote = data.user_vote;
+          applyVote(userVote);
+          if (userVote === null) {
+            showToast('↩ Vote removed', 1800);
+          } else {
+            showToast(type === 'like' ? '👍 Liked!' : '👎 Disliked!', 1800);
+          }
+        })
+        .catch(() => showToast('⚠️ Vote failed.'));
     }
-  })
-  .catch(() => showToast('⚠️ Vote failed.'));
-}
 
-function applyVote(v) {
-  document.getElementById("btnLike").classList.toggle("liked", v === "like");
-  document.getElementById("btnDislike").classList.toggle("disliked", v === "dislike");
-}
+    function applyVote(v) {
+      document.getElementById("btnLike").classList.toggle("liked", v === "like");
+      document.getElementById("btnDislike").classList.toggle("disliked", v === "dislike");
+    }
 
     function switchTab(id, btn) {
       document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
@@ -2578,3 +2368,6 @@ function applyVote(v) {
 </body>
 
 </html>
+
+
+Resources
