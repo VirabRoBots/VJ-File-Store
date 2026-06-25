@@ -1792,36 +1792,60 @@
     }
 
     function attachVideoListeners(vid) {
-      if (!vid || vid.__eventsAttached) return;
-      vid.__eventsAttached = true;
-      vid.addEventListener('play', function() {
+    if (!vid || vid.__eventsAttached) return;
+    vid.__eventsAttached = true;
+    
+    vid.addEventListener('play', function() {
         if (activeTrackIdx === null || !activeAudio) return;
         if (audioLoading) {
-          videoWasPlaying = true;
-          vid.pause();
+            videoWasPlaying = true;
+            vid.pause();
         } else activeAudio.play().catch(() => {});
-      });
-      vid.addEventListener('pause', function() {
+    });
+    
+    vid.addEventListener('pause', function() {
         if (activeAudio) activeAudio.pause();
-      });
-      vid.addEventListener('seeking', function() {
+    });
+    
+    vid.addEventListener('waiting', function() {
+        // Pause audio when video is buffering/loading
+        if (activeAudio && activeTrackIdx !== null) {
+            activeAudio.pause();
+        }
+    });
+    
+    vid.addEventListener('playing', function() {
+        // Resume audio when video resumes after loading
+        if (activeAudio && activeTrackIdx !== null && !audioLoading) {
+            const drift = vid.currentTime - activeAudio.currentTime;
+            if (Math.abs(drift) > 1.5) {
+                reloadAudio(vid.currentTime);
+            } else {
+                activeAudio.play().catch(() => {});
+            }
+        }
+    });
+    
+    vid.addEventListener('seeking', function() {
         if (activeTrackIdx === null) return;
         clearTimeout(seekDebounce);
         seekDebounce = setTimeout(function() {
-          reloadAudio(vid.currentTime);
+            reloadAudio(vid.currentTime);
         }, 250);
-      });
-      vid.addEventListener('ratechange', function() {
+    });
+    
+    vid.addEventListener('ratechange', function() {
         if (activeAudio) activeAudio.playbackRate = vid.playbackRate;
-      });
-      vid.addEventListener('volumechange', function() {
+    });
+    
+    vid.addEventListener('volumechange', function() {
         if (!activeAudio || activeTrackIdx === null) return;
         activeAudio.volume = player ? player.volume : vid.volume;
         if (!vid.muted) {
-          activeAudio.muted = player ? player.muted : vid.muted;
+            activeAudio.muted = player ? player.muted : vid.muted;
         }
-      });
-    }
+    });
+}
 
     function switchAudioTrack(streamIndex, listIdx) {
       const vid = document.getElementById('myVideo');
