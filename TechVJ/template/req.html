@@ -1598,59 +1598,305 @@
     </div>
   </div>
 
-  <script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
+<script src="https://cdn.plyr.io/3.6.12/plyr.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const FILE_ID = (() => {
-      // Extract from video source URL
-      const src = document.querySelector('#myVideo source')?.src || FILE_URL;
-      if (!src) return null;
-      // URL format: https://server.com/123/MyMovie.mkv?hash=abc
-      // Extract the number after domain: /123/
-      const match = src.match(/\/(\d+)\//);
-      return match ? match[1] : src.split('/').pop().split('?')[0];
-    })();
     const FILE_URL = "{{file_url}}";
     const FILE_NAME = "{{file_name}}";
     const IS_AUDIO = ("false" === "true");
-    let audioCtx = null;
-    let gainNode = null;
+    // ── ADD FILE_ID DEFINITION HERE ──
+    const FILE_ID = (() => {
+      const src = document.querySelector('#myVideo source')?.src || FILE_URL;
+      if (!src) return null;
+      const match = src.match(/\/(\d+)\//);
+      return match ? match[1] : src.split('/').pop().split('?')[0];
+    })();
+    // ── ADD THESE LINES RIGHT AFTER FILE_ID ──
+    const COMMENT_KEY = "ps_cmts_" + FILE_ID;
+    const RESUME_KEY = "ps_resume_" + FILE_ID;
+    const PAGE_SIZE = 3;
+    // ── AUDIO STATE ──────────────────────────────────────────────
     let activeAudio = null;
     let activeTrackIdx = null;
+    let audioCtx = null;
+    let vidGainNode = null;
+    let audioLoading = false;
+    let videoWasPlaying = false;
+    let seekDebounce = null;
     let audioTracks = [];
+    // ── LANGUAGE MAP ──────────────────────────────────────────────
+    const LANG_MAP = {
+      'eng': 'English',
+      'en': 'English',
+      'hin': 'Hindi',
+      'hi': 'Hindi',
+      'tam': 'Tamil',
+      'ta': 'Tamil',
+      'tel': 'Telugu',
+      'te': 'Telugu',
+      'mal': 'Malayalam',
+      'ml': 'Malayalam',
+      'kan': 'Kannada',
+      'kn': 'Kannada',
+      'ben': 'Bengali',
+      'bn': 'Bengali',
+      'pan': 'Punjabi',
+      'pa': 'Punjabi',
+      'mar': 'Marathi',
+      'mr': 'Marathi',
+      'jpn': 'Japanese',
+      'ja': 'Japanese',
+      'kor': 'Korean',
+      'ko': 'Korean',
+      'zho': 'Chinese',
+      'zh': 'Chinese',
+      'rus': 'Russian',
+      'ru': 'Russian',
+      'fra': 'French',
+      'fr': 'French',
+      'spa': 'Spanish',
+      'es': 'Spanish',
+      'deu': 'German',
+      'de': 'German',
+      'ita': 'Italian',
+      'it': 'Italian',
+      'por': 'Portuguese',
+      'pt': 'Portuguese',
+      'ara': 'Arabic',
+      'ar': 'Arabic',
+      'tur': 'Turkish',
+      'tr': 'Turkish'
+    };
 
-    function fetchAudioTracks() {
-      const list = document.getElementById("audioTrackList");
-      // Get message ID from URL
+    function getLangName(track) {
+      const tags = track.tags || {};
+      const lang = (tags.language || tags.LANGUAGE || '').toLowerCase().trim();
+      return LANG_MAP[lang] || lang || 'Unknown';
+    }
+
+    function getTrackLabel(track, idx) {
+      const name = getLangName(track);
+      const codec = track.codec_name || 'aac';
+      return idx === 0 ? `${name} (Default)` : `${name} (${codec})`;
+    }
+    // ── WEB AUDIO API ──────────────────────────────────────────────
+    function initAudioContext(vid) {
+      if (!vid) return;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) {
+        return;
+      }
+      if (!audioCtx) {
+        try {
+          audioCtx = new AC();
+        } catch (e) {
+          return;
+        }
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (vid.__audioConnected) return;
+      vid.__audioConnected = true;
+      try {
+        const src = audioCtx.createMediaElementSource(vid);
+        if (!vidGainNode) {
+          vidGainNode = audioCtx.createGain();
+          vidGainNode.connect(audioCtx.destination);
+        }
+        vidGainNode.gain.value = (activeTrackIdx !== null) ? 0 : 1;
+        src.connect(vidGainNode);
+      } catch (e) {
+        if (activeTrackIdx !== null) vid.muted = true;
+      }
+    }
+
+    function silenceVideo(vid) {
+      if (vidGainNode) {
+        vidGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+      } else {
+        vid.muted = true;
+      }
+    }
+
+    function restoreVideoAudio(vid) {
+      if (vidGainNode) {
+        vidGainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+      } else {
+        vid.muted = false;
+      }
+    }
+    // ── AUDIO ENGINE ──────────────────────────────────────────────
+    function destroyAudio() {
+      if (!activeAudio) return;
+      activeAudio.oncanplay = null;
+      activeAudio.onerror = null;
+      activeAudio.pause();
+      activeAudio.src = '';
+      activeAudio.load();
+      activeAudio.remove();
+      activeAudio = null;
+      activeTrackIdx = null;
+      audioLoading = false;
+      videoWasPlaying = false;
+    }
+
+    function getFileId() {
       const src = document.querySelector('#myVideo source')?.src || FILE_URL;
       const match = src.match(/\/(\d+)\//);
-      const msgId = match ? match[1] : null;
+      return match ? match[1] : null;
+    }
+
+    function buildAudioUrl(streamIndex, videoTime) {
+      const msgId = getFileId();
+      if (!msgId) return null;
+      return `/audio/${streamIndex}/${msgId}?ss=${videoTime.toFixed(3)}`;
+    }
+
+    function reloadAudio(videoTime) {
+      if (activeTrackIdx === null) return;
+      const vid = document.getElementById('myVideo');
+      if (!vid) return;
+      audioLoading = true;
+      if (!vid.paused) {
+        videoWasPlaying = true;
+        vid.pause();
+      }
+      activeAudio.oncanplay = null;
+      activeAudio.onerror = null;
+      activeAudio.pause();
+      const url = buildAudioUrl(activeTrackIdx, videoTime);
+      if (!url) {
+        audioLoading = false;
+        return;
+      }
+      activeAudio.src = url;
+      activeAudio.volume = player ? player.volume : vid.volume;
+      activeAudio.muted = player ? player.muted : vid.muted;
+      activeAudio.playbackRate = vid.playbackRate;
+      activeAudio.load();
+      activeAudio.onerror = function() {
+        audioLoading = false;
+        console.error('Audio track load error');
+      };
+      activeAudio.oncanplay = function() {
+        if (activeTrackIdx === null) return;
+        audioLoading = false;
+        if (videoWasPlaying || !vid.paused) {
+          videoWasPlaying = false;
+          activeAudio.play().then(() => {
+            vid.play().catch(() => {});
+          }).catch(() => {
+            vid.pause();
+          });
+        }
+      };
+    }
+
+    function attachVideoListeners(vid) {
+      if (!vid || vid.__eventsAttached) return;
+      vid.__eventsAttached = true;
+      vid.addEventListener('play', function() {
+        if (activeTrackIdx === null || !activeAudio) return;
+        if (audioLoading) {
+          videoWasPlaying = true;
+          vid.pause();
+        } else activeAudio.play().catch(() => {});
+      });
+      vid.addEventListener('pause', function() {
+        if (activeAudio) activeAudio.pause();
+      });
+      vid.addEventListener('seeking', function() {
+        if (activeTrackIdx === null) return;
+        clearTimeout(seekDebounce);
+        seekDebounce = setTimeout(function() {
+          reloadAudio(vid.currentTime);
+        }, 250);
+      });
+      vid.addEventListener('ratechange', function() {
+        if (activeAudio) activeAudio.playbackRate = vid.playbackRate;
+      });
+      vid.addEventListener('volumechange', function() {
+        if (!activeAudio || activeTrackIdx === null) return;
+        activeAudio.volume = player ? player.volume : vid.volume;
+        if (!vid.muted) {
+          activeAudio.muted = player ? player.muted : vid.muted;
+        }
+      });
+    }
+
+    function switchAudioTrack(streamIndex, listIdx) {
+      const vid = document.getElementById('myVideo');
+      if (!vid) return;
+      // If same track, do nothing
+      if (activeTrackIdx === streamIndex && activeAudio) return;
+      initAudioContext(vid);
+      // If switching back to default (index 0)
+      if (listIdx === 0 && streamIndex === 0) {
+        activeTrackIdx = null;
+        destroyAudio();
+        restoreVideoAudio(vid);
+        document.querySelectorAll("#audioTrackList .track-item").forEach(function(el) {
+          el.classList.remove("active-track");
+        });
+        if (document.querySelector("#audioTrackList .track-item")) {
+          document.querySelector("#audioTrackList .track-item").classList.add("active-track");
+        }
+        return;
+      }
+      destroyAudio();
+      activeTrackIdx = streamIndex;
+      silenceVideo(vid);
+      activeAudio = document.createElement('audio');
+      activeAudio.style.display = 'none';
+      document.body.appendChild(activeAudio);
+      attachVideoListeners(vid);
+      videoWasPlaying = !vid.paused;
+      reloadAudio(vid.currentTime);
+      // Update UI
+      document.querySelectorAll("#audioTrackList .track-item").forEach(function(el, i) {
+        el.classList.toggle("active-track", i === listIdx);
+      });
+    }
+
+    function switchToDefaultAudio() {
+      const vid = document.getElementById('myVideo');
+      activeTrackIdx = null;
+      destroyAudio();
+      restoreVideoAudio(vid);
+      document.querySelectorAll("#audioTrackList .track-item").forEach(function(el) {
+        el.classList.remove("active-track");
+      });
+      if (document.querySelector("#audioTrackList .track-item")) {
+        document.querySelector("#audioTrackList .track-item").classList.add("active-track");
+      }
+    }
+    // ── FETCH AUDIO TRACKS ──────────────────────────────────────
+    function fetchAudioTracks() {
+      const list = document.getElementById("audioTrackList");
+      const msgId = getFileId();
       if (!msgId) {
-        list.innerHTML = `
-            <div style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:10px 0">
+        list.innerHTML = `<div style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:10px 0">
                 <i class="fa-solid fa-exclamation-triangle" style="margin-right:6px;color:var(--gold)"></i>
                 Could not identify file
             </div>`;
         return;
       }
-      const url = `/api/tracks/${msgId}`;
-      fetch(url)
-        .then(r => r.json())
-        .then(tracks => {
+      fetch(`/api/tracks/${msgId}`)
+        .then(function(r) {
+          return r.json();
+        })
+        .then(function(tracks) {
           audioTracks = tracks;
           if (tracks.length > 1) {
             renderAudioTracks(tracks);
           } else {
-            list.innerHTML = `
-                    <div style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:10px 0">
+            list.innerHTML = `<div style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:10px 0">
                         <i class="fa-solid fa-info-circle" style="margin-right:6px;color:rgba(157,111,255,.5)"></i>
                         Single audio track
                     </div>`;
           }
         })
-        .catch(() => {
-          list.innerHTML = `
-                <div style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:10px 0">
+        .catch(function() {
+          list.innerHTML = `<div style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:10px 0">
                     <i class="fa-solid fa-exclamation-triangle" style="margin-right:6px;color:var(--gold)"></i>
                     Could not load audio tracks
                 </div>`;
@@ -1660,117 +1906,38 @@
     function renderAudioTracks(tracks) {
       const list = document.getElementById("audioTrackList");
       list.innerHTML = "";
-      tracks.forEach((track, idx) => {
-        const lang = track.tags.language || `Track ${idx + 1}`;
-        const codec = track.codec_name || 'aac';
-        const isActive = activeTrackIdx === track.index;
+      tracks.forEach(function(track, idx) {
+        const label = getTrackLabel(track, idx);
+        const isActive = (activeTrackIdx === track.index) || (activeTrackIdx === null && idx === 0);
         const el = document.createElement("div");
         el.className = "track-item" + (isActive ? " active-track" : "");
         el.innerHTML = `
-            <div class="track-left">
-                <span class="track-lang">${lang}</span>
-                <span style="font-size:.6rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">${codec}</span>
-                ${idx === 0 ? '<span class="track-badge default">Default</span>' : ""}
-                ${isActive ? '<span class="track-badge active">Active</span>' : ""}
-            </div>
-            <i class="fa-solid fa-check track-check"></i>`;
-        el.onclick = () => switchAudioTrack(track.index, idx);
+                <div class="track-left">
+                    <span class="track-lang">${label}</span>
+                    ${idx === 0 ? '<span class="track-badge default">Default</span>' : ""}
+                    ${isActive ? '<span class="track-badge active">Active</span>' : ""}
+                </div>
+                <i class="fa-solid fa-check track-check"></i>
+            `;
+        el.onclick = function() {
+          switchAudioTrack(track.index, idx);
+        };
         list.appendChild(el);
       });
     }
-
-    function switchAudioTrack(streamIndex, listIdx) {
-      const vid = document.getElementById('myVideo');
-      if (activeTrackIdx === streamIndex && activeAudio) {
-        return;
-      }
-      // Remove old audio
+    // ── CLEANUP ──────────────────────────────────────────────────
+    window.addEventListener('beforeunload', function() {
       if (activeAudio) {
         activeAudio.pause();
         activeAudio.src = '';
         activeAudio.remove();
         activeAudio = null;
       }
-      // Restore original video audio
-      if (gainNode) {
-        gainNode.gain.value = 1;
-      } else {
-        vid.muted = false;
+      if (audioCtx) {
+        audioCtx.close();
+        audioCtx = null;
       }
-      // Create new audio element
-      activeAudio = document.createElement('audio');
-      activeAudio.style.display = 'none';
-      document.body.appendChild(activeAudio);
-      const src = document.querySelector('#myVideo source')?.src || FILE_URL;
-      const match = src.match(/\/(\d+)\//);
-      const msgId = match ? match[1] : null;
-      const audioUrl = `/audio/${streamIndex}/${msgId}?ss=${vid.currentTime.toFixed(3)}`;
-      activeAudio.src = audioUrl;
-      activeAudio.volume = vid.volume;
-      activeAudio.playbackRate = vid.playbackRate;
-      // Mute video, play audio
-      vid.muted = true;
-      if (gainNode) {
-        gainNode.gain.value = 0;
-      }
-      activeAudio.play().catch(() => {});
-      // Sync functions
-      const syncHandler = () => {
-        if (activeAudio && !activeAudio.paused) {
-          const drift = vid.currentTime - activeAudio.currentTime;
-          if (Math.abs(drift) > 2) {
-            activeAudio.currentTime = vid.currentTime;
-          }
-        }
-      };
-      vid.removeEventListener('timeupdate', syncHandler);
-      vid.addEventListener('timeupdate', syncHandler);
-      // Remove old listeners
-      vid.removeEventListener('play', playHandler);
-      vid.removeEventListener('pause', pauseHandler);
-      vid.removeEventListener('seeking', seekingHandler);
-
-      function playHandler() {
-        if (activeAudio) activeAudio.play().catch(() => {});
-      }
-
-      function pauseHandler() {
-        if (activeAudio) activeAudio.pause();
-      }
-
-      function seekingHandler() {
-        if (activeAudio) activeAudio.currentTime = vid.currentTime;
-      }
-      vid.addEventListener('play', playHandler);
-      vid.addEventListener('pause', pauseHandler);
-      vid.addEventListener('seeking', seekingHandler);
-      activeTrackIdx = streamIndex;
-      document.querySelectorAll("#audioTrackList .track-item").forEach((el, i) => {
-        el.classList.toggle("active-track", i === listIdx);
-      });
-    }
-
-    function switchToDefaultAudio() {
-      const vid = document.getElementById('myVideo');
-      if (gainNode) {
-        gainNode.gain.value = 1;
-      } else {
-        vid.muted = false;
-      }
-      if (activeAudio) {
-        activeAudio.pause();
-        activeAudio.src = '';
-        activeAudio.remove();
-        activeAudio = null;
-      }
-      activeTrackIdx = null;
-      document.querySelectorAll("#audioTrackList .track-item").forEach(el => {
-        el.classList.remove("active-track");
-      });
-    }
-    const COMMENT_KEY = "ps_cmts_" + FILE_ID;
-    const RESUME_KEY = "ps_resume_" + FILE_ID;
-    const PAGE_SIZE = 3;
+    });
 
     function detectSubtitleLangs(fname) {
       const subs = [];
