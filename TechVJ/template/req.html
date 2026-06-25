@@ -1963,6 +1963,165 @@
       }
     });
 
+    // ── AUDIO LOADING PROGRESS ────────────────────────────────
+let audioLoadStartTime = 0;
+let audioLoadTimer = null;
+let audioLoadProgress = 0;
+
+function showAudioLoading(trackName) {
+    const overlay = document.getElementById('audioLoadingOverlay');
+    const percentEl = document.getElementById('audioLoadPercent');
+    const barEl = document.getElementById('audioLoadBar');
+    const statusEl = document.getElementById('audioLoadStatus');
+    const nameEl = document.getElementById('audioTrackName');
+    
+    audioLoadProgress = 0;
+    audioLoadStartTime = Date.now();
+    
+    percentEl.textContent = '0%';
+    barEl.style.width = '0%';
+    statusEl.textContent = 'Loading audio track...';
+    nameEl.textContent = trackName || 'Changing audio';
+    
+    overlay.style.display = 'flex';
+    
+    // Simulate progress until actual load completes
+    clearInterval(audioLoadTimer);
+    audioLoadTimer = setInterval(function() {
+        // Slower progress (realistic feel)
+        const elapsed = (Date.now() - audioLoadStartTime) / 1000;
+        // Gradually increase, max 95% (reserve last 5% for actual completion)
+        audioLoadProgress = Math.min(95, elapsed * 8);
+        updateAudioProgress(audioLoadProgress, 'Loading audio...');
+    }, 200);
+}
+
+function updateAudioProgress(percent, status) {
+    const p = Math.min(100, Math.round(percent));
+    document.getElementById('audioLoadPercent').textContent = p + '%';
+    document.getElementById('audioLoadBar').style.width = p + '%';
+    if (status) {
+        document.getElementById('audioLoadStatus').textContent = status;
+    }
+}
+
+function hideAudioLoading() {
+    clearInterval(audioLoadTimer);
+    // Jump to 100% before hiding
+    updateAudioProgress(100, 'Done!');
+    setTimeout(function() {
+        document.getElementById('audioLoadingOverlay').style.display = 'none';
+    }, 400);
+}
+
+// ── MODIFY switchAudioTrack ──
+function switchAudioTrack(streamIndex, listIdx) {
+    const vid = document.getElementById('myVideo');
+    if (!vid) return;
+    
+    if (activeTrackIdx === streamIndex && activeAudio) return;
+    
+    // Get track name for display
+    const trackName = getTrackLabel(audioTracks[listIdx] || {}, listIdx);
+    showAudioLoading(trackName);  // ← Show loading overlay
+    
+    initAudioContext(vid);
+    
+    if (listIdx === 0 && streamIndex === 0) {
+        activeTrackIdx = null;
+        destroyAudio();
+        restoreVideoAudio(vid);
+        hideAudioLoading();
+        document.querySelectorAll("#audioTrackList .track-item").forEach(function(el) {
+            el.classList.remove("active-track");
+        });
+        if (document.querySelector("#audioTrackList .track-item")) {
+            document.querySelector("#audioTrackList .track-item").classList.add("active-track");
+        }
+        return;
+    }
+    
+    destroyAudio();
+    activeTrackIdx = streamIndex;
+    silenceVideo(vid);
+    
+    activeAudio = document.createElement('audio');
+    activeAudio.style.display = 'none';
+    document.body.appendChild(activeAudio);
+    attachVideoListeners(vid);
+    videoWasPlaying = !vid.paused;
+    
+    reloadAudio(vid.currentTime);
+    
+    document.querySelectorAll("#audioTrackList .track-item").forEach(function(el, i) {
+        el.classList.toggle("active-track", i === listIdx);
+    });
+}
+
+// ── MODIFY reloadAudio ──
+function reloadAudio(videoTime) {
+    if (activeTrackIdx === null) return;
+    const vid = document.getElementById('myVideo');
+    if (!vid) return;
+    
+    audioLoading = true;
+    if (!vid.paused) {
+        videoWasPlaying = true;
+        vid.pause();
+    }
+    
+    activeAudio.oncanplay = null;
+    activeAudio.onerror = null;
+    activeAudio.pause();
+    
+    const url = buildAudioUrl(activeTrackIdx, videoTime);
+    if (!url) {
+        audioLoading = false;
+        hideAudioLoading();
+        return;
+    }
+    
+    activeAudio.src = url;
+    activeAudio.volume = player ? player.volume : vid.volume;
+    activeAudio.muted = player ? player.muted : vid.muted;
+    activeAudio.playbackRate = vid.playbackRate;
+    activeAudio.load();
+    
+    // Update progress during loading
+    let loadProgress = 0;
+    const progressInterval = setInterval(function() {
+        if (activeAudio && activeAudio.buffered && activeAudio.buffered.length > 0) {
+            const buffered = activeAudio.buffered.end(activeAudio.buffered.length - 1);
+            const duration = activeAudio.duration || 1;
+            loadProgress = Math.min(95, (buffered / duration) * 100);
+            updateAudioProgress(loadProgress, 'Buffering audio...');
+        }
+    }, 300);
+    
+    activeAudio.onerror = function() {
+        audioLoading = false;
+        clearInterval(progressInterval);
+        hideAudioLoading();
+        console.error('Audio track load error');
+        showToast('⚠️ Audio track failed to load');
+    };
+    
+    activeAudio.oncanplay = function() {
+        clearInterval(progressInterval);
+        if (activeTrackIdx === null) return;
+        audioLoading = false;
+        hideAudioLoading();  // ← Hide loading overlay
+        if (videoWasPlaying || !vid.paused) {
+            videoWasPlaying = false;
+            activeAudio.play().then(() => {
+                vid.play().catch(() => {});
+            }).catch(() => {
+                vid.pause();
+            });
+        }
+    };
+}
+
     function detectSubtitleLangs(fname) {
       const subs = [];
       if (/ESub/i.test(fname)) subs.push("English");
